@@ -20,7 +20,7 @@ if [ "$role" = "app" ]; then
     php artisan config:cache
     php artisan view:clear
     php artisan route:cache
-    php artisan migrate
+    php artisan migrate --env=.env
 
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
     exec docker-php-entrypoint "$@"

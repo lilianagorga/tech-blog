@@ -29,8 +29,7 @@ services:
     image: mysql:8.0
     ports:
       - 3306:3306
-    command:
-      - --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       - MYSQL_HOST=${DB_HOST}
       - MYSQL_ROOT_HOST=${DB_HOST}
@@ -40,6 +39,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
+      - ./Docker/my.cnf:/etc/mysql/my.cnf
 
   #Redis Server
   redis:
