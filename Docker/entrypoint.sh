@@ -1,5 +1,12 @@
 #!/bin/zsh
 
+until mysqladmin ping -h"database" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do
+    echo "Waiting for database.."
+    sleep 5
+done
+
+echo "database ready"
+
 if [ ! -f "vendor/autoload.php" ]; then
   composer install --no-progress --no-interaction
 fi
@@ -14,14 +21,13 @@ fi
 role=${CONTAINER_ROLE:-app}
 
 if [ "$role" = "app" ]; then
+    php artisan migrate --env=.env
     php artisan key:generate
     php artisan cache:clear
     php artisan config:clear
     php artisan config:cache
     php artisan view:clear
     php artisan route:cache
-    php artisan migrate --env=.env
-
     php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
     exec docker-php-entrypoint "$@"
 elif [ "$role" = "queue" ]; then

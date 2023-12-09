@@ -1,12 +1,18 @@
 FROM php:8.2.1 as php
 
 RUN apt-get update -y \
-    && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev tzdata nano zsh && \
+    && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev tzdata nano zsh default-mysql-client iputils-ping && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update -y \
+    && apt-get install -y iputils-ping \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql bcmath
+RUN docker-php-ext-install pdo pdo_mysql mysqli bcmath
+RUN docker-php-ext-enable pdo_mysql mysqli
+
 
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
