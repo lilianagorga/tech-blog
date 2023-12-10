@@ -1,11 +1,19 @@
 #!/bin/zsh
 
+echo "Current environment: $APP_ENV"
+echo "Database connection: $(php artisan tinker --execute='echo config("database.default");')"
+
 until mysqladmin ping -h"database" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do
     echo "Waiting for database.."
     sleep 5
 done
+echo "Local database is ready"
 
-echo "database ready"
+until mysqladmin ping -h"database_testing" -u"${DB_USERNAME}" -p"${DB_PASSWORD}" --silent; do
+    echo "Waiting for testing database..."
+    sleep 5
+done
+echo "Testing database is ready!"
 
 if [ ! -f "vendor/autoload.php" ]; then
   composer install --no-progress --no-interaction
@@ -18,10 +26,23 @@ else
   echo "env file exists."
 fi
 
+if [ ! -f ".env.testing" ]; then
+        echo "Creating .env.testing file for environment: $APP_ENV"
+        cp .env.testing.example .env.testing
+    else
+        echo ".env.testing file exists."
+fi
+
+if [ "$APP_ENV" = "testing" ]; then
+    echo "Running migrations for testing environment"
+    export $(cat .env.testing | xargs)
+    php artisan migrate --env=testing
+fi
+
 role=${CONTAINER_ROLE:-app}
 
 if [ "$role" = "app" ]; then
-    php artisan migrate --env=.env
+    php artisan migrate
     php artisan key:generate
     php artisan cache:clear
     php artisan config:clear
