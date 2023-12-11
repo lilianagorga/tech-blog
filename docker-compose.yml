@@ -98,6 +98,8 @@ services:
     build:
       context: .
       target: node
+    ports:
+      - "3000:3000"
     volumes:
       - .:/usr/src
       - ./node_modules:/usr/src/node_modules
