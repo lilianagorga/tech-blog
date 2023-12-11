@@ -33,16 +33,13 @@ if [ ! -f ".env.testing" ]; then
         echo ".env.testing file exists."
 fi
 
-if [ "$APP_ENV" = "testing" ]; then
-    echo "Running migrations for testing environment"
-    export $(cat .env.testing | xargs)
-    php artisan migrate --env=testing
-fi
-
 role=${CONTAINER_ROLE:-app}
 
 if [ "$role" = "app" ]; then
     php artisan migrate
+    php artisan cache:clear
+    php artisan config:clear
+    php artisan migrate --env=testing
     php artisan key:generate
     php artisan cache:clear
     php artisan config:clear
