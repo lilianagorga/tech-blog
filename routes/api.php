@@ -20,5 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/posts', [PostController::class, 'index']);
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::middleware('auth:sanctum')->group(function () {
+  Route::apiResource('posts', PostController::class);
+  Route::apiResource('categories', CategoryController::class);
+});
