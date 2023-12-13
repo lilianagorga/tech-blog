@@ -23,9 +23,9 @@ abstract class TestCase extends BaseTestCase
     return Category::factory()->count($count)->create();
   }
 
-  public function createPost($attributes = [])
+  public function createPost($args = [])
   {
-    return Post::factory()->create($attributes);
+    return Post::factory()->create($args);
   }
 
   public function createUser($args = [])
