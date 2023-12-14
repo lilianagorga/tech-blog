@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TextWidgetController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);
   Route::apiResource('users', UserController::class)->except('store');
+  Route::apiResource('text-widgets', TextWidgetController::class);
 });
 
 Route::post('/user/register', RegisterController::class);

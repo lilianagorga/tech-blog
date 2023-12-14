@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\TextWidget;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Sanctum\Sanctum;
@@ -33,10 +34,25 @@ abstract class TestCase extends BaseTestCase
     return User::factory()->create($args);
   }
 
+  public function createUserCount($count = 5)
+  {
+    return User::factory()->count($count)->create();
+  }
+
   public function authUser()
   {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
     return $user;
+  }
+
+  public function createTextWidgetCount($count = 3)
+  {
+    return TextWidget::factory()->count($count)->create();
+  }
+
+  public function createTextWidget($args = [])
+  {
+    return TextWidget::factory()->create($args);
   }
 }

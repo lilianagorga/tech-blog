@@ -19,7 +19,7 @@ class UserTest extends TestCase
 
   public function test_users_can_be_listed()
   {
-    User::factory()->count(5)->create();
+    $this->createUserCount();
     $response = $this->getJson('/api/users');
     $response->assertOk();
     $response->assertJsonCount(6);
