@@ -44,7 +44,7 @@ class CategoryTest extends TestCase
 
   public function test_categories_can_be_retrieved(): void
   {
-    $this->createCategory();
+    $this->createCategoryCount();
 
     $response = $this->getJson('/api/categories');
 
@@ -67,7 +67,7 @@ class CategoryTest extends TestCase
 
   public function test_a_single_category_can_be_retrieved(): void
   {
-    $category = $this->createCategory();
+    $category = $this->createCategoryCount();
 
     $response = $this->getJson('/api/categories/' . $category->first()->id);
 
@@ -80,7 +80,7 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_updated(): void
   {
-    $category = $this->createCategory()->first();
+    $category = $this->createCategoryCount()->first();
     $updatedData = ['title' => 'Category Update', 'slug' => 'category-update'];
 
     $response = $this->putJson('/api/categories/' . $category->id, $updatedData);
@@ -91,7 +91,7 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_deleted(): void
   {
-    $category = $this->createCategory()->first();
+    $category = $this->createCategoryCount()->first();
 
     $response = $this->deleteJson('/api/categories/' . $category->id);
 

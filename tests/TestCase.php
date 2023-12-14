@@ -19,9 +19,14 @@ abstract class TestCase extends BaseTestCase
     $this->withoutExceptionHandling();
   }
 
-  public function createCategory($count = 5)
+  public function createCategoryCount($count = 5)
   {
     return Category::factory()->count($count)->create();
+  }
+
+  public function createCategory($args = [])
+  {
+    return Category::factory()->create($args);
   }
 
   public function createPost($args = [])

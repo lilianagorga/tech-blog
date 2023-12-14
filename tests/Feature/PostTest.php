@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\PostController;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -68,7 +69,10 @@ class PostTest extends TestCase
 
   public function test_a_single_post_can_be_retrieved(): void
   {
-    $post = $this->createPost();
+    $post = $this->createPost([
+      'active' => true,
+      'published_at' => now()->subDay()
+    ]);
 
     $response = $this->getJson('/api/posts/'.$post->id);
 
@@ -82,6 +86,15 @@ class PostTest extends TestCase
       'published_at' => $post->published_at ? $post->published_at->toJSON() : null,
       'user_id' => $post->user_id
     ]);
+  }
+
+  public function test_a_single_post_is_not_retrieved_if_not_active(): void
+  {
+    $post = $this->createPost(['active' => false]);
+    $this->assertFalse($post->active);
+
+    $response = $this->getJson('/api/posts/'.$post->id);
+    $response->assertNotFound();
   }
 
   public function test_a_post_can_be_updated(): void
@@ -110,5 +123,48 @@ class PostTest extends TestCase
     $response->assertNoContent();
     $this->assertDatabaseMissing('posts', ['id' => $post->id]);
   }
+
+  public function test_posts_can_be_retrieved_by_category(): void {
+    $category = Category::factory()->create();
+    $posts = Post::factory()->count(2)->create(['active' => true]);
+    foreach ($posts as $post) {
+      $post->categories()->attach($category->id);
+    }
+
+    $response = $this->getJson('/api/category/'.$category->slug);
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+  }
+
+  public function test_posts_can_be_filtered_by_category(): void {
+    $category = Category::factory()->create();
+    $posts = Post::factory()->count(2)->create(['active' => true]);
+    foreach ($posts as $post) {
+      $post->categories()->attach($category->id);
+    }
+
+    $response = $this->getJson('/api/posts?category=' . $category->slug);
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+  }
+
+  public function test_posts_can_be_searched(): void
+  {
+    Post::factory()->create(['title' => 'Unique Title', 'active' => true]);
+    Post::factory()->count(2)->create(['active' => true]);
+
+    $response = $this->getJson('/api/search?q=Unique');
+    $response->assertOk();
+    $response->assertJsonCount(13);
+  }
+
+  public function test_posts_can_be_sorted(): void
+  {
+    Post::factory()->count(3)->create(['active' => true]);
+
+    $response = $this->getJson('/api/posts?sort=published_at&order=asc');
+    $response->assertOk();
+  }
+
 
 }
