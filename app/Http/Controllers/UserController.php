@@ -43,5 +43,13 @@ class UserController extends Controller
     return response()->json(null, Response::HTTP_NO_CONTENT);
   }
 
+  public function managePanels(Request $request): Response
+  {
+    if ($request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Authorized']);
+    } else {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+  }
 
 }
