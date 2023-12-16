@@ -44,8 +44,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+  protected function getDefaultGuardName(): string {
+    return 'api';
+  }
+
   public function canAccessPanel(): bool
   {
-    return $this->hasPermissionTo('manage panels');
+    return $this->hasRole('Admin', 'api') && $this->hasPermissionTo('manage panels', 'api');
   }
 }

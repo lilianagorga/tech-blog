@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -56,4 +58,23 @@ class UserTest extends TestCase
     $response->assertNoContent();
     $this->assertDatabaseMissing('users', ['id' => $user->id]);
   }
+
+  public function test_manage_panels_access()
+  {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
+    $response = $this->getJson('/api/users/manage-panels');
+    $response->assertOk();
+    $response->assertJson(['message' => 'Access Authorized']);
+  }
+
+  public function test_manage_panels_access_denied_for_non_admin_user()
+  {
+    $user = $this->createUser();
+    Sanctum::actingAs($user);
+    $response = $this->getJson('/api/users/manage-panels');
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
+    $response->assertJson(['message' => 'Access Forbidden']);
+  }
+
 }

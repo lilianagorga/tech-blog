@@ -8,6 +8,8 @@ use App\Models\TextWidget;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Sanctum\Sanctum;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -51,7 +53,18 @@ abstract class TestCase extends BaseTestCase
     return $user;
   }
 
-  public function createTextWidgetCount($count = 3)
+  public function addRoleAndPermissionToAdmin(): User
+  {
+    /** @var User $admin */
+    $admin = User::factory()->create();
+    $role = Role::create(['name' => 'Admin', 'guard_name' => 'api']);
+    $permission = Permission::create(['name' => 'manage panels', 'guard_name' => 'api']);
+    $role->givePermissionTo($permission);
+    $admin->assignRole($role);
+    return $admin;
+  }
+
+  public function createTextWidgetCount($count)
   {
     return TextWidget::factory()->count($count)->create();
   }
@@ -60,4 +73,5 @@ abstract class TestCase extends BaseTestCase
   {
     return TextWidget::factory()->create($args);
   }
+
 }

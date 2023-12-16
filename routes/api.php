@@ -26,8 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
   });
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);
+  Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
   Route::apiResource('users', UserController::class)->except('store');
-  Route::get('/manage-panels', [UserController::class, 'managePanels']);
   Route::apiResource('text-widgets', TextWidgetController::class);
 });
 

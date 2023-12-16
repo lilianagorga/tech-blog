@@ -19,7 +19,7 @@ class TextWidgetTest extends TestCase
 
   public function test_text_widgets_can_be_listed()
   {
-    $this->createTextWidgetCount();
+    $this->createTextWidgetCount(2);
     $response = $this->getJson('/api/text-widgets');
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
