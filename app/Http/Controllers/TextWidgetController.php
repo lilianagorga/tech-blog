@@ -12,7 +12,7 @@ class TextWidgetController extends Controller
   public function index(): JsonResponse
   {
     $widgets = TextWidget::where('active', true)->get();
-    return response()->json(['data' => $widgets]);
+    return response()->json($widgets);
   }
 
   public function store(Request $request): JsonResponse

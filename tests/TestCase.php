@@ -64,9 +64,9 @@ abstract class TestCase extends BaseTestCase
     return $admin;
   }
 
-  public function createTextWidgetCount($count)
+  public function createTextWidgetCount($count = 1)
   {
-    return TextWidget::factory()->count($count)->create();
+    return TextWidget::factory()->count($count)->state(['active' => true])->create();
   }
 
   public function createTextWidget($args = [])

@@ -3,8 +3,11 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextWidgetController;
+use App\Http\Controllers\UpvoteDownvoteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,14 +27,27 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/user', function (Request $request) {
     return $request->user();
   });
+
+  Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
+  Route::get('/profile', [ProfileController::class, 'edit']);
+  Route::patch('/profile', [ProfileController::class, 'update']);
+  Route::delete('/profile', [ProfileController::class, 'destroy']);
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);
-  Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
   Route::apiResource('users', UserController::class)->except('store');
   Route::apiResource('text-widgets', TextWidgetController::class);
+  Route::get('/comments', [CommentController::class, 'index']);
+  Route::post('/comments', [CommentController::class, 'store']);
+  Route::patch('/comments', [CommentController::class, 'update']);
+  Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
+  Route::delete('/comments', [CommentController::class, 'destroy']);
+  Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
+  Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
 });
 
 Route::get('/search', [PostController::class, 'search'])->name('search');
 Route::get('/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
 Route::post('/user/register', RegisterController::class);
 Route::post('/user/login', LoginController::class);
+
+
