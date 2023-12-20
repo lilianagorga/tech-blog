@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\TextWidget;
 use App\Models\User;
@@ -72,6 +73,11 @@ abstract class TestCase extends BaseTestCase
   public function createTextWidget($args = [])
   {
     return TextWidget::factory()->create($args);
+  }
+
+  public function createComment($args = [])
+  {
+    return Comment::factory()->create($args);
   }
 
 }

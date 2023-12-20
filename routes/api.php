@@ -38,9 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::apiResource('text-widgets', TextWidgetController::class);
   Route::get('/comments', [CommentController::class, 'index']);
   Route::post('/comments', [CommentController::class, 'store']);
-  Route::patch('/comments', [CommentController::class, 'update']);
+  Route::patch('/comments/{comment}', [CommentController::class, 'update']);
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
-  Route::delete('/comments', [CommentController::class, 'destroy']);
+  Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
   Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
   Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
 });

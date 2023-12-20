@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProfileController extends Controller
 {
@@ -41,6 +42,6 @@ class ProfileController extends Controller
     $user = $request->user();
     $user->delete();
 
-    return response()->json(['message' => 'User account deleted successfully.'], 200);
+    return response()->json(['message' => 'User account deleted successfully.'], Response::HTTP_OK);
   }
 }

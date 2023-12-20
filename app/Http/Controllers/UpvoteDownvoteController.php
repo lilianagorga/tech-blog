@@ -6,21 +6,22 @@ use App\Models\Post;
 use App\Models\UpvoteDownvote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class UpvoteDownvoteController extends Controller
 {
-  public function upvote(Request $request, $postId)
+  public function upvote(Request $request, $postId): JsonResponse
   {
     return $this->vote($request, $postId, true);
   }
 
-  public function downvote(Request $request, $postId)
+  public function downvote(Request $request, $postId): JsonResponse
   {
     return $this->vote($request, $postId, false);
   }
 
-  protected function vote(Request $request, $postId, $isUpvote)
+  protected function vote(Request $request, $postId, $isUpvote): JsonResponse
   {
     $user = $request->user();
 
