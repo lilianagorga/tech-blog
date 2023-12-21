@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextWidgetController;
+use App\Http\Controllers\UI\DashboardController;
 use App\Http\Controllers\UpvoteDownvoteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -43,6 +46,11 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
   Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
   Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
+
+
+  Route::post('/logout', [LogoutController::class, 'logout']);
+  Route::get('/me', [AuthController::class, 'me']);
+  Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 Route::get('/search', [PostController::class, 'search'])->name('search');
