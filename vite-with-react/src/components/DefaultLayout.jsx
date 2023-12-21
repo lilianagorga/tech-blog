@@ -14,7 +14,7 @@ function classNames(...classes) {
 export default function DefaultLayout() {
   const { currentUser, userToken, setUserToken, setCurrentUser } = useStateContext();
   if (!userToken) {
-    return <Navigate to="login" />
+    return <Navigate to="/user/login" />
   }
   const logout = (ev) => {
     ev.preventDefault();

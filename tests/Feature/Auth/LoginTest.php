@@ -19,12 +19,12 @@ class LoginTest extends TestCase
 
   public function testIfUserEmailIsNotAvailableThenItReturnError(): void
   {
-    $this->postJson('/api/user/login', ['email' => 'test@test.com', 'password' => 'password'])->assertUnauthorized();
+    $this->postJson('/api/user/login', ['email' => 'test@test.com', 'password' => 'password'])->assertUnprocessable();
   }
 
   public function testItRaiseErrorIfPasswordIsIncorrect(): void
   {
     $user = $this->createUser();
-    $this->postJson('/api/user/login', ['email' => $user->email, 'password' => 'random'])->assertUnauthorized();
+    $this->postJson('/api/user/login', ['email' => $user->email, 'password' => 'random'])->assertUnprocessable();
   }
 }

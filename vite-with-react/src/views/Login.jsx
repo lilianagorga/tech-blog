@@ -14,7 +14,7 @@ export default function Login() {
     ev.preventDefault();
     setError({__html: ''})
     axiosClient
-      .post("/login", {
+      .post("/user/login", {
         email,
         password,
       })
@@ -36,7 +36,7 @@ export default function Login() {
       <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
       <p className="mt-4 text-center text-sm text-gray-500">
         Not a member?{' '}
-        <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign up for free</Link>
+        <Link to="/user/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign up for free</Link>
       </p>
       {error.__html && (<div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error}></div>)}
 

@@ -26,11 +26,11 @@ const router = createBrowserRouter([
     element: <GuestLayout/>,
     children: [
       {
-        path: 'login',
+        path: 'user/login',
         element: <Login />
       },
       {
-        path: 'register',
+        path: 'user/register',
         element: <Register />
       }
     ]

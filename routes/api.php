@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+
   Route::get('/user', function (Request $request) {
     return $request->user();
   });
@@ -46,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
   Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
   Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
-
 
   Route::post('/logout', [LogoutController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);

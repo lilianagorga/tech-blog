@@ -12,7 +12,16 @@ class RegisterController extends Controller
 {
   public function __invoke(RegisterRequest $request): Response
   {
-    $user = User::create($request->validated());
-    return response($user, Response::HTTP_CREATED);
+//    $user = User::create($request->validated());
+//    return response($user, Response::HTTP_CREATED);
+    $data = $request->validated();
+    /** @var User $user */
+    $user = User::create([
+      'name' => $data['name'],
+      'email' => $data['email'],
+      'password' => bcrypt($data['password'])
+    ]);
+    $token = $user->createToken('main')->plainTextToken;
+    return response(['user' => $user, 'token' => $token]);
   }
 }
