@@ -33,9 +33,9 @@ ENTRYPOINT ["Docker/entrypoint.sh"]
 
 FROM node:current-alpine3.17 as node
 
-WORKDIR /var/www
-COPY . .
+WORKDIR /var/www/vite-with-react
+COPY vite-with-react/package*.json ./
 
 RUN npm install
 
-VOLUME /var/www/node_modules
+COPY vite-with-react/ ./

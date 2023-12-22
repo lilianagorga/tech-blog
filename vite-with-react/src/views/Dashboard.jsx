@@ -30,7 +30,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-700">
           <TButton link>
             <EyeIcon className="w-5 h-5 mr-2" />
-            View Answers
+            View Posts
           </TButton>
         </div>
       )}

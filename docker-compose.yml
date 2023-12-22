@@ -101,8 +101,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/usr/src
-      - ./node_modules:/usr/src/node_modules
+      - .:/var/www
+      - ./vite-with-react/node_modules:/var/www/vite-with-react/node_modules
     tty: true
 
 networks:
