@@ -32,6 +32,7 @@ export default function Dashboard() {
             <EyeIcon className="w-5 h-5 mr-2" />
             View Posts
           </TButton>
+          <h3>Hello <span>World</span></h3>
         </div>
       )}
     </PageComponent>

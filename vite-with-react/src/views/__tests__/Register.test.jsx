@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import Register from '../Register';
+import router from "../../router.jsx";
 
 describe('Register Component', () => {
   it('should render correctly', () => {
@@ -11,5 +12,17 @@ describe('Register Component', () => {
         <Register />
       </RouterProvider>
     );
+  });
+});
+
+describe('Register Component', () => {
+  it('should render registration form fields', () => {
+    render(
+      <RouterProvider router={router}>
+        <Register />
+      </RouterProvider>
+    );
+    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Email address')).toBeInTheDocument();
   });
 });

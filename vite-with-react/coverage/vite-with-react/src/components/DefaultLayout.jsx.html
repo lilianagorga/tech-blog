@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">10% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/150</span>
+                <span class='fraction'>15/150</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">10% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/150</span>
+                <span class='fraction'>15/150</span>
             </div>
         
             
@@ -213,10 +213,24 @@
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -349,39 +363,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import {Fragment, useEffect} from 'react'</span></span></span>
-<span class="cstat-no" title="statement not covered" >import { Disclosure, Menu, Transition } from '@headlessui/react'</span>
-<span class="cstat-no" title="statement not covered" >import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'</span>
-<span class="cstat-no" title="statement not covered" >import {Navigate, NavLink, Outlet} from "react-router-dom";</span>
-<span class="cstat-no" title="statement not covered" >import {useStateContext} from "../contexts/ContextProvider.jsx";</span>
-<span class="cstat-no" title="statement not covered" >import axiosClient from "../axios.js";</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >const navigation = [{ name: 'Dashboard', to: '/dashboard'}]</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >function classNames(...classes) {</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {Fragment, useEffect} from 'react'
+import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import {Navigate, NavLink, Outlet} from "react-router-dom";
+import {useStateContext} from "../contexts/ContextProvider.jsx";
+import axiosClient from "../axios.js";
+&nbsp;
+const navigation = [{ name: 'Dashboard', to: '/dashboard'}]
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function classNames(...classes) {</span></span>
 <span class="cstat-no" title="statement not covered" >  return classes.filter(Boolean).join(' ')</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export default function DefaultLayout() {</span>
-<span class="cstat-no" title="statement not covered" >  const { currentUser, userToken, setUserToken, setCurrentUser } = useStateContext();</span>
-<span class="cstat-no" title="statement not covered" >  if (!userToken) {</span>
-<span class="cstat-no" title="statement not covered" >    return &lt;Navigate to="/user/login" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  const logout = (ev) =&gt; {</span>
+&nbsp;
+export default function DefaultLayout() {
+  const { currentUser, userToken, setUserToken, setCurrentUser } = useStateContext();
+  if (!userToken) {
+    return &lt;Navigate to="/user/login" /&gt;
+<span class="branch-0 cbranch-no" title="branch not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  const logout = <span class="fstat-no" title="function not covered" >(ev) =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    ev.preventDefault();</span>
 <span class="cstat-no" title="statement not covered" >    axiosClient.post('/logout')</span>
 <span class="cstat-no" title="statement not covered" >      .then(res =&gt; {</span>
@@ -401,7 +401,7 @@
 <span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="min-h-full"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;Disclosure as="nav" className="bg-gray-800"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          {({ open }) =&gt; (</span>
+<span class="cstat-no" title="statement not covered" >          {<span class="fstat-no" title="function not covered" >({ open }) =&gt; (</span></span>
 <span class="cstat-no" title="statement not covered" >            &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;div className="flex h-16 items-center justify-between"&gt;</span>
@@ -520,7 +520,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-23T09:35:11.326Z
+                at 2023-12-23T19:20:00.874Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

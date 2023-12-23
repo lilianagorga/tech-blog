@@ -33,18 +33,23 @@ Route::middleware('auth:sanctum')->group(function () {
   });
 
   Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
+
   Route::get('/profile', [ProfileController::class, 'edit']);
   Route::patch('/profile', [ProfileController::class, 'update']);
   Route::delete('/profile', [ProfileController::class, 'destroy']);
+
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);
   Route::apiResource('users', UserController::class)->except('store');
   Route::apiResource('text-widgets', TextWidgetController::class);
+
+
   Route::get('/comments', [CommentController::class, 'index']);
   Route::post('/comments', [CommentController::class, 'store']);
   Route::patch('/comments/{comment}', [CommentController::class, 'update']);
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
   Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
   Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
 
