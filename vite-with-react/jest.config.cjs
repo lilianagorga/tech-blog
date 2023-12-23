@@ -1,24 +1,11 @@
-// module.exports = {
-//   "setupFilesAfterEnv": [
-//   "@testing-library/jest-dom/extend-expect"
-//   ],
-//   "testEnvironment": "jest-environment-jsdom",
-//   "transform": {
-//   "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
-//   },
-//   "moduleNameMapper": {
-//     "\\.(css|less|sass|scss)$": "identity-obj-proxy"
-//   }
-// }
-
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+  setupFilesAfterEnv: ['<rootDir>/setupTest.js'],
   testEnvironment: 'jest-environment-jsdom',
   "transform": {
-  "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+  "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+    "./src/axios.js": "babel-jest"
   },
   "moduleNameMapper": {
-    "\\.(css|less|sass|scss)$": "identity-obj-proxy"
-  }
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+  },
 };
-
