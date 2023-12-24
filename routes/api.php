@@ -33,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
   });
 
   Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
+  Route::post('/users/roles', [UserController::class, 'roles']);
+  Route::post('/users/roles/add', [UserController::class, 'addRoles']);
+  Route::post('/users/permissions', [UserController::class, 'permissions']);
+  Route::post('/users/permissions/add', [UserController::class, 'addPermissions']);
+
 
   Route::get('/profile', [ProfileController::class, 'edit']);
   Route::patch('/profile', [ProfileController::class, 'update']);
