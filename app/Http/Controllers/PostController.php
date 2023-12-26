@@ -92,26 +92,26 @@ class PostController extends Controller
     return response()->json(null, Response::HTTP_NO_CONTENT);
   }
 
-  public function byCategory(Category $category): Response
-  {
-    $posts = Post::query()->join('category_post', 'posts.id', '=', 'category_post.post_id')
-      ->where('category_post.category_id', '=', $category->id)->where('active', '=', true)
-      ->whereDate('published_at', '<=', Carbon::now())->orderBy('published_at', 'desc')->paginate(10);
-    return response()->json($posts);
-  }
-
-  public function search(Request $request): Response
-  {
-    $query = $request->get('q');
-    $posts = Post::where('active', true)
-      ->whereDate('published_at', '<=', now())
-      ->where(function ($q) use ($query) {
-        $q->where('title', 'like', "%$query%")
-          ->orWhere('body', 'like', "%$query%");
-      })
-      ->paginate(10);
-    return response()->json($posts);
-  }
+//  public function byCategory(Category $category): Response
+//  {
+//    $posts = Post::query()->join('category_post', 'posts.id', '=', 'category_post.post_id')
+//      ->where('category_post.category_id', '=', $category->id)->where('active', '=', true)
+//      ->whereDate('published_at', '<=', Carbon::now())->orderBy('published_at', 'desc')->paginate(10);
+//    return response()->json($posts);
+//  }
+//
+//  public function search(Request $request): Response
+//  {
+//    $query = $request->get('q');
+//    $posts = Post::where('active', true)
+//      ->whereDate('published_at', '<=', now())
+//      ->where(function ($q) use ($query) {
+//        $q->where('title', 'like', "%$query%")
+//          ->orWhere('body', 'like', "%$query%");
+//      })
+//      ->paginate(10);
+//    return response()->json($posts);
+//  }
 
 
 

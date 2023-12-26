@@ -5,7 +5,10 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\Sanctum;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -64,8 +67,16 @@ class UserTest extends TestCase
     $admin = $this->addRoleAndPermissionToAdmin();
     Sanctum::actingAs($admin);
     $response = $this->getJson('/api/users/manage-panels');
+    $users = User::with('roles', 'permissions')->get()->toArray();
+    $roles = Role::all()->pluck('name')->toArray();
+    $permissions = Permission::all()->pluck('name')->toArray();
+    $data = [
+      'permissions' => $permissions,
+      'roles' => $roles,
+      'users' => $users
+    ];
     $response->assertOk();
-    $response->assertJson(['message' => 'Access Authorized']);
+    $response->assertJson($data);
   }
 
   public function test_manage_panels_access_denied_for_non_admin_user()

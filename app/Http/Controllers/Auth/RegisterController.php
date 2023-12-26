@@ -21,7 +21,8 @@ class RegisterController extends Controller
       'email' => $data['email'],
       'password' => bcrypt($data['password'])
     ]);
+    $user->markEmailAsVerified();
     $token = $user->createToken('main')->plainTextToken;
-    return response(['user' => $user, 'token' => $token]);
+    return response(['user' => $user, 'token' => $token], Response::HTTP_CREATED);
   }
 }

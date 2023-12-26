@@ -27,11 +27,13 @@ class LoginController extends Controller
     $credentials = $request->validated();
     $remember = $credentials['remember'] ?? false;
     unset($credentials['remember']);
+
     if (!Auth::attempt($credentials, $remember)) {
       return response([
         'error' => 'The provided credentials are not correct'
       ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
     $user = Auth::user();
     $token = $user->createToken('main')->plainTextToken;
     return response(['user' => $user, 'token' => $token]);

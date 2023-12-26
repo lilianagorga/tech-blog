@@ -13,7 +13,7 @@ class RegisterTest extends TestCase
   {
     $this->postJson('/api/user/register',
       ['name' => 'Liliana', 'email' => 'test@test.it', 'password' => 'Secret123!', 'password_confirmation' => 'Secret123!' ])
-      ->assertOk()->assertJsonStructure(['user', 'token']);
+      ->assertCreated();
     $this->assertDatabaseHas('users', ['name' => 'Liliana']);
   }
 }

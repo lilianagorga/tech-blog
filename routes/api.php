@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
+//  /posts/{postId}/vote endpoint
   Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
   Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
 
@@ -65,7 +66,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/search', [PostController::class, 'search'])->name('search');
 Route::get('/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
+
 Route::post('/user/register', RegisterController::class);
 Route::post('/user/login', LoginController::class);
-
-

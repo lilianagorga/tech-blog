@@ -90,7 +90,7 @@ class UserController extends Controller
         }
       }
 
-     return response()->json($role, status: Response::HTTP_CREATED);
+     return response()->json($role, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
@@ -160,7 +160,7 @@ class UserController extends Controller
         'guard_name' => 'api'
       ]);
 
-      return response()->json($permission, status: Response::HTTP_CREATED);
+      return response()->json($permission, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
