@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::post('/posts/{postId}/vote/{vote}', [VoteController::class, 'vote']);
 
-  Route::post('/logout', [LogoutController::class, 'logout']);
+  Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);
   Route::get('/dashboard', [DashboardController::class, 'index']);
 });
@@ -65,5 +65,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/search', [PostController::class, 'search'])->name('search');
 Route::get('/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
 
-Route::post('/user/register', RegisterController::class);
-Route::post('/user/login', LoginController::class);
+Route::post('/user/register', [AuthController::class, 'register']);
+Route::post('/user/login', [AuthController::class, 'login']);
