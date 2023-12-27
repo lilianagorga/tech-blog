@@ -38,6 +38,9 @@ class CommentController extends Controller
     } else {
       $comment = new Comment($commentData);
       $comment->user_id = $user->id;
+      if ($request->has('parent_id')) {
+        $comment->parent_id = $request->input('parent_id');
+      }
       $comment->save();
     }
 
