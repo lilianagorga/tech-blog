@@ -10,7 +10,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextWidgetController;
 use App\Http\Controllers\UI\DashboardController;
-use App\Http\Controllers\UpvoteDownvoteController;
+use App\Http\Controllers\VoteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,9 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
-//  /posts/{postId}/vote endpoint
-  Route::post('/posts/{postId}/upvote', [UpvoteDownvoteController::class, 'upvote']);
-  Route::post('/posts/{postId}/downvote', [UpvoteDownvoteController::class, 'downvote']);
+  Route::post('/posts/{postId}/vote/{vote}', [VoteController::class, 'vote']);
 
   Route::post('/logout', [LogoutController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);

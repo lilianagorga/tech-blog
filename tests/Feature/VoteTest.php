@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UpvoteDownvoteTest extends TestCase
+class VoteTest extends TestCase
 {
   use RefreshDatabase;
 
@@ -16,29 +16,29 @@ class UpvoteDownvoteTest extends TestCase
     $this->user = $this->authUser();
   }
 
-  public function test_user_can_upvote_a_post()
+  public function test_user_can_vote_positive_a_post()
   {
     $post = $this->createPost();
-    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/upvote");
+    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/up");
     $response->assertOk();
     $response->assertJson(['message' => 'Vote recorded']);
-    $this->assertDatabaseHas('upvote_downvotes', [
+    $this->assertDatabaseHas('votes', [
       'post_id' => $post->id,
       'user_id' => $this->user->id,
-      'is_upvote' => true
+      'vote' => 'up'
     ]);
   }
 
-  public function test_user_can_downvote_a_post()
+  public function test_user_can_vote_negative_a_post()
   {
     $post = $this->createPost();
-    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/downvote");
+    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/down");
     $response->assertOk();
     $response->assertJson(['message' => 'Vote recorded']);
-    $this->assertDatabaseHas('upvote_downvotes', [
+    $this->assertDatabaseHas('votes', [
       'post_id' => $post->id,
       'user_id' => $this->user->id,
-      'is_upvote' => false
+      'vote' => 'down'
     ]);
   }
 
