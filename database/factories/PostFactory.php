@@ -26,7 +26,7 @@ class PostFactory extends Factory
         'thumbnail' => fake()->imageUrl,
         'body' => fake()->realText(5000),
         'active' => fake()->boolean,
-        'published_at' => fake()->dateTime,
+        'published_at' => now(),
         'user_id' => User::factory()->create()->id,
       ];
     }

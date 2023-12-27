@@ -128,6 +128,8 @@ class PostTest extends TestCase
     $category = Category::factory()->create();
     $posts = Post::factory()->count(2)->create(['active' => true]);
     foreach ($posts as $post) {
+      $this->assertNotNull($post->published_at);
+      $this->assertTrue($post->published_at->isPast() || $post->published_at->isToday());
       $post->categories()->attach($category->id);
     }
 
@@ -140,6 +142,8 @@ class PostTest extends TestCase
     $category = Category::factory()->create();
     $posts = Post::factory()->count(2)->create(['active' => true]);
     foreach ($posts as $post) {
+      $this->assertNotNull($post->published_at);
+      $this->assertTrue($post->published_at->isPast() || $post->published_at->isToday());
       $post->categories()->attach($category->id);
     }
 
