@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -31,6 +32,10 @@ class ProfileTest extends TestCase
 
   public function test_update_profile()
   {
+    $this->user->email_verified_at = now()->subDay();
+    $this->user->save();
+
+    $originalTimestamp = $this->user->email_verified_at->timestamp;
     $updatedData = ['name' => 'Updated Name', 'email' => 'updated@example.com'];
     $response = $this->patchJson('/api/profile', $updatedData);
     $response->assertOk();
@@ -40,6 +45,12 @@ class ProfileTest extends TestCase
       'name' => 'Updated Name',
       'email' => 'updated@example.com',
     ]);
+    $updatedUser = User::find($this->user->id);
+    $updatedUser->refresh();
+    $this->assertTrue(
+      $updatedUser->email_verified_at->timestamp > $originalTimestamp,
+      'email_verified_at should be updated'
+    );
   }
 
   public function test_delete_profile()
