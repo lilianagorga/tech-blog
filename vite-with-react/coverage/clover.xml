@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1703608046853" clover="3.2.0">
-  <project timestamp="1703608046854" name="All files">
-    <metrics statements="603" coveredstatements="344" conditionals="25" coveredconditionals="14" methods="23" coveredmethods="8" elements="651" coveredelements="366" complexity="0" loc="603" ncloc="603" packages="5" files="10" classes="10"/>
+<coverage generated="1703681779974" clover="3.2.0">
+  <project timestamp="1703681779974" name="All files">
+    <metrics statements="605" coveredstatements="345" conditionals="25" coveredconditionals="14" methods="23" coveredmethods="8" elements="653" coveredelements="367" complexity="0" loc="605" ncloc="605" packages="5" files="10" classes="10"/>
     <package name="src">
       <metrics statements="63" coveredstatements="58" conditionals="4" coveredconditionals="2" methods="0" coveredmethods="0"/>
       <file name="axios.js" path="/var/www/vite-with-react/src/axios.js">
@@ -416,7 +416,7 @@
       </file>
     </package>
     <package name="src.views">
-      <metrics statements="223" coveredstatements="177" conditionals="9" coveredconditionals="7" methods="11" coveredmethods="3"/>
+      <metrics statements="225" coveredstatements="178" conditionals="9" coveredconditionals="7" methods="11" coveredmethods="3"/>
       <file name="Dashboard.jsx" path="/var/www/vite-with-react/src/views/Dashboard.jsx">
         <metrics statements="40" coveredstatements="37" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
@@ -541,7 +541,7 @@
         <line num="77" count="3" type="stmt"/>
       </file>
       <file name="Register.jsx" path="/var/www/vite-with-react/src/views/Register.jsx">
-        <metrics statements="106" coveredstatements="82" conditionals="2" coveredconditionals="1" methods="6" coveredmethods="1"/>
+        <metrics statements="108" coveredstatements="83" conditionals="2" coveredconditionals="1" methods="6" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -557,7 +557,7 @@
         <line num="13" count="1" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
         <line num="17" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
@@ -581,8 +581,8 @@
         <line num="37" count="0" type="stmt"/>
         <line num="38" count="0" type="stmt"/>
         <line num="39" count="0" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="41" count="1" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
         <line num="42" count="1" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
         <line num="44" count="1" type="stmt"/>
@@ -591,9 +591,9 @@
         <line num="47" count="1" type="stmt"/>
         <line num="48" count="1" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
-        <line num="50" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="50" count="1" type="stmt"/>
         <line num="51" count="1" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
+        <line num="52" count="1" type="cond" truecount="0" falsecount="1"/>
         <line num="53" count="1" type="stmt"/>
         <line num="54" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
@@ -648,6 +648,8 @@
         <line num="104" count="1" type="stmt"/>
         <line num="105" count="1" type="stmt"/>
         <line num="106" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
       </file>
     </package>
   </project>

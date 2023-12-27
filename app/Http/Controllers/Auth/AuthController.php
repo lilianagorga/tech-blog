@@ -28,8 +28,9 @@ class AuthController extends Controller
       'password' => bcrypt($data['password'])
     ]);
     $user->markEmailAsVerified();
-    $token = $user->createToken('main')->plainTextToken;
-    return response(['user' => $user, 'token' => $token], Response::HTTP_CREATED);
+    return response(['user' => $user], Response::HTTP_CREATED);
+//    $token = $user->createToken('main')->plainTextToken;
+//    return response(['user' => $user, 'token' => $token], Response::HTTP_CREATED);
   }
 
   public function login(LoginRequest $request): Response
