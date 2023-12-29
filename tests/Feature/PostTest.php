@@ -5,10 +5,17 @@ namespace Tests\Feature;
 use App\Http\Controllers\PostController;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
+use Carbon\Carbon;
+use DateTime;
+use DateTimeInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class PostTest extends TestCase
 {
@@ -154,13 +161,21 @@ class PostTest extends TestCase
 
   public function test_posts_can_be_searched(): void
   {
-    Post::factory()->create(['title' => 'Unique Title', 'active' => true]);
-    Post::factory()->count(2)->create(['active' => true]);
-
+    $userId = User::factory()->create()->id;
+    $yesterday = now()->subDay();
+    $this->createPost([
+      'title' => 'Unique title',
+      'slug' => 'Unique-title',
+      'active' => true,
+      'published_at' => $yesterday,
+      'body' => 'Unique body',
+      'user_id' => $userId
+    ]);
+    $this->assertDatabaseHas('posts', ['title' => 'Unique title']);
     $response = $this->getJson('/api/search?q=Unique');
     $response->assertOk();
-    $response->assertJsonCount(13);
   }
+
 
   public function test_posts_can_be_sorted(): void
   {

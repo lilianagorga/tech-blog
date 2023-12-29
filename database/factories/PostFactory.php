@@ -25,8 +25,8 @@ class PostFactory extends Factory
         'slug' => Str::slug($title),
         'thumbnail' => fake()->imageUrl,
         'body' => fake()->realText(5000),
-        'active' => fake()->boolean,
-        'published_at' => now(),
+        'active' => true,
+        'published_at' => now()->subDay(),
         'user_id' => User::factory()->create()->id,
       ];
     }
