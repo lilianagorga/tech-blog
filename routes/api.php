@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostViewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TextWidgetController;
 use App\Http\Controllers\UI\DashboardController;
@@ -56,6 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
   Route::post('/posts/{postId}/vote/{vote}', [VoteController::class, 'vote']);
+  Route::post('/posts/{post}/views', [PostViewController::class, 'store']);
+
 
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);
