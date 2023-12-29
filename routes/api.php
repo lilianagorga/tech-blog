@@ -4,9 +4,6 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\PostViewController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TextWidgetController;
 use App\Http\Controllers\UI\DashboardController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\UserController;
@@ -36,15 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/users/permissions', [UserController::class, 'permissions']);
   Route::post('/users/permissions/add', [UserController::class, 'addPermissions']);
 
-
-  Route::get('/profile', [ProfileController::class, 'edit']);
-  Route::patch('/profile', [ProfileController::class, 'update']);
-  Route::delete('/profile', [ProfileController::class, 'destroy']);
-
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);
   Route::apiResource('users', UserController::class)->except('store');
-  Route::apiResource('text-widgets', TextWidgetController::class);
 
 
   Route::get('/comments', [CommentController::class, 'index']);
@@ -53,8 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
-  Route::post('/posts/{postId}/vote/{vote}', [VoteController::class, 'vote']);
-  Route::post('/posts/{post}/views', [PostViewController::class, 'store']);
+  Route::post('/posts/{postId}/vote/{type}', [VoteController::class, 'store']);
+  Route::patch('/votes/{voteId}', [VoteController::class, 'update']);
+  Route::delete('/votes/{voteId}', [VoteController::class, 'destroy']);
 
 
   Route::post('/logout', [AuthController::class, 'logout']);

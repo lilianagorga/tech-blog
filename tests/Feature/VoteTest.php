@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Vote;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,12 +21,20 @@ class VoteTest extends TestCase
   {
     $post = $this->createPost();
     $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/up");
-    $response->assertOk();
-    $response->assertJson(['message' => 'Vote recorded']);
+    $response->assertCreated();
+    $response->assertJsonStructure([
+      'type',
+      'post_id',
+      'user_id',
+      'id',
+      'created_at',
+      'updated_at'
+    ]);
+
     $this->assertDatabaseHas('votes', [
       'post_id' => $post->id,
       'user_id' => $this->user->id,
-      'vote' => 'up'
+      'type' => 'up'
     ]);
   }
 
@@ -33,13 +42,65 @@ class VoteTest extends TestCase
   {
     $post = $this->createPost();
     $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/down");
-    $response->assertOk();
-    $response->assertJson(['message' => 'Vote recorded']);
+    $response->assertCreated();
+    $response->assertJsonStructure([
+      'type',
+      'post_id',
+      'user_id',
+      'id',
+      'created_at',
+      'updated_at'
+    ]);
     $this->assertDatabaseHas('votes', [
       'post_id' => $post->id,
       'user_id' => $this->user->id,
-      'vote' => 'down'
+      'type' => 'down'
     ]);
   }
+
+  public function test_user_can_update_vote()
+  {
+    $user = $this->user;
+    $post = $this->createPost();
+    $vote = Vote::factory()->create([
+      'post_id' => $post->id,
+      'user_id' => $user->id,
+      'type' => 'up'
+    ]);
+
+    $newType = 'down';
+    $response = $this->patchJson("/api/votes/{$vote->id}", ['type' => $newType]);
+
+    $response->assertOk();
+    $response->assertJson([
+      'message' => 'Vote updated',
+      'vote' => [
+        'id' => $vote->id,
+        'type' => $newType
+      ]
+    ]);
+
+    $this->assertDatabaseHas('votes', [
+      'id' => $vote->id,
+      'type' => $newType
+    ]);
+  }
+
+  public function test_user_can_delete_vote()
+  {
+    $user = $this->user;
+    $post = $this->createPost();
+    $vote = Vote::factory()->create([
+      'post_id' => $post->id,
+      'user_id' => $user->id
+    ]);
+
+    $response = $this->deleteJson("/api/votes/{$vote->id}");
+    $response->assertOk();
+    $response->assertJson(['message' => 'Vote deleted']);
+    $this->assertDatabaseMissing('votes', ['id' => $vote->id]);
+  }
+
+
 
 }

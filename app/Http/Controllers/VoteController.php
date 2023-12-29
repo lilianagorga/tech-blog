@@ -11,46 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VoteController extends Controller
 {
-
-//  protected function vote(Request $request, $postId, $isUpvote): JsonResponse
-//  {
-//    $user = $request->user();
-//
-//    if (!$user || !$user->hasVerifiedEmail()) {
-//      return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-//    }
-//
-//    $vote = Vote::where('post_id', $postId)
-//      ->where('user_id', $user->id)
-//      ->first();
-//
-//    if ($vote) {
-//      if (($isUpvote && $vote->is_upvote) || (!$isUpvote && !$vote->is_upvote)) {
-//        $vote->delete();
-//      } else {
-//        $vote->is_upvote = $isUpvote;
-//        $vote->save();
-//      }
-//    } else {
-//      Vote::create([
-//        'is_upvote' => $isUpvote,
-//        'post_id' => $postId,
-//        'user_id' => $user->id
-//      ]);
-//    }
-//
-//    return response()->json(['message' => 'Vote recorded']);
-//  }
-
-  public function vote(Request $request, $postId, $vote): JsonResponse
+  public function store(Request $request, $postId, $type): JsonResponse
   {
     $user = $request->user();
     if (!$user || !$user->hasVerifiedEmail()) {
       return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
     }
 
-    $vote = strtolower($vote);
-    if (!in_array($vote, ['up', 'down'])) {
+    $type = strtolower($type);
+    if (!in_array($type, ['up', 'down'])) {
       return response()->json(['message' => 'Invalid vote'], Response::HTTP_BAD_REQUEST);
     }
 
@@ -59,21 +28,59 @@ class VoteController extends Controller
       ->first();
 
     if ($existingVote) {
-      if ($existingVote->vote === $vote) {
-        $existingVote->delete();
-      } else {
-        $existingVote->vote = $vote;
-        $existingVote->save();
-      }
-    } else {
-      Vote::create([
-        'vote' => $vote,
-        'post_id' => $postId,
-        'user_id' => $user->id
-      ]);
+      return response()->json(['message' => 'Vote existing'], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    return response()->json(['message' => 'Vote recorded']);
+    $vote = Vote::create([
+      'type' => $type,
+      'post_id' => $postId,
+      'user_id' => $user->id
+    ]);
+
+    return response()->json($vote, Response::HTTP_CREATED);
   }
+
+  public function update(Request $request, $id)
+  {
+    $user = $request->user();
+    if (!$user || !$user->hasVerifiedEmail()) {
+      return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    $type = $request->input('type');
+    $type = strtolower($type);
+    if (!in_array($type, ['up', 'down'])) {
+      return response()->json(['message' => 'Invalid vote type'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $vote = Vote::where('id', $id)->where('user_id', $user->id)->first();
+    if (!$vote) {
+      return response()->json(['message' => 'Vote not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $vote->update(['type' => $type]);
+
+    return response()->json(['message' => 'Vote updated', 'vote' => $vote]);
+  }
+
+
+  public function destroy(Request $request, $id): JsonResponse
+  {
+    $user = $request->user();
+    if (!$user || !$user->hasVerifiedEmail()) {
+      return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    $vote = Vote::where('id', $id)->where('user_id', $user->id)->first();
+    if (!$vote) {
+      return response()->json(['message' => 'Vote not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $vote->delete();
+
+    return response()->json(['message' => 'Vote deleted']);
+  }
+
+
 }
 

@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\TextWidget;
 use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Laravel\Sanctum\Sanctum;
 use Spatie\Permission\Models\Permission;
@@ -65,19 +66,14 @@ abstract class TestCase extends BaseTestCase
     return $admin;
   }
 
-  public function createTextWidgetCount($count = 1)
-  {
-    return TextWidget::factory()->count($count)->state(['active' => true])->create();
-  }
-
-  public function createTextWidget($args = [])
-  {
-    return TextWidget::factory()->create($args);
-  }
-
   public function createComment($args = [])
   {
     return Comment::factory()->create($args);
+  }
+
+  public function createVote($args = [])
+  {
+    return Vote::factory()->create($args);
   }
 
 }

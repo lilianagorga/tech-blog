@@ -106,7 +106,8 @@ class PostTest extends TestCase
 
   public function test_a_post_can_be_updated(): void
   {
-    $post = $this->createPost();
+    $user = $this->user;
+    $post = $this->createPost(['user_id' => $user->id]);
     $updatedData = [
       'title' => 'Updated Post Title',
       'slug' => 'updated-post-title',
@@ -123,7 +124,8 @@ class PostTest extends TestCase
 
   public function test_a_post_can_be_deleted(): void
   {
-    $post = $this->createPost();
+    $user = $this->user;
+    $post = $this->createPost(['user_id' => $user->id]);
 
     $response = $this->deleteJson('/api/posts/'.$post->id);
 

@@ -13,9 +13,12 @@ class CategoryController extends Controller
       $categories = Category::all();
       return response()->json($categories);
     }
-
   public function store(Request $request): Response
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+
     $validatedData = $request->validate([
       'title' => 'required|string|max:2048',
       'slug' => 'required|string|max:2048|unique:categories'
@@ -35,6 +38,9 @@ class CategoryController extends Controller
 
   public function update(Request $request, $id): Response
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
     $category = Category::findOrFail($id);
     $validatedData = $request->validate([
       'title' => 'required|string|max:2048',
@@ -45,8 +51,11 @@ class CategoryController extends Controller
     return response()->json($category);
   }
 
-  public function destroy($id): Response
+  public function destroy(Request $request, $id): Response
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
     $category = Category::findOrFail($id);
     $category->delete();
 

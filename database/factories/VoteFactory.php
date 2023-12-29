@@ -2,16 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Comment>
+ * @extends Factory<Vote>
  */
-class CommentFactory extends Factory
+class VoteFactory extends Factory
 {
+  protected $model = Vote::class;
     /**
      * Define the model's default state.
      *
@@ -20,9 +21,9 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-          'comment' => fake()->realText(5000),
-          'post_id' => Post::factory()->create()->id,
-          'user_id' => User::factory()->create()->id,
+          'type' => $this->faker->randomElement(['up', 'down']),
+          'post_id' => Post::factory(),
+          'user_id' => User::factory(),
         ];
     }
 }

@@ -11,7 +11,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-  protected $fillable = ['comment', 'post_id', 'user_id', 'parent_id'];
+  protected $fillable = ['comment', 'post_id', 'user_id'];
 
   public function user(): BelongsTo
   {
@@ -21,15 +21,5 @@ class Comment extends Model
   public function post(): BelongsTo
   {
     return $this->belongsTo(Post::class);
-  }
-
-  public function parentComment(): BelongsTo
-  {
-    return $this->belongsTo(Comment::class, 'parent_id');
-  }
-
-  public function comments(): HasMany
-  {
-    return $this->hasMany(Comment::class, 'parent_id')->orderByDesc('created_at');
   }
 }

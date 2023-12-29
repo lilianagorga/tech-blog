@@ -24,7 +24,7 @@ class CommentTest extends TestCase
     $response = $this->getJson('/api/comments');
     $response->assertOk();
     $response->assertJsonStructure([
-      '*' => ['id', 'comment', 'user_id', 'post_id', 'created_at', 'updated_at', 'user', 'post', 'comments']
+      '*' => ['id', 'comment', 'user_id', 'post_id', 'created_at', 'updated_at', 'user', 'post']
     ]);
   }
 
@@ -63,7 +63,7 @@ class CommentTest extends TestCase
     $response = $this->getJson('/api/posts/' . $post->id . '/comments');
     $response->assertOk();
     $response->assertJsonStructure([
-      '*' => ['id', 'comment', 'user_id', 'post_id', 'parent_id', 'created_at', 'updated_at']
+      '*' => ['id', 'comment', 'user_id', 'post_id', 'created_at', 'updated_at']
     ]);
   }
 
@@ -79,15 +79,6 @@ class CommentTest extends TestCase
       'comment' => 'Deleted Comment.',
       'post_id' => $comment->post_id
     ]);
-  }
-
-  public function test_can_create_reply_to_comment()
-  {
-    $mainComment = $this->createComment();
-
-    $replyComment = Comment::factory()->replyTo($mainComment->id)->create();
-    $this->assertDatabaseHas('comments', ['id' => $replyComment->id, 'parent_id' => $mainComment->id]);
-    $this->assertEquals($replyComment->parent_id, $mainComment->id);
   }
 
 

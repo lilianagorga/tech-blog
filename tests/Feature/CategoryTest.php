@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Schema;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
@@ -54,6 +55,8 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_created(): void
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $categoryData = [
       'title' => 'new category',
       'slug' => 'new-category'
@@ -80,6 +83,8 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_updated(): void
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $category = $this->createCategoryCount()->first();
     $updatedData = ['title' => 'Category Update', 'slug' => 'category-update'];
 
@@ -91,6 +96,8 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_deleted(): void
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $category = $this->createCategoryCount()->first();
 
     $response = $this->deleteJson('/api/categories/' . $category->id);

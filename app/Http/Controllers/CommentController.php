@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
-use App\Models\Post;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,10 +11,12 @@ class CommentController extends Controller
 {
   public function index(): JsonResponse
   {
-    $comments = Comment::with(['user', 'post', 'comments'])->orderByDesc('created_at')->get();
+    $comments = Comment::with(['user', 'post'])->orderByDesc('created_at')->get();
     return response()->json($comments);
   }
 
+
+  //post_id
   public function store(CommentRequest $request): JsonResponse
   {
     $user = $request->user();
@@ -26,23 +26,10 @@ class CommentController extends Controller
     }
 
     $commentData = $request->validated();
-
-    if ($request->has('comment_id')) {
-      $comment = Comment::find($request->input('comment_id'));
-
-      if (!$comment || $comment->user_id != $user->id) {
-        return response()->json(['message' => 'Forbidden'], Response::HTTP_FORBIDDEN);
-      }
-
-      $comment->update(['comment' => $commentData['comment']]);
-    } else {
-      $comment = new Comment($commentData);
-      $comment->user_id = $user->id;
-      if ($request->has('parent_id')) {
-        $comment->parent_id = $request->input('parent_id');
-      }
-      $comment->save();
-    }
+    $comment = new Comment($commentData);
+    $comment->user_id = $user->id;
+    $comment->post_id = $commentData['post_id'];
+    $comment->save();
 
     return response()->json($comment, Response::HTTP_CREATED);
   }
@@ -60,8 +47,7 @@ class CommentController extends Controller
   public function showCommentsForPost($postId): JsonResponse
   {
     $comments = Comment::where('post_id', '=', $postId)
-      ->with(['user', 'comments'])
-      ->whereNull('parent_id')
+      ->with(['user'])
       ->orderByDesc('created_at')
       ->get();
 
