@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\TextWidget;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class TextWidgetTest extends TestCase
@@ -27,6 +28,8 @@ class TextWidgetTest extends TestCase
 
   public function test_a_text_widget_can_be_created()
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $textWidgetData = [
       'title' => 'Widget Title',
       'active' => true,
@@ -54,6 +57,8 @@ class TextWidgetTest extends TestCase
 
   public function test_a_text_widget_can_be_updated()
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $widget = $this->createTextWidget();
     $updatedData = [
       'title' => 'Updated Title',
@@ -73,6 +78,8 @@ class TextWidgetTest extends TestCase
 
   public function test_a_text_widget_can_be_deleted()
   {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
     $widget = TextWidget::factory()->create();
 
     $response = $this->deleteJson('/api/text-widgets/' . $widget->id);

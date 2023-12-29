@@ -1,9 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;

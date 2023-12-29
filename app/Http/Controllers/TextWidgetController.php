@@ -17,6 +17,9 @@ class TextWidgetController extends Controller
 
   public function store(Request $request): JsonResponse
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
     $validatedData = $request->validate([
       'key' => 'required|unique:text_widgets|max:255',
       'title' => 'required|max:2048',
@@ -36,6 +39,9 @@ class TextWidgetController extends Controller
 
   public function update(Request $request, TextWidget $textWidget): JsonResponse
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
     $validatedData = $request->validate([
       'key' => 'required|max:255|unique:text_widgets,key,' . $textWidget->id,
       'title' => 'required|max:2048',
@@ -48,8 +54,11 @@ class TextWidgetController extends Controller
     return response()->json($textWidget);
   }
 
-  public function destroy(TextWidget $textWidget): JsonResponse
+  public function destroy(Request $request, TextWidget $textWidget): JsonResponse
   {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
     $textWidget->delete();
     return response()->json(null, Response::HTTP_NO_CONTENT);
   }
