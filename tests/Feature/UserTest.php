@@ -83,6 +83,7 @@ class UserTest extends TestCase
   {
     $user = $this->createUser();
     Sanctum::actingAs($user);
+    Permission::findOrCreate('manage panels', 'api');
     $response = $this->getJson('/api/users/manage-panels');
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $response->assertJson(['message' => 'Access Forbidden']);

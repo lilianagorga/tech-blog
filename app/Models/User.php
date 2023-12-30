@@ -48,18 +48,14 @@ class User extends Authenticatable
     return 'api';
   }
 
-//  public function isAdmin(): bool
-//  {
-//    return $this->hasRole('Admin', 'api');
-//  }
-//
-//  public function canAccessPanel(): bool
-//  {
-//    return $this->isAdmin() || $this->hasPermissionTo('manage panels', 'api');
-//  }
+  public function isAdmin(): bool
+  {
+    return $this->hasRole('Admin', 'api');
+  }
+
   public function canAccessPanel(): bool
   {
-    return $this->hasRole('Admin', 'api') && $this->hasPermissionTo('manage panels', 'api');
+    return $this->isAdmin() || $this->hasPermissionTo('manage panels', 'api');
   }
 }
 
