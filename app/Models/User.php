@@ -48,8 +48,25 @@ class User extends Authenticatable
     return 'api';
   }
 
+//  public function isAdmin(): bool
+//  {
+//    return $this->hasRole('Admin', 'api');
+//  }
+//
+//  public function canAccessPanel(): bool
+//  {
+//    return $this->isAdmin() || $this->hasPermissionTo('manage panels', 'api');
+//  }
   public function canAccessPanel(): bool
   {
     return $this->hasRole('Admin', 'api') && $this->hasPermissionTo('manage panels', 'api');
   }
 }
+
+
+//use Spatie\Permission\Models\Role;
+//use Spatie\Permission\Models\Permission;
+
+//$role = Role::create(['name' => 'admin']);
+//$permissions = Permission::all();
+//$role->syncPermissions($permissions);

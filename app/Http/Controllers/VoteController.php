@@ -11,9 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VoteController extends Controller
 {
-  public function store(Request $request, $postId, $type): JsonResponse
+  public function store(Request $request, $type): JsonResponse
   {
     $user = $request->user();
+    $postId = $request->input('post_id');
     if (!$user || !$user->hasVerifiedEmail()) {
       return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
     }
@@ -78,7 +79,7 @@ class VoteController extends Controller
 
     $vote->delete();
 
-    return response()->json(['message' => 'Vote deleted']);
+    return response()->json(null, Response::HTTP_NO_CONTENT);
   }
 
 

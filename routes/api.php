@@ -44,7 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
-  Route::post('/posts/{postId}/vote/{type}', [VoteController::class, 'store']);
+//  Route::post('/posts/{postId}/vote/{type}', [VoteController::class, 'store']);
+  Route::post('/votes/{type}', [VoteController::class, 'store']);
   Route::patch('/votes/{voteId}', [VoteController::class, 'update']);
   Route::delete('/votes/{voteId}', [VoteController::class, 'destroy']);
 

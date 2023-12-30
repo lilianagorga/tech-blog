@@ -14,9 +14,6 @@ class CommentController extends Controller
     $comments = Comment::with(['user', 'post'])->orderByDesc('created_at')->get();
     return response()->json($comments);
   }
-
-
-  //post_id
   public function store(CommentRequest $request): JsonResponse
   {
     $user = $request->user();

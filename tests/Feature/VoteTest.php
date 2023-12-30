@@ -20,7 +20,7 @@ class VoteTest extends TestCase
   public function test_user_can_vote_positive_a_post()
   {
     $post = $this->createPost();
-    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/up");
+    $response = $this->actingAs($this->user)->postJson("/api/votes/up", ['post_id' => $post->id]);
     $response->assertCreated();
     $response->assertJsonStructure([
       'type',
@@ -41,7 +41,7 @@ class VoteTest extends TestCase
   public function test_user_can_vote_negative_a_post()
   {
     $post = $this->createPost();
-    $response = $this->actingAs($this->user)->postJson("/api/posts/{$post->id}/vote/down");
+    $response = $this->actingAs($this->user)->postJson("/api/votes/down", ['post_id' => $post->id]);
     $response->assertCreated();
     $response->assertJsonStructure([
       'type',
@@ -96,8 +96,7 @@ class VoteTest extends TestCase
     ]);
 
     $response = $this->deleteJson("/api/votes/{$vote->id}");
-    $response->assertOk();
-    $response->assertJson(['message' => 'Vote deleted']);
+    $response->assertNoContent();
     $this->assertDatabaseMissing('votes', ['id' => $vote->id]);
   }
 
