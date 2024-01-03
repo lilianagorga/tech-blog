@@ -63,6 +63,6 @@ class User extends Authenticatable
 //use Spatie\Permission\Models\Role;
 //use Spatie\Permission\Models\Permission;
 
-//$role = Role::create(['name' => 'admin']);
+//$role = Role::create(['name' => 'admin', 'guard_name' => 'api']);
 //$permissions = Permission::all();
 //$role->syncPermissions($permissions);

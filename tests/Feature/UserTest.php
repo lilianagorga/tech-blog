@@ -89,4 +89,29 @@ class UserTest extends TestCase
     $response->assertJson(['message' => 'Access Forbidden']);
   }
 
+  public function test_admin_has_all_permissions()
+  {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
+    $managePanelsPermission = Permission::create(['name' => 'manage panels', 'guard_name' => 'api']);
+    $adminRole = Role::findByName('Admin', 'api');
+    $adminRole->givePermissionTo($managePanelsPermission);
+    $permissions = Permission::all()->pluck('name');
+    $this->assertNotEmpty($permissions, 'No permissions found in the database.');
+    foreach ($permissions as $permission) {
+      $this->assertTrue($admin->hasPermissionTo($permission));
+    }
+  }
+
+  public function test_admin_has_specific_roles()
+  {
+    $admin = $this->addRoleAndPermissionToAdmin();
+    Sanctum::actingAs($admin);
+    $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
+
+    foreach ($roles as $role) {
+      $this->assertTrue($admin->hasRole($role));
+    }
+  }
+
 }

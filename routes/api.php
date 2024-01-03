@@ -37,18 +37,15 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::apiResource('categories', CategoryController::class);
   Route::apiResource('users', UserController::class)->except('store');
 
-
   Route::get('/comments', [CommentController::class, 'index']);
   Route::post('/comments', [CommentController::class, 'store']);
   Route::patch('/comments/{comment}', [CommentController::class, 'update']);
   Route::get('/posts/{postId}/comments', [CommentController::class, 'showCommentsForPost']);
   Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
-//  Route::post('/posts/{postId}/vote/{type}', [VoteController::class, 'store']);
   Route::post('/votes/{type}', [VoteController::class, 'store']);
   Route::patch('/votes/{voteId}', [VoteController::class, 'update']);
   Route::delete('/votes/{voteId}', [VoteController::class, 'destroy']);
-
 
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);

@@ -59,10 +59,17 @@ abstract class TestCase extends BaseTestCase
   {
     /** @var User $admin */
     $admin = User::factory()->create();
-    $role = Role::create(['name' => 'Admin', 'guard_name' => 'api']);
-    $permission = Permission::create(['name' => 'manage panels', 'guard_name' => 'api']);
-    $role->givePermissionTo($permission);
-    $admin->assignRole($role);
+    $roleNames = ['Admin', 'Writer', 'Marketer', 'Developer'];
+
+    foreach ($roleNames as $roleName) {
+      $role = Role::create(['name' => $roleName, 'guard_name' => 'api']);
+      $admin->assignRole($role);
+    }
+
+    $allPermissions = Permission::all();
+    $adminRole = Role::findByName('Admin', 'api');
+    $adminRole->syncPermissions($allPermissions);
+
     return $admin;
   }
 
