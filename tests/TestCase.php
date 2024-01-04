@@ -55,21 +55,21 @@ abstract class TestCase extends BaseTestCase
     return $user;
   }
 
-  public function addRoleAndPermissionToAdmin(): User
+  public function addRolesAndPermissionsToAdmin(): User
   {
     /** @var User $admin */
     $admin = User::factory()->create();
-    $roleNames = ['Admin', 'Writer', 'Marketer', 'Developer'];
-
-    foreach ($roleNames as $roleName) {
-      $role = Role::create(['name' => $roleName, 'guard_name' => 'api']);
+    $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
+    foreach ($roles as $roleName) {
+      $role = Role::findOrCreate($roleName, 'api');
       $admin->assignRole($role);
     }
-
-    $allPermissions = Permission::all();
-    $adminRole = Role::findByName('Admin', 'api');
-    $adminRole->syncPermissions($allPermissions);
-
+    $permissions = ['manage panels', 'edit posts', 'edit categories', 'edit comments', 'edit code'];
+    foreach ($permissions as $permName) {
+      $permission = Permission::findOrCreate($permName, 'api');
+      $adminRole = Role::findByName('Admin', 'api');
+      $adminRole->givePermissionTo($permission);
+    }
     return $admin;
   }
 

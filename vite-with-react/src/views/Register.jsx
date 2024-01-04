@@ -26,7 +26,6 @@ export default function Register() {
       .then(({ data }) => {
         setCurrentUser(data.user)
         navigate("/user/login");
-        // setUserToken(data.token)
       })
       .catch((error) => {
         if (error.response && error.response.data && error.response.data.errors) {

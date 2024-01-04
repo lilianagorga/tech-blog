@@ -55,7 +55,7 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_created(): void
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $categoryData = [
       'title' => 'new category',
@@ -83,7 +83,7 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_updated(): void
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $category = $this->createCategoryCount()->first();
     $updatedData = ['title' => 'Category Update', 'slug' => 'category-update'];
@@ -96,7 +96,7 @@ class CategoryTest extends TestCase
 
   public function test_a_category_can_be_deleted(): void
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $category = $this->createCategoryCount()->first();
 

@@ -64,7 +64,7 @@ class UserTest extends TestCase
 
   public function test_manage_panels_access()
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $response = $this->getJson('/api/users/manage-panels');
     $users = User::with('roles', 'permissions')->get()->toArray();
@@ -91,24 +91,18 @@ class UserTest extends TestCase
 
   public function test_admin_has_all_permissions()
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
-    $managePanelsPermission = Permission::create(['name' => 'manage panels', 'guard_name' => 'api']);
-    $adminRole = Role::findByName('Admin', 'api');
-    $adminRole->givePermissionTo($managePanelsPermission);
-    $permissions = Permission::all()->pluck('name');
-    $this->assertNotEmpty($permissions, 'No permissions found in the database.');
-    foreach ($permissions as $permission) {
+    foreach (Permission::all() as $permission) {
       $this->assertTrue($admin->hasPermissionTo($permission));
     }
   }
 
-  public function test_admin_has_specific_roles()
+  public function test_admin_has_all_roles()
   {
-    $admin = $this->addRoleAndPermissionToAdmin();
+    $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
-
     foreach ($roles as $role) {
       $this->assertTrue($admin->hasRole($role));
     }

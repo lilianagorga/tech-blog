@@ -16,25 +16,54 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
       /** @var User $adminUser */
-      $adminUser = User::factory()->create([
-        'email' => 'admin@example.com',
-        'name' => 'Admin',
-        'password' => bcrypt('admin123')
-      ]);
+      $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
+      $permissions = ['manage panels', 'edit posts', 'edit categories', 'edit comments', 'edit code'];
 
-      $adminRole = Role::create(['name' => 'Admin']);
-      $managePanelsPermission = Permission::create(['name' => 'manage panels']);
-      $adminRole->givePermissionTo($managePanelsPermission);
-      $adminUser->assignRole($adminRole);
-      User::factory()->create([
-        'name' => 'Liliana',
-        'email' => 'liliana@test.com',
-        'password' => bcrypt('12345678')
+      foreach ($permissions as $permName) {
+        Permission::findOrCreate($permName, 'api');
+      }
+
+      $adminRole = Role::findOrCreate('Admin', 'api');
+      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->get());
+
+      $writerRole = Role::create(['name' => 'Writer', 'guard_name' => 'api']);
+      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit posts', 'edit comments'])->get());
+
+      $marketerRole = Role::create(['name' => 'Marketer', 'guard_name' => 'api']);
+      $marketerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit posts', 'edit comments'])->get());
+
+      $developerRole = Role::create(['name' => 'Developer', 'guard_name' => 'api']);
+      $developerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit code'])->get());
+
+      $adminUser = User::factory()->create([
+        'email' => 'admin@mysite.com',
+        'name' => 'Admin',
+        'password' => bcrypt('Secret123!')
       ]);
-      User::factory()->create([
-        'name' => 'manu',
-        'email' => 'manu@test.co.uk',
-        'password' => bcrypt('12345678')
+      $adminUser->assignRole('Admin');
+
+      /** @var User $writerUser */
+      $writerUser = User::factory()->create([
+        'email' => 'writer@example.com',
+        'name' => 'Writer',
+        'password' => bcrypt('Secret123!')
       ]);
+      $writerUser->assignRole('Writer');
+
+      /** @var User $marketerUser */
+      $marketerUser = User::factory()->create([
+        'email' => 'marketer@example.com',
+        'name' => 'Marketer',
+        'password' => bcrypt('Secret123!')
+      ]);
+      $marketerUser->assignRole('Marketer');
+
+      /** @var User $developerUser */
+      $developerUser = User::factory()->create([
+        'email' => 'developer@example.com',
+        'name' => 'Developer',
+        'password' => bcrypt('developer123')
+      ]);
+      $developerUser->assignRole('Developer');
     }
 }
