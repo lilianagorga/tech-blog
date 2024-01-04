@@ -1,14 +1,15 @@
 import {LockClosedIcon} from "@heroicons/react/20/solid/index.js";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axiosClient from "../axios.js";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 
 export default function Login() {
-  const {setCurrentUser, setUserToken} = useStateContext();
+  const {setCurrentUser, setUserToken, setUserRoles} = useStateContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ __html: '' });
+  const navigate = useNavigate();
 
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -21,6 +22,13 @@ export default function Login() {
       .then(({ data }) => {
         setCurrentUser(data.user)
         setUserToken(data.token)
+        setUserRoles(data.roles || []);
+        if (data.roles && data.roles.length > 0) {
+          navigate("/users/manage-panels");
+        } else {
+          navigate("/");
+        }
+
       })
       .catch((error) => {
         if (error.response) {

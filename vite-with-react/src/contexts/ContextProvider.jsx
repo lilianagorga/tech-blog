@@ -3,6 +3,7 @@ import {createContext, useContext, useState} from "react";
 const StateContext = createContext({
   currentUser: {},
   userToken: null,
+  userRoles: [],
   questionTypes: [],
   toast: {
     message: null,
@@ -15,6 +16,7 @@ const StateContext = createContext({
 export const ContextProvider = ({ children }) =>{
   const [currentUser, setCurrentUser] = useState({});
   const [userToken, _setUserToken] = useState(localStorage.getItem(('TOKEN') || ''));
+  const [userRoles, setUserRoles] = useState([]);
   const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"]);
   const [toast, setToast] = useState({message: '', show: false})
   const setUserToken = (token) => {
@@ -33,7 +35,7 @@ export const ContextProvider = ({ children }) =>{
   }
   return (
     <StateContext.Provider value={{
-      currentUser, setCurrentUser, userToken, setUserToken, questionTypes, toast, showToast
+      currentUser, setCurrentUser, userToken, setUserToken, questionTypes, toast, showToast, userRoles, setUserRoles
     }}>
       {children}
     </StateContext.Provider>

@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/contexts/ContextProvider.jsx</title>
+    <title>Code coverage report for src/components/AddPermission.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/contexts</a> ContextProvider.jsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> AddPermission.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.63% </span>
+                <span class="strong">12.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/44</span>
+                <span class='fraction'>4/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.63% </span>
+                <span class="strong">12.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/44</span>
+                <span class='fraction'>4/33</span>
             </div>
         
             
@@ -97,32 +97,7 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -151,52 +126,44 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {createContext, useContext, useState} from "react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from 'react';
 &nbsp;
-const StateContext = createContext({
-  currentUser: {},
-  userToken: null,
-  userRoles: [],
-  questionTypes: [],
-  toast: {
-    message: null,
-    show: false,
-  },
-  setCurrentUser: <span class="fstat-no" title="function not covered" >() =&gt; { },</span>
-  setUserToken: <span class="fstat-no" title="function not covered" >() =&gt; { }</span>
-})
-&nbsp;
-export const ContextProvider = <span class="fstat-no" title="function not covered" >({ children }) =&gt;{</span>
-<span class="cstat-no" title="statement not covered" >  const [currentUser, setCurrentUser] = useState({});</span>
-<span class="cstat-no" title="statement not covered" >  const [userToken, _setUserToken] = useState(localStorage.getItem(('TOKEN') || ''));</span>
-<span class="cstat-no" title="statement not covered" >  const [userRoles, setUserRoles] = useState([]);</span>
-<span class="cstat-no" title="statement not covered" >  const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"]);</span>
-<span class="cstat-no" title="statement not covered" >  const [toast, setToast] = useState({message: '', show: false})</span>
-<span class="cstat-no" title="statement not covered" >  const setUserToken = (token) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (token) {</span>
-<span class="cstat-no" title="statement not covered" >      localStorage.setItem('TOKEN', token)</span>
-<span class="cstat-no" title="statement not covered" >    } else {</span>
-<span class="cstat-no" title="statement not covered" >      localStorage.removeItem('TOKEN')</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    _setUserToken(token);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  const showToast = (message) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    setToast({ message, show: true })</span>
-<span class="cstat-no" title="statement not covered" >    setTimeout(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      setToast({message: '', show: false})</span>
-<span class="cstat-no" title="statement not covered" >    }, 5000)</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function AddPermission({ onSubmit }) {</span></span>
+<span class="cstat-no" title="statement not covered" >  const [userId, setUserId] = useState('');</span>
+<span class="cstat-no" title="statement not covered" >  const [permissionId, setPermissionId] = useState('');</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const handleSubmit = (event) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >    onSubmit(userId, permissionId);</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;StateContext.Provider value={{</span>
-<span class="cstat-no" title="statement not covered" >      currentUser, setCurrentUser, userToken, setUserToken, questionTypes, toast, showToast, userRoles, setUserRoles</span>
-<span class="cstat-no" title="statement not covered" >    }}&gt;</span>
-<span class="cstat-no" title="statement not covered" >      {children}</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/StateContext.Provider&gt;</span>
-<span class="cstat-no" title="statement not covered" >  )</span>
+<span class="cstat-no" title="statement not covered" >    &lt;form onSubmit={handleSubmit}&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;label htmlFor="userId"&gt;User ID:&lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;input</span>
+<span class="cstat-no" title="statement not covered" >        id="userId"</span>
+<span class="cstat-no" title="statement not covered" >        type="text"</span>
+<span class="cstat-no" title="statement not covered" >        value={userId}</span>
+<span class="cstat-no" title="statement not covered" >        onChange={(e) =&gt; setUserId(e.target.value)}</span>
+<span class="cstat-no" title="statement not covered" >      /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;label htmlFor="permissionId"&gt;Permission ID:&lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;input</span>
+<span class="cstat-no" title="statement not covered" >        id="permissionId"</span>
+<span class="cstat-no" title="statement not covered" >        type="text"</span>
+<span class="cstat-no" title="statement not covered" >        value={permissionId}</span>
+<span class="cstat-no" title="statement not covered" >        onChange={(e) =&gt; setPermissionId(e.target.value)}</span>
+<span class="cstat-no" title="statement not covered" >      /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;button type="submit"&gt;Add Permission&lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/form&gt;</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-export const useStateContext = () =&gt; useContext(StateContext)
+&nbsp;
+export default AddPermission;
 &nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
