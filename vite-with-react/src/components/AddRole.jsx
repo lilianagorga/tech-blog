@@ -9,16 +9,17 @@ function AddRole({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="roleName">Role Name:</label>
-      <input
-        id="roleName"
-        type="text"
-        value={roleName}
-        onChange={(e) => setRoleName(e.target.value)}
-      />
-      <button type="submit">Add Role</button>
-    </form>
+    <></>
+    // <form onSubmit={handleSubmit}>
+    //   <label htmlFor="roleName">Role Name:</label>
+    //   <input
+    //     id="roleName"
+    //     type="text"
+    //     value={roleName}
+    //     onChange={(e) => setRoleName(e.target.value)}
+    //   />
+    //   <button type="submit">Add Role</button>
+    // </form>
   );
 }
 

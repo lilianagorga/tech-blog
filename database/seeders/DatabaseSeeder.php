@@ -24,16 +24,16 @@ class DatabaseSeeder extends Seeder
       }
 
       $adminRole = Role::findOrCreate('Admin', 'api');
-      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->get());
+      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit categories', 'edit posts', 'edit comments', 'edit code'])->get());
 
       $writerRole = Role::create(['name' => 'Writer', 'guard_name' => 'api']);
-      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit posts', 'edit comments'])->get());
+      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit posts', 'edit comments'])->get());
 
       $marketerRole = Role::create(['name' => 'Marketer', 'guard_name' => 'api']);
-      $marketerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit posts', 'edit comments'])->get());
+      $marketerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit posts', 'edit comments'])->get());
 
       $developerRole = Role::create(['name' => 'Developer', 'guard_name' => 'api']);
-      $developerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manage panels', 'edit code'])->get());
+      $developerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit code'])->get());
 
       $adminUser = User::factory()->create([
         'email' => 'admin@mysite.com',
@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         'password' => bcrypt('Secret123!')
       ]);
       $adminUser->assignRole('Admin');
+      $adminUser->givePermissionTo('manage panels');
 
       /** @var User $writerUser */
       $writerUser = User::factory()->create([
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
         'password' => bcrypt('Secret123!')
       ]);
       $writerUser->assignRole('Writer');
+      $writerUser->givePermissionTo('manage panels');
 
       /** @var User $marketerUser */
       $marketerUser = User::factory()->create([
@@ -57,6 +59,7 @@ class DatabaseSeeder extends Seeder
         'password' => bcrypt('Secret123!')
       ]);
       $marketerUser->assignRole('Marketer');
+      $marketerUser->givePermissionTo('manage panels');
 
       /** @var User $developerUser */
       $developerUser = User::factory()->create([
@@ -65,5 +68,6 @@ class DatabaseSeeder extends Seeder
         'password' => bcrypt('developer123')
       ]);
       $developerUser->assignRole('Developer');
+      $developerUser->givePermissionTo('manage panels');
     }
 }

@@ -48,19 +48,17 @@ class UserController extends Controller
   public function managePanels(Request $request): Response
   {
     if ($request->user()->canAccessPanel()) {
-      $users = User::with('roles', 'permissions')->get();
-
-
+      $users = User::with(['roles.permissions', 'permissions'])->get();
       $roles = Role::all()->pluck('name');
       $permissions = Permission::all()->pluck('name');
 
       $data = [
         'permissions' => $permissions,
         'roles' => $roles,
-        'users' => $users
+        'users' => $users,
       ];
 
-      return response()->json($data, status: Response::HTTP_OK);
+      return response()->json($data, Response::HTTP_OK);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }

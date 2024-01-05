@@ -19,42 +19,43 @@ function Users({ users, onAddPermission }) {
   };
 
   return (
-    <div>
-      <h3>Users</h3>
-      <table>
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Add Permission</th>
-        </tr>
-        </thead>
-        <tbody>
-        {Object.values(users).map((user) => (
-          <tr key={user.id}>
-            <td>{user.name}</td>
-            <td>{user.email}</td>
-            <td>
-              <button onClick={() => handleAddPermissionClick(user.id)}>
-                Add Permission
-              </button>
-              {selectedUserId === user.id && (
-                <form onSubmit={handleSubmitPermission}>
-                  <input
-                    type="text"
-                    placeholder="Permission ID"
-                    value={permissionIdToAdd}
-                    onChange={handlePermissionChange}
-                  />
-                  <button type="submit">Submit</button>
-                </form>
-              )}
-            </td>
-          </tr>
-        ))}
-        </tbody>
-      </table>
-    </div>
+    <></>
+    // <div>
+    //   <h3>Users</h3>
+    //   <table>
+    //     <thead>
+    //     <tr>
+    //       <th>Name</th>
+    //       <th>Email</th>
+    //       <th>Add Permission</th>
+    //     </tr>
+    //     </thead>
+    //     <tbody>
+    //     {Object.values(users).map((user) => (
+    //       <tr key={user.id}>
+    //         <td>{user.name}</td>
+    //         <td>{user.email}</td>
+    //         <td>
+    //           <button onClick={() => handleAddPermissionClick(user.id)}>
+    //             Add Permission
+    //           </button>
+    //           {selectedUserId === user.id && (
+    //             <form onSubmit={handleSubmitPermission}>
+    //               <input
+    //                 type="text"
+    //                 placeholder="Permission ID"
+    //                 value={permissionIdToAdd}
+    //                 onChange={handlePermissionChange}
+    //               />
+    //               <button type="submit">Submit</button>
+    //             </form>
+    //           )}
+    //         </td>
+    //       </tr>
+    //     ))}
+    //     </tbody>
+    //   </table>
+    // </div>
   );
 }
 
