@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.29% </span>
+                <span class="strong">30.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/47</span>
+                <span class='fraction'>20/65</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.29% </span>
+                <span class="strong">30.76% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/47</span>
+                <span class='fraction'>20/65</span>
             </div>
         
             
@@ -111,7 +111,25 @@
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -128,6 +146,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -175,11 +211,21 @@ const StateContext = createContext({
   setUserToken: <span class="fstat-no" title="function not covered" >() =&gt; { }</span>
 })
 &nbsp;
+const getDefaultPermissions = <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  try {</span>
+<span class="cstat-no" title="statement not covered" >    const permissions = localStorage.getItem('permissions');</span>
+<span class="cstat-no" title="statement not covered" >    return permissions ? JSON.parse(permissions) : [];</span>
+<span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >    console.error("Error parsing permissions from localStorage: ", error);</span>
+<span class="cstat-no" title="statement not covered" >    return [];</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+&nbsp;
 export const ContextProvider = <span class="fstat-no" title="function not covered" >({ children }) =&gt;{</span>
 <span class="cstat-no" title="statement not covered" >  const [currentUser, setCurrentUser] = useState({});</span>
 <span class="cstat-no" title="statement not covered" >  const [userToken, _setUserToken] = useState(localStorage.getItem(('TOKEN') || ''));</span>
 <span class="cstat-no" title="statement not covered" >  const [userRoles, setUserRoles] = useState([]);</span>
-<span class="cstat-no" title="statement not covered" >  const [userPermissions, setUserPermissions] = useState([]);</span>
+<span class="cstat-no" title="statement not covered" >  const [userPermissions, _setUserPermissions] = useState(getDefaultPermissions());</span>
 <span class="cstat-no" title="statement not covered" >  const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"]);</span>
 <span class="cstat-no" title="statement not covered" >  const [toast, setToast] = useState({message: '', show: false})</span>
 <span class="cstat-no" title="statement not covered" >  const setUserToken = (token) =&gt; {</span>
@@ -189,6 +235,14 @@ export const ContextProvider = <span class="fstat-no" title="function not covere
 <span class="cstat-no" title="statement not covered" >      localStorage.removeItem('TOKEN')</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    _setUserToken(token);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >  const setUserPermissions = (permissions) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (permissions) {</span>
+<span class="cstat-no" title="statement not covered" >      localStorage.setItem('permissions', JSON.stringify(permissions));</span>
+<span class="cstat-no" title="statement not covered" >    } else {</span>
+<span class="cstat-no" title="statement not covered" >      localStorage.removeItem('permissions')</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >    _setUserPermissions(permissions)</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >  const showToast = (message) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    setToast({ message, show: true })</span>
@@ -214,7 +268,7 @@ export const useStateContext = () =&gt; useContext(StateContext)
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-05T17:06:25.064Z
+                at 2024-01-07T09:43:19.542Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

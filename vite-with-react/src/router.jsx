@@ -4,7 +4,14 @@ import Login from "./views/Login.jsx";
 import Register from "./views/Register.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
 import DefaultLayout from "./components/DefaultLayout.jsx";
-import ManagePanels from "./views/ManagePanels.jsx";
+import ManagePanel from "./views/ManagePanel.jsx";
+import AddPermission from "./views/AddPermission.jsx";
+import AddRole from "./views/AddRole.jsx";
+import Role from "./views/Role.jsx";
+import Permission from "./views/Permission.jsx";
+import Post from "./views/Post.jsx";
+import Category from "./views/Category.jsx";
+import Comment from "./views/Comment.jsx";
 
 
 const router = createBrowserRouter([
@@ -18,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: '',
-        element: <Dashboard/>
+        element: <Dashboard/>,
       },
     ]
   },
@@ -38,7 +45,35 @@ const router = createBrowserRouter([
   },
   {
     path: '/users/manage-panels',
-    element: <ManagePanels />,
+    element: <ManagePanel/>
+  },
+  {
+    path: '/users/permissions/add',
+    element: <AddPermission />
+  },
+  {
+    path: '/users/roles/add',
+    element: <AddRole />,
+  },
+  {
+    path: '/users/roles',
+    element: <Role />,
+  },
+  {
+    path: '/users/permissions',
+    element: <Permission />,
+  },
+  {
+    path: '/posts',
+    element: <Post />,
+  },
+  {
+    path: '/categories',
+    element: <Category />,
+  },
+  {
+    path: '/comments',
+    element: <Comment />,
   },
 ])
 

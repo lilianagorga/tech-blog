@@ -138,7 +138,10 @@ class UserController extends Controller
         return response()->json(['message' => 'User or Permissions not found'], Response::HTTP_NOT_FOUND);
       }
 
-      $user->syncPermissions($permissions);
+//      $user->syncPermissions($permissions);
+      foreach ($permissions as $permission) {
+        $user->givePermissionTo($permission);
+      }
 
       return response()->json(['message' => 'Permissions updated successfully'], Response::HTTP_OK);
     } else {

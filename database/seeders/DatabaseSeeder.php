@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
       $adminUser = User::factory()->create([
         'email' => 'admin@mysite.com',
         'name' => 'Admin',
-        'password' => bcrypt('Secret123!')
+        'password' => bcrypt('Admin123!')
       ]);
       $adminUser->assignRole('Admin');
       $adminUser->givePermissionTo('manage panels');
@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
       $writerUser = User::factory()->create([
         'email' => 'writer@example.com',
         'name' => 'Writer',
-        'password' => bcrypt('Secret123!')
+        'password' => bcrypt('Writer123!')
       ]);
       $writerUser->assignRole('Writer');
       $writerUser->givePermissionTo('manage panels');
@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
       $marketerUser = User::factory()->create([
         'email' => 'marketer@example.com',
         'name' => 'Marketer',
-        'password' => bcrypt('Secret123!')
+        'password' => bcrypt('Marketer123!')
       ]);
       $marketerUser->assignRole('Marketer');
       $marketerUser->givePermissionTo('manage panels');
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
       $developerUser = User::factory()->create([
         'email' => 'developer@example.com',
         'name' => 'Developer',
-        'password' => bcrypt('developer123')
+        'password' => bcrypt('Developer123!')
       ]);
       $developerUser->assignRole('Developer');
       $developerUser->givePermissionTo('manage panels');
