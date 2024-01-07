@@ -4,7 +4,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
 
 function ManagePanel() {
-  const { showToast, userPermissions, setUserPermissions } = useStateContext();
+  const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles } = useStateContext();
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
@@ -19,6 +19,10 @@ function ManagePanel() {
           if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
             setUserPermissions(usersResponse.data.permissions || []);
             console.log(usersResponse.data.permissions);
+          }
+          if (JSON.stringify(userRoles) !== JSON.stringify(usersResponse.data.roles)) {
+            setUserRoles(usersResponse.data.roles || []);
+            console.log(usersResponse.data.roles);
           }
         }
       } catch (error) {
@@ -36,7 +40,7 @@ function ManagePanel() {
     return () => {
       isMounted = false;
     };
-  }, [showToast, navigate, userPermissions, setUserPermissions]);
+  }, [showToast, navigate, userPermissions, setUserPermissions, userRoles, setUserRoles]);
 
   const getUserPermissions = (user) => {
     const rolePermissions = user.roles

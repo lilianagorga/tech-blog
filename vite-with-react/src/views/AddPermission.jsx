@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
-import axios from 'axios';
 import axiosClient from "../axios.js";
 
 function AddPermission() {
-  const { currentUser, userPermissions, setUserPermissions, showToast } = useStateContext();
+  const { currentUser, userPermissions, showToast } = useStateContext();
   const [selectedPermissions, setSelectedPermissions] = useState('');
 
   const handleSubmit = async (event) => {

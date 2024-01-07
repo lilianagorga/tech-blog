@@ -24,10 +24,20 @@ const getDefaultPermissions = () => {
   }
 };
 
+const getDefaultRoles = () => {
+  try {
+    const roles = localStorage.getItem('roles');
+    return roles ? JSON.parse(roles) : [];
+  } catch (error) {
+    console.error("Error parsing roles from localstorage:", error);
+    return [];
+  }
+}
+
 export const ContextProvider = ({ children }) =>{
   const [currentUser, setCurrentUser] = useState({});
   const [userToken, _setUserToken] = useState(localStorage.getItem(('TOKEN') || ''));
-  const [userRoles, setUserRoles] = useState([]);
+  const [userRoles, _setUserRoles] = useState(getDefaultRoles());
   const [userPermissions, _setUserPermissions] = useState(getDefaultPermissions());
   const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"]);
   const [toast, setToast] = useState({message: '', show: false})
@@ -46,6 +56,15 @@ export const ContextProvider = ({ children }) =>{
       localStorage.removeItem('permissions')
     }
     _setUserPermissions(permissions)
+  }
+
+  const setUserRoles = (roles) => {
+    if (roles) {
+      localStorage.setItem('roles', JSON.stringify(roles));
+    } else {
+      localStorage.removeItem('roles')
+    }
+    _setUserRoles(roles)
   }
   const showToast = (message) => {
     setToast({ message, show: true })
