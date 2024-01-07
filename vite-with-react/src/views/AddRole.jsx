@@ -3,7 +3,7 @@ import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
 
 function AddRole() {
-  const { currentUser, userRoles, showToast } = useStateContext();
+  const { currentUser, userRoles, showToast, setUserRoles } = useStateContext();
   const [selectedRoles, setSelectedRoles] = useState('');
 
   const handleSubmit = async (event) => {
@@ -25,6 +25,9 @@ function AddRole() {
 
       if (response.status === 200) {
         showToast('Role added successfully');
+        const updatedRoles = Array.isArray(selectedRoles) ? [...userRoles, ...selectedRoles] : [...userRoles, selectedRoles];
+        setUserRoles(updatedRoles);
+        localStorage.setItem('roles', JSON.stringify(updatedRoles));
       }
     } catch (error) {
       if (error.response && error.response.data) {

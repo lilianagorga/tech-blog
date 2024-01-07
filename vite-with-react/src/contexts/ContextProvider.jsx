@@ -1,18 +1,24 @@
-import {createContext, useContext, useState} from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const StateContext = createContext({
-  currentUser: {},
-  userToken: null,
-  userRoles: [],
-  userPermissions: [],
-  questionTypes: [],
-  toast: {
-    message: null,
-    show: false,
-  },
-  setCurrentUser: () => { },
-  setUserToken: () => { }
-})
+const getDefaultCurrentUser = () => {
+  try {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : {};
+  } catch (error) {
+    console.error("Error parsing currentUser from localStorage: ", error);
+    return {};
+  }
+};
+
+const getDefaultRoles = () => {
+  try {
+    const roles = localStorage.getItem('roles');
+    return roles ? JSON.parse(roles) : [];
+  } catch (error) {
+    console.error("Error parsing roles from localStorage:", error);
+    return [];
+  }
+};
 
 const getDefaultPermissions = () => {
   try {
@@ -24,62 +30,83 @@ const getDefaultPermissions = () => {
   }
 };
 
-const getDefaultRoles = () => {
-  try {
-    const roles = localStorage.getItem('roles');
-    return roles ? JSON.parse(roles) : [];
-  } catch (error) {
-    console.error("Error parsing roles from localstorage:", error);
-    return [];
-  }
-}
+const StateContext = createContext({
+  currentUser: getDefaultCurrentUser(),
+  userToken: localStorage.getItem('TOKEN') || null,
+  userRoles: getDefaultRoles(),
+  userPermissions: getDefaultPermissions(),
+  questionTypes: ['text', "select", "radio", "checkbox", "textarea"],
+  toast: {
+    message: '',
+    show: false,
+  },
+  setCurrentUser: () => {},
+  setUserToken: () => {},
+  setUserRoles: () => {},
+  setUserPermissions: () => {},
+  showToast: () => {},
+});
 
-export const ContextProvider = ({ children }) =>{
-  const [currentUser, setCurrentUser] = useState({});
-  const [userToken, _setUserToken] = useState(localStorage.getItem(('TOKEN') || ''));
-  const [userRoles, _setUserRoles] = useState(getDefaultRoles());
-  const [userPermissions, _setUserPermissions] = useState(getDefaultPermissions());
-  const [questionTypes] = useState(['text', "select", "radio", "checkbox", "textarea"]);
-  const [toast, setToast] = useState({message: '', show: false})
-  const setUserToken = (token) => {
+export const ContextProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(getDefaultCurrentUser());
+  const [userToken, setUserToken] = useState(localStorage.getItem('TOKEN') || '');
+  const [userRoles, setUserRoles] = useState(getDefaultRoles());
+  const [userPermissions, setUserPermissions] = useState(getDefaultPermissions());
+  const [toast, setToast] = useState({ message: '', show: false });
+
+  const handleSetUserToken = (token) => {
     if (token) {
-      localStorage.setItem('TOKEN', token)
+      localStorage.setItem('TOKEN', token);
     } else {
-      localStorage.removeItem('TOKEN')
+      localStorage.removeItem('TOKEN');
     }
-    _setUserToken(token);
-  }
-  const setUserPermissions = (permissions) => {
-    if (permissions) {
-      localStorage.setItem('permissions', JSON.stringify(permissions));
-    } else {
-      localStorage.removeItem('permissions')
-    }
-    _setUserPermissions(permissions)
-  }
+    setUserToken(token);
+  };
 
-  const setUserRoles = (roles) => {
+  const handleSetCurrentUser = (user) => {
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('currentUser');
+    }
+    setCurrentUser(user);
+  };
+
+  const handleSetUserRoles = (roles) => {
     if (roles) {
       localStorage.setItem('roles', JSON.stringify(roles));
     } else {
-      localStorage.removeItem('roles')
+      localStorage.removeItem('roles');
     }
-    _setUserRoles(roles)
-  }
+    setUserRoles(roles);
+  };
+
+  const handleSetUserPermissions = (permissions) => {
+    if (permissions) {
+      localStorage.setItem('permissions', JSON.stringify(permissions));
+    } else {
+      localStorage.removeItem('permissions');
+    }
+    setUserPermissions(permissions);
+  };
+
   const showToast = (message) => {
-    setToast({ message, show: true })
-    setTimeout(() => {
-      setToast({message: '', show: false})
-    }, 5000)
-  }
+    setToast({ message, show: true });
+    setTimeout(() => setToast({ message: '', show: false }), 5000);
+  };
+
   return (
     <StateContext.Provider value={{
-      currentUser, setCurrentUser, userToken, setUserToken, questionTypes, toast,
-      showToast, userRoles, setUserRoles, userPermissions, setUserPermissions
+      currentUser, setCurrentUser: handleSetCurrentUser,
+      userToken, setUserToken: handleSetUserToken,
+      userRoles, setUserRoles: handleSetUserRoles,
+      userPermissions, setUserPermissions: handleSetUserPermissions,
+      toast, showToast,
+      questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
       {children}
     </StateContext.Provider>
-  )
-}
-export const useStateContext = () => useContext(StateContext)
+  );
+};
 
+export const useStateContext = () => useContext(StateContext);

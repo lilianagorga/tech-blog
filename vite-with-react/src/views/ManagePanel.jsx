@@ -4,7 +4,7 @@ import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
 
 function ManagePanel() {
-  const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles } = useStateContext();
+  const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles, currentUser } = useStateContext();
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
@@ -56,6 +56,7 @@ function ManagePanel() {
     return user.roles.map(role => role.name).join(', ');
   };
 
+  console.log('current user from manage panel:', currentUser);
 
   return (
   <div className="container mx-auto pt-2 mt-2">

@@ -3,7 +3,7 @@ import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
 
 function AddPermission() {
-  const { currentUser, userPermissions, showToast } = useStateContext();
+  const { currentUser, userPermissions, showToast, setUserPermissions } = useStateContext();
   const [selectedPermissions, setSelectedPermissions] = useState('');
 
   const handleSubmit = async (event) => {
@@ -25,6 +25,9 @@ function AddPermission() {
 
     if (response.status === 200) {
       showToast('Permission added successfully');
+      const updatedPermissions = Array.isArray(selectedPermissions) ? [...userPermissions, ...selectedPermissions] : [...userPermissions, selectedPermissions];
+      setUserPermissions(updatedPermissions);
+      localStorage.setItem('permissions', JSON.stringify(updatedPermissions));
     }
   } catch (error) {
     if (error.response && error.response.data) {
