@@ -1,10 +1,10 @@
 import React from "react";
 
-function Role() {
+function CreateRole() {
 
   return (
     <></>
   )
 }
 
-export default Role;
+export default CreateRole;

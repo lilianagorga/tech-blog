@@ -7,8 +7,8 @@ import DefaultLayout from "./components/DefaultLayout.jsx";
 import ManagePanel from "./views/ManagePanel.jsx";
 import AddPermission from "./views/AddPermission.jsx";
 import AddRole from "./views/AddRole.jsx";
-import Role from "./views/Role.jsx";
-import Permission from "./views/Permission.jsx";
+import CreateRole from "./views/CreateRole.jsx";
+import CreatePermission from "./views/CreatePermission.jsx";
 import Post from "./views/Post.jsx";
 import Category from "./views/Category.jsx";
 import Comment from "./views/Comment.jsx";
@@ -57,11 +57,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/users/roles',
-    element: <Role />,
+    element: <CreateRole />,
   },
   {
     path: '/users/permissions',
-    element: <Permission />,
+    element: <CreatePermission />,
   },
   {
     path: '/posts',

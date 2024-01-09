@@ -73,6 +73,22 @@ abstract class TestCase extends BaseTestCase
     return $admin;
   }
 
+  public function createUserWithSpecificRoleAndPermissions(): User
+  {
+    /** @var User $developer */
+    $developer = User::factory()->create();
+    $developerRole = Role::findOrCreate('Developer', 'api');
+    $developer->assignRole($developerRole);
+    $permissions = ['manage panels', 'edit code'];
+    foreach ($permissions as $permName) {
+      $permission = Permission::findOrCreate($permName, 'api');
+      $developerRole->givePermissionTo($permission);
+    }
+
+    return $developer;
+  }
+
+
   public function createComment($args = [])
   {
     return Comment::factory()->create($args);

@@ -27,7 +27,7 @@ function Users({ users, onAddPermission }) {
     //     <tr>
     //       <th>Name</th>
     //       <th>Email</th>
-    //       <th>Add Permission</th>
+    //       <th>Add CreatePermission</th>
     //     </tr>
     //     </thead>
     //     <tbody>
@@ -37,13 +37,13 @@ function Users({ users, onAddPermission }) {
     //         <td>{user.email}</td>
     //         <td>
     //           <button onClick={() => handleAddPermissionClick(user.id)}>
-    //             Add Permission
+    //             Add CreatePermission
     //           </button>
     //           {selectedUserId === user.id && (
     //             <form onSubmit={handleSubmitPermission}>
     //               <input
     //                 type="text"
-    //                 placeholder="Permission ID"
+    //                 placeholder="CreatePermission ID"
     //                 value={permissionIdToAdd}
     //                 onChange={handlePermissionChange}
     //               />

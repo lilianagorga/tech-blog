@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ManagePanelController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UI\DashboardController;
 use App\Http\Controllers\VoteController;
@@ -27,11 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     return $request->user();
   });
 
-  Route::get('/users/manage-panels', [UserController::class, 'managePanels']);
-  Route::post('/users/roles', [UserController::class, 'roles']);
-  Route::post('/users/roles/add', [UserController::class, 'addRoles']);
-  Route::post('/users/permissions', [UserController::class, 'permissions']);
-  Route::post('/users/permissions/add', [UserController::class, 'addPermissions']);
+  Route::get('/users/manage-panels', [ManagePanelController::class, 'managePanels']);
+  Route::post('/users/roles', [ManagePanelController::class, 'createRole']);
+  Route::post('/users/roles/add', [ManagePanelController::class, 'addRoles']);
+  Route::delete('/users/roles/{role}', [ManagePanelController::class, 'deleteRole']);
+  Route::post('/users/permissions', [ManagePanelController::class, 'createPermission']);
+  Route::post('/users/permissions/add', [ManagePanelController::class, 'addPermissions']);
+  Route::delete('/users/permissions/{permission}', [ManagePanelController::class, 'deletePermission']);
 
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);

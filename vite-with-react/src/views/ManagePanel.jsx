@@ -114,8 +114,8 @@ function ManagePanel() {
     </div>
     <footer className="mt-4 p-4 bg-gray-200">
       <div className="grid grid-cols-4 m-8 p-8 bg-gray-800 gap-8 rounded">
-        <Link to="/users/permissions" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Permissions</Link>
-        <Link to="/users/roles" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Roles</Link>
+        <Link to="/users/permissions" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Create Permission</Link>
+        <Link to="/users/roles" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Create Role</Link>
         <Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
           Add Permission
         </Link>
