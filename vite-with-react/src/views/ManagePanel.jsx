@@ -6,6 +6,7 @@ import axiosClient from "../axios.js";
 function ManagePanel() {
   const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles, currentUser } = useStateContext();
   const [users, setUsers] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,7 +15,7 @@ function ManagePanel() {
       try {
         const usersResponse = await axiosClient.get('/users/manage-panels');
         if (isMounted) {
-          console.log(usersResponse.data);
+          console.log("users:", usersResponse.data);
           setUsers(usersResponse.data.users || []);
           if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
             setUserPermissions(usersResponse.data.permissions || []);
@@ -24,6 +25,7 @@ function ManagePanel() {
             setUserRoles(usersResponse.data.roles || []);
             console.log(usersResponse.data.roles);
           }
+          setIsAdmin(usersResponse.data.isAdmin);
         }
       } catch (error) {
         if (isMounted) {
@@ -114,8 +116,12 @@ function ManagePanel() {
       <div className="grid grid-cols-4 m-8 p-8 bg-gray-800 gap-8 rounded">
         <Link to="/users/permissions" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Permissions</Link>
         <Link to="/users/roles" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Roles</Link>
-        <Link to="/users/permissions/add" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Add Permission</Link>
-        <Link to="/users/roles/add" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Add Role</Link>
+        <Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
+          Add Permission
+        </Link>
+        <Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
+          Add Role
+        </Link>
       </div>
     </footer>
   </div>

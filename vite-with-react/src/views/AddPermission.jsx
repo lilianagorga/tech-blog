@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
+import { useLocation } from 'react-router-dom';
 
 function AddPermission() {
-  const { currentUser, userPermissions, showToast, setUserPermissions } = useStateContext();
+  const { userPermissions, showToast, setUserPermissions } = useStateContext();
+  const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState('');
+  const location = useLocation();
+  const { users } = location.state || { users: [] };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,7 +18,7 @@ function AddPermission() {
     }
 
     const postData = {
-      user_id: currentUser.id,
+      user_id: selectedUserId,
       permissions: Array.isArray(selectedPermissions)
         ? selectedPermissions
         : [selectedPermissions]
@@ -38,16 +42,31 @@ function AddPermission() {
       showToast('Error adding permission');
     }
   }
-
-    console.log('Current User:', currentUser);
+    console.log('user id:', selectedUserId);
     console.log('User Permissions:', userPermissions);
 
   };
+
 
   return (
     <div>
       <h2>Add Permission</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="userSelect">Select User:</label>
+          <select
+            id="userSelect"
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+          >
+            <option value="">Select User</option>
+            {users && users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <label htmlFor="permissionSelect">Select Permission:</label>
           <select
@@ -57,12 +76,11 @@ function AddPermission() {
           >
             <option value="">Select Permission</option>
             {userPermissions.map((permission, index) => (
-              <option key={index} value={permission}>
+              <option key={index} value={permission.name}>
                 {permission}
               </option>
             ))}
           </select>
-
         </div>
         <button type="submit">Add Permission</button>
       </form>

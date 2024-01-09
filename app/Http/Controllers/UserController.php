@@ -51,8 +51,9 @@ class UserController extends Controller
       $users = User::with(['roles.permissions', 'permissions'])->get();
       $roles = Role::all()->pluck('name');
       $permissions = Permission::all()->pluck('name');
-
+      $isAdmin = $request->user()->isAdmin();
       $data = [
+        'isAdmin' => $isAdmin,
         'permissions' => $permissions,
         'roles' => $roles,
         'users' => $users,
@@ -137,8 +138,6 @@ class UserController extends Controller
       if (!$user || $permissions->isEmpty()) {
         return response()->json(['message' => 'User or Permissions not found'], Response::HTTP_NOT_FOUND);
       }
-
-//      $user->syncPermissions($permissions);
       foreach ($permissions as $permission) {
         $user->givePermissionTo($permission);
       }

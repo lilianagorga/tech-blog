@@ -58,11 +58,3 @@ class User extends Authenticatable
     return $this->isAdmin() || $this->hasPermissionTo('manage panels', 'api');
   }
 }
-
-
-//use Spatie\Permission\Models\Role;
-//use Spatie\Permission\Models\Permission;
-
-//$role = Role::create(['name' => 'admin', 'guard_name' => 'api']);
-//$permissions = Permission::all();
-//$role->syncPermissions($permissions);

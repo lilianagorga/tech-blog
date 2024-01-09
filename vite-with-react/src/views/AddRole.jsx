@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
+import { useLocation } from 'react-router-dom';
 
 function AddRole() {
-  const { currentUser, userRoles, showToast, setUserRoles } = useStateContext();
+  const { userRoles, showToast, setUserRoles } = useStateContext();
+  const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRoles, setSelectedRoles] = useState('');
+  const location = useLocation();
+  const { users } = location.state || { users: [] };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,7 +18,7 @@ function AddRole() {
     }
 
     const postData = {
-      user_id: currentUser.id,
+      user_id: selectedUserId,
       roles: Array.isArray(selectedRoles)
         ? selectedRoles
         : [selectedRoles]
@@ -39,7 +43,7 @@ function AddRole() {
       }
     }
 
-    console.log('Current User:', currentUser);
+    console.log('user id:', selectedUserId);
     console.log('User Roles:', userRoles);
 
   };
@@ -49,6 +53,21 @@ function AddRole() {
       <h2>Add Role</h2>
       <form onSubmit={handleSubmit}>
         <div>
+          <label htmlFor="userSelect">Select User:</label>
+          <select
+            id="userSelect"
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+          >
+            <option value="">Select User</option>
+            {users && users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label htmlFor="roleSelect">Select Role:</label>
           <select
             id="roleSelect"
@@ -57,7 +76,7 @@ function AddRole() {
           >
             <option value="">Select Role</option>
             {userRoles.map((role, index) => (
-              <option key={index} value={role}>
+              <option key={index} value={role.name}>
                 {role}
               </option>
             ))}
