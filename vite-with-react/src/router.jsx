@@ -9,6 +9,8 @@ import AddPermission from "./views/AddPermission.jsx";
 import AddRole from "./views/AddRole.jsx";
 import CreateRole from "./views/CreateRole.jsx";
 import CreatePermission from "./views/CreatePermission.jsx";
+import DeletePermission from "./views/DeletePermission";
+import DeleteRole from "./views/DeleteRole";
 import Post from "./views/Post.jsx";
 import Category from "./views/Category.jsx";
 import Comment from "./views/Comment.jsx";
@@ -63,6 +65,15 @@ const router = createBrowserRouter([
     path: '/users/permissions',
     element: <CreatePermission />,
   },
+  {
+    path: '/users/permissions/:permissionId',
+    element: <DeletePermission />,
+  },
+  {
+    path: '/users/roles/:roleId',
+    element: <DeleteRole />,
+  },
+
   {
     path: '/posts',
     element: <Post />,
