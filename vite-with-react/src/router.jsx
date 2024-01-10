@@ -21,13 +21,17 @@ const router = createBrowserRouter([
     path: '/',
     element: <DefaultLayout />,
     children: [
+      // {
+      //   path: '/dashboard',
+      //   element: <Navigate to="/" />
+      // },
       {
-        path: '/dashboard',
-        element: <Navigate to="/" />
+        path: 'dashboard',
+        element: <Dashboard/>,
       },
       {
-        path: '',
-        element: <Dashboard/>,
+        path: 'users/manage-panels',
+        element: <ManagePanel/>
       },
     ]
   },
@@ -45,10 +49,10 @@ const router = createBrowserRouter([
       }
     ]
   },
-  {
-    path: '/users/manage-panels',
-    element: <ManagePanel/>
-  },
+  // {
+  //   path: '/users/manage-panels',
+  //   element: <ManagePanel/>
+  // },
   {
     path: '/users/permissions/add',
     element: <AddPermission />

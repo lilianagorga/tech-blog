@@ -5,7 +5,11 @@ import {Navigate, NavLink, Outlet} from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
-const navigation = [{ name: 'Dashboard', to: '/dashboard'}]
+const navigation = [
+  { name: 'Dashboard', to: '/dashboard' },
+  { name: 'Manage Panel', to: '/users/manage-panels' }
+];
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
