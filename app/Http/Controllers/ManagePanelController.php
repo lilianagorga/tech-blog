@@ -133,37 +133,70 @@ class ManagePanelController extends Controller
     }
   }
 
-  public function deleteRole(Request $request, $id): Response
+  public function deleteRole(Request $request): Response
   {
     if (!$request->user()->isAdmin()) {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
 
-    try {
-      $role = Role::findOrFail($id);
-      $role->delete();
+    $validatedData = $request->validate(
+      [
+        'user_id' => 'required|integer',
+        'roles' => 'required|array',
+        'roles.*' => 'required|string|exists:roles,name'
+      ]
+    );
 
-      return response()->json(['message' => 'CreateRole deleted successfully'], Response::HTTP_OK);
+    try {
+      $user = User::findOrFail($validatedData['user_id']);
+      $roles = Role::whereIn('name', $validatedData['roles'])->pluck('name');
+      foreach ($roles as $role) {
+        $user->removeRole($role);
+      }
+
+      return response()->json(['message' => 'Roles deleted successfully'], Response::HTTP_OK);
     } catch (ModelNotFoundException $e) {
-      return response()->json(['message' => 'CreateRole not found'], Response::HTTP_NOT_FOUND);
+      return response()->json(['message' => 'User or Role not found'], Response::HTTP_NOT_FOUND);
     } catch (Exception $e) {
       return response()->json(['message' => 'Failed to delete role', 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
   }
 
-  public function deletePermission(Request $request, $id): Response
+
+  public function deletePermission(Request $request): Response
   {
     if (!$request->user()->isAdmin()) {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
 
-    try {
-      $permission = Permission::findOrFail($id);
-      $permission->delete();
+    $validatedData = $request->validate(
+      [
+        'user_id' => 'required|integer',
+        'permissions' => 'required|array',
+        'permissions.*' => 'required|string|exists:permissions,name'
+      ]
+    );
 
-      return response()->json(['message' => 'CreatePermission deleted successfully'], Response::HTTP_OK);
+    try {
+      $user = User::findOrFail($validatedData['user_id']);
+      $permissions = Permission::whereIn('name', $validatedData['permissions'])->pluck('name');
+      foreach ($permissions as $permission) {
+        if ($user->hasDirectPermission($permission)) {
+          $user->revokePermissionTo($permission);
+        }
+      }
+
+      foreach ($user->roles as $role) {
+        foreach ($permissions as $permission) {
+          if ($role->hasPermissionTo($permission)) {
+            $role->revokePermissionTo($permission);
+          }
+        }
+      }
+
+      return response()->json(['message' => 'Permission deleted successfully'], Response::HTTP_OK);
     } catch (ModelNotFoundException $e) {
-      return response()->json(['message' => 'CreatePermission not found'], Response::HTTP_NOT_FOUND);
+      return response()->json(['message' => 'Permission not found'], Response::HTTP_NOT_FOUND);
     } catch (Exception $e) {
       return response()->json(['message' => 'Failed to delete permission', 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
     }

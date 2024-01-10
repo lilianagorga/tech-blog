@@ -31,10 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/users/manage-panels', [ManagePanelController::class, 'managePanels']);
   Route::post('/users/roles', [ManagePanelController::class, 'createRole']);
   Route::post('/users/roles/add', [ManagePanelController::class, 'addRoles']);
-  Route::delete('/users/roles/{role}', [ManagePanelController::class, 'deleteRole']);
+  Route::delete('/users/roles/delete', [ManagePanelController::class, 'deleteRole']);
   Route::post('/users/permissions', [ManagePanelController::class, 'createPermission']);
   Route::post('/users/permissions/add', [ManagePanelController::class, 'addPermissions']);
-  Route::delete('/users/permissions/{permission}', [ManagePanelController::class, 'deletePermission']);
+  Route::delete('/users/permissions/delete', [ManagePanelController::class, 'deletePermission']);
 
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);

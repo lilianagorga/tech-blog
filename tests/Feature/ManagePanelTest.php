@@ -146,50 +146,124 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
+    $user = User::factory()->create();
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
+    /** @var User $user */
+    $user->assignRole($role->name);
+    $rolesData = [
+      'user_id' => $user->id,
+      'roles' => [$role->name]
+    ];
 
-    $response = $this->deleteJson('/api/users/roles/' . $role->id);
+    $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
 
     $response->assertStatus(Response::HTTP_OK);
-    $response->assertJson(['message' => 'CreateRole deleted successfully']);
-    $this->assertDatabaseMissing('roles', ['name' => 'TestRole']);
+    $response->assertJson(['message' => 'Roles deleted successfully']);
+    $this->assertFalse($user->hasRole('TestRole'));
   }
 
   public function test_delete_role_denied_for_user_with_panel_access_but_not_admin()
   {
     $developer = $this->createUserWithSpecificRoleAndPermissions();
     Sanctum::actingAs($developer);
+    $user = User::factory()->create();
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
+    /** @var User $user */
+    $user->assignRole($role->name);
+    $rolesData = [
+      'user_id' => $user->id,
+      'roles' => [$role->name]
+    ];
 
-    $response = $this->deleteJson('/api/users/roles/' . $role->id);
+    $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
-    $this->assertDatabaseHas('roles', ['name' => 'TestRole']);
+    $this->assertTrue($user->hasRole('TestRole'));
   }
 
   public function test_delete_permission_successfully_by_admin()
+{
+  $admin = $this->addRolesAndPermissionsToAdmin();
+  Sanctum::actingAs($admin);
+  $user = User::factory()->create();
+  $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+  /** @var User $user */
+  $user->givePermissionTo($permission->name);
+  $permissionsData = [
+    'user_id' => $user->id,
+    'permissions' => [$permission->name]
+  ];
+
+  $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+
+  $response->assertStatus(Response::HTTP_OK);
+  $response->assertJson(['message' => 'Permission deleted successfully']);
+  $this->assertFalse($user->hasPermissionTo('TestPermission'));
+}
+
+  public function test_delete_permission_associated_to_role_successfully_by_admin()
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
+    $user = User::factory()->create();
+    $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
     $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+    $role->givePermissionTo($permission->name);
+    /** @var User $user */
+    $user->assignRole($role->name);
+    $permissionsData = [
+      'user_id' => $user->id,
+      'permissions' => [$permission->name]
+    ];
 
-    $response = $this->deleteJson('/api/users/permissions/' . $permission->id);
+    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
 
     $response->assertStatus(Response::HTTP_OK);
-    $response->assertJson(['message' => 'CreatePermission deleted successfully']);
-    $this->assertDatabaseMissing('permissions', ['name' => 'TestPermission']);
+    $response->assertJson(['message' => 'Permission deleted successfully']);
+    $role->refresh();
+    $this->assertFalse($role->hasPermissionTo('TestPermission'));
   }
+
 
   public function test_delete_permission_denied_for_user_with_panel_access_but_not_admin()
   {
     $developer = $this->createUserWithSpecificRoleAndPermissions();
     Sanctum::actingAs($developer);
+    $user = User::factory()->create();
     $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+    /** @var User $user */
+    $user->givePermissionTo($permission->name);
+    $permissionsData = [
+      'user_id' => $user->id,
+      'permissions' => [$permission->name]
+    ];
 
-    $response = $this->deleteJson('/api/users/permissions/' . $permission->id);
+    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
-    $this->assertDatabaseHas('permissions', ['name' => 'TestPermission']);
+    $this->assertTrue($user->hasPermissionTo('TestPermission'));
+  }
+
+  public function test_delete_permission_associated_to_role_denied_for_user_with_panel_access_but_not_admin()
+  {
+    $developer = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($developer);
+    $user = User::factory()->create();
+    $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
+    $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+    $role->givePermissionTo($permission->name);
+    /** @var User $user */
+    $user->assignRole($role->name);
+    $permissionsData = [
+      'user_id' => $user->id,
+      'permissions' => [$permission->name]
+    ];
+
+    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
+    $role->refresh();
+    $this->assertTrue($role->hasPermissionTo('TestPermission'));
   }
 
   public function test_add_roles_successfully_by_admin()

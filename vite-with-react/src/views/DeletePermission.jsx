@@ -1,8 +1,9 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
 function DeletePermission(){
-  const { permissionId } = useParams();
+  const location = useLocation();
+  const { users } = location.state || { users: [] };
   return (
     <></>
   )

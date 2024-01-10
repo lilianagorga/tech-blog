@@ -66,11 +66,11 @@ const router = createBrowserRouter([
     element: <CreatePermission />,
   },
   {
-    path: '/users/permissions/:permissionId',
+    path: '/users/permissions/delete',
     element: <DeletePermission />,
   },
   {
-    path: '/users/roles/:roleId',
+    path: '/users/roles/delete',
     element: <DeleteRole />,
   },
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
+import DeleteRole from "./DeleteRole.jsx";
 
 function ManagePanel() {
   const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles, currentUser } = useStateContext();
@@ -58,6 +59,7 @@ function ManagePanel() {
     return user.roles.map(role => role.name).join(', ');
   };
 
+  console.log('user role:',userRoles);
   console.log('current user from manage panel:', currentUser);
 
   return (
@@ -125,6 +127,12 @@ function ManagePanel() {
         </Link>
         <Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
           Add Role
+        </Link>
+        <Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
+          Delete Role
+        </Link>
+        <Link to="/users/permissions/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
+          Delete Permission
         </Link>
       </div>
     </footer>
