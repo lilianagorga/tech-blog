@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
-import DeleteRole from "./DeleteRole.jsx";
+import {getUserPermissions} from "../utils/utils.jsx";
 
 function ManagePanel() {
   const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles, currentUser } = useStateContext();
@@ -45,21 +45,22 @@ function ManagePanel() {
     };
   }, [showToast, navigate, userPermissions, setUserPermissions, userRoles, setUserRoles]);
 
-  const getUserPermissions = (user) => {
-    const rolePermissions = user.roles
-      ? user.roles.flatMap(role => role.permissions ? role.permissions.map(perm => perm.name) : [])
-      : [];
-    const directPermissions = user.permissions
-      ? user.permissions.map(perm => perm.name)
-      : [];
-    return Array.from(new Set([...rolePermissions, ...directPermissions]));
-  };
+  // const getUserPermissions = (user) => {
+  //   const rolePermissions = user.roles
+  //     ? user.roles.flatMap(role => role.permissions ? role.permissions.map(perm => perm.name) : [])
+  //     : [];
+  //   const directPermissions = user.permissions
+  //     ? user.permissions.map(perm => perm.name)
+  //     : [];
+  //   return Array.from(new Set([...rolePermissions, ...directPermissions]));
+  // };
 
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
 
   console.log('user role:',userRoles);
+  console.log('user permission:', userPermissions);
   console.log('current user from manage panel:', currentUser);
 
   return (
@@ -115,7 +116,7 @@ function ManagePanel() {
       </main>
     </div>
     <footer className="mt-4 p-4 bg-gray-200">
-      <div className="grid grid-cols-4 m-8 p-8 bg-gray-800 gap-8 rounded">
+      <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">
         <Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
           Create Permission
         </Link>
@@ -131,7 +132,7 @@ function ManagePanel() {
         <Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
           Delete Role
         </Link>
-        <Link to="/users/permissions/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
+        <Link to="/users/permissions/delete" state={{ users: users, permissions: userPermissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
           Delete Permission
         </Link>
       </div>
