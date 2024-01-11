@@ -1,7 +1,7 @@
-import {Fragment, useEffect} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {Navigate, NavLink, Outlet} from "react-router-dom";
+import {Navigate, NavLink, Outlet, useNavigate} from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
@@ -16,10 +16,15 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setUserToken, setCurrentUser } = useStateContext();
-  if (!userToken) {
-    return <Navigate to="/user/login" />
-  }
+  const { currentUser, userToken, setUserToken, setCurrentUser, canAccessPanel } = useStateContext();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userToken) {
+      navigate("/user/login");
+    }
+  }, [userToken, navigate]);
   const logout = (ev) => {
     ev.preventDefault();
     axiosClient.post('/logout')
@@ -62,8 +67,14 @@ export default function DefaultLayout() {
                               isActive
                                 ? 'bg-gray-900 text-white'
                                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'rounded-md px-3 py-2 text-sm font-medium'
+                              'rounded-md px-3 py-2 text-sm font-medium',
+                              (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
                             )}
+                            onClick={(e) => {
+                              if (!canAccessPanel && item.name === 'Manage Panel') {
+                                e.preventDefault();
+                              }
+                            }}
                           >
                             {item.name}
                           </NavLink>
@@ -124,8 +135,14 @@ export default function DefaultLayout() {
                       to={item.to}
                       className={({ isActive}) => classNames(
                         isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                        'block rounded-md px-3 py-2 text-base font-medium'
+                        'block rounded-md px-3 py-2 text-base font-medium',
+                        (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
                       )}
+                      onClick={(e) => {
+                        if (!canAccessPanel && item.name === 'Manage Panel') {
+                          e.preventDefault();
+                        }
+                      }}
                     >
                       {item.name}
                     </NavLink>

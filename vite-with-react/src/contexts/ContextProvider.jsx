@@ -44,6 +44,7 @@ const StateContext = createContext({
   setUserToken: () => {},
   setUserRoles: () => {},
   setUserPermissions: () => {},
+  setCanAccessPanel: () => {},
   showToast: () => {},
 });
 
@@ -53,6 +54,7 @@ export const ContextProvider = ({ children }) => {
   const [userRoles, setUserRoles] = useState(getDefaultRoles());
   const [userPermissions, setUserPermissions] = useState(getDefaultPermissions());
   const [toast, setToast] = useState({ message: '', show: false });
+  const [canAccessPanel, setCanAccessPanel] = useState(false);
 
   const handleSetUserToken = (token) => {
     if (token) {
@@ -88,6 +90,7 @@ export const ContextProvider = ({ children }) => {
       localStorage.removeItem('permissions');
     }
     setUserPermissions(permissions);
+    setCanAccessPanel(permissions.length > 0);
   };
 
   const showToast = (message) => {
@@ -102,6 +105,7 @@ export const ContextProvider = ({ children }) => {
       userRoles, setUserRoles: handleSetUserRoles,
       userPermissions, setUserPermissions: handleSetUserPermissions,
       toast, showToast,
+      canAccessPanel, setCanAccessPanel: handleSetUserPermissions,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
       {children}
