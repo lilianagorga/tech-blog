@@ -46,11 +46,11 @@ class AuthController extends Controller
 
     $user = Auth::user();
     $token = $user->createToken('main')->plainTextToken;
-//    $roles = $user->getRoleNames();
-//    $permissions = $user->getAllPermissions()->pluck('name');
+    $roles = $user->getRoleNames();
+    $permissions = $user->getAllPermissions()->pluck('name');
     return response([
       'user' => $user, 'token' => $token,
-//      'roles' => $roles, 'permissions' => $permissions
+      'roles' => $roles, 'permissions' => $permissions
     ]);
   }
 

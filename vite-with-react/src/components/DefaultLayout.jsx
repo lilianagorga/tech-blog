@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import {Fragment} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import {Navigate, NavLink, Outlet, useNavigate} from "react-router-dom";
@@ -17,7 +17,7 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
   const { currentUser, userToken, setUserToken, setCurrentUser, userPermissions } = useStateContext();
-  // const canAccessPanel = userPermissions.length > 0;
+  const canAccessPanel = userPermissions.length > 0;
 
   if (!userToken) {
     return <Navigate to="/user/login" />
@@ -67,13 +67,13 @@ export default function DefaultLayout() {
                                 ? 'bg-gray-900 text-white'
                                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium',
-                              // (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
+                              (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
                             )}
-                            // onClick={(e) => {
-                            //   if (!canAccessPanel && item.name === 'Manage Panel') {
-                            //     e.preventDefault();
-                            //   }
-                            // }}
+                            onClick={(e) => {
+                              if (!canAccessPanel && item.name === 'Manage Panel') {
+                                e.preventDefault();
+                              }
+                            }}
                           >
                             {item.name}
                           </NavLink>
@@ -135,13 +135,13 @@ export default function DefaultLayout() {
                       className={({ isActive}) => classNames(
                         isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium',
-                        // (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
+                        (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
                       )}
-                      // onClick={(e) => {
-                      //   if (!canAccessPanel && item.name === 'Manage Panel') {
-                      //     e.preventDefault();
-                      //   }
-                      // }}
+                      onClick={(e) => {
+                        if (!canAccessPanel && item.name === 'Manage Panel') {
+                          e.preventDefault();
+                        }
+                      }}
                     >
                       {item.name}
                     </NavLink>
