@@ -44,7 +44,7 @@ const StateContext = createContext({
   setUserToken: () => {},
   setUserRoles: () => {},
   setUserPermissions: () => {},
-  setCanAccessPanel: () => {},
+  // setCanAccessPanel: () => {},
   showToast: () => {},
 });
 
@@ -90,7 +90,7 @@ export const ContextProvider = ({ children }) => {
       localStorage.removeItem('permissions');
     }
     setUserPermissions(permissions);
-    setCanAccessPanel(permissions.length > 0);
+    // setCanAccessPanel(permissions.length > 0);
   };
 
   const showToast = (message) => {
@@ -105,7 +105,8 @@ export const ContextProvider = ({ children }) => {
       userRoles, setUserRoles: handleSetUserRoles,
       userPermissions, setUserPermissions: handleSetUserPermissions,
       toast, showToast,
-      canAccessPanel, setCanAccessPanel: handleSetUserPermissions,
+      canAccessPanel,
+      // canAccessPanel, setCanAccessPanel: handleSetUserPermissions,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
       {children}

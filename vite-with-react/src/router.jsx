@@ -49,10 +49,6 @@ const router = createBrowserRouter([
       }
     ]
   },
-  // {
-  //   path: '/users/manage-panels',
-  //   element: <ManagePanel/>
-  // },
   {
     path: '/users/permissions/add',
     element: <AddPermission />

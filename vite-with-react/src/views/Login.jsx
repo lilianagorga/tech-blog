@@ -23,13 +23,14 @@ export default function Login() {
         setCurrentUser(data.user)
         setUserToken(data.token)
         setUserPermissions(data.permissions || []);
-        const hasManagePanelsPermission = data.permissions && data.permissions.length > 0;
-        setCanAccessPanel(hasManagePanelsPermission);
-        if (hasManagePanelsPermission) {
-          navigate("/users/manage-panels");
-        } else {
-          navigate("/dashboard");
-        }
+        // const hasManagePanelsPermission = data.permissions && data.permissions.length > 0;
+        // setCanAccessPanel(hasManagePanelsPermission);
+
+        // if (data.permissions && data.permissions.length > 0) {
+        //   navigate("/users/manage-panels");
+        // } else {
+        //   navigate("/dashboard");
+        // }
 
       })
       .catch((error) => {

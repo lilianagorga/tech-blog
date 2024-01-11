@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
 import {getUserPermissions} from "../utils/utils.jsx";
@@ -10,7 +10,6 @@ function ManagePanel() {
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
@@ -47,7 +46,7 @@ function ManagePanel() {
     return () => {
       isMounted = false;
     };
-  }, [showToast, navigate, userPermissions, setUserPermissions, userRoles, setUserRoles]);
+  }, []);
 
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
@@ -66,11 +65,11 @@ function ManagePanel() {
         <aside className="col-span-2 bg-gray-200 p-4" aria-label="Sidebar">
           <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
             <ul className="space-y-2">
-              <li>
-                <a href="/" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Home</span>
-                </a>
-              </li>
+              {/*<li>*/}
+              {/*  <a href="/" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">*/}
+              {/*    <span className="ml-3">Home</span>*/}
+              {/*  </a>*/}
+              {/*</li>*/}
               <li>
                 <a href="/posts" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <span className="ml-3">Posts</span>
@@ -112,28 +111,28 @@ function ManagePanel() {
           </div>
         </main>
       </div>
-      <footer className="mt-4 p-4 bg-gray-200">
-        <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">
-          <Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Create Permission
-          </Link>
-          <Link to="/users/roles" state={{ permissions: userPermissions }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Create Role
-          </Link>
-          <Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Add Permission
-          </Link>
-          <Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Add Role
-          </Link>
-          <Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Delete Role
-          </Link>
-          <Link to="/users/permissions/delete" state={{ users: users, permissions: userPermissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Delete Permission
-          </Link>
-        </div>
-      </footer>
+      {/*<footer className="mt-4 p-4 bg-gray-200">*/}
+      {/*  <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">*/}
+      {/*    <Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Create Permission*/}
+      {/*    </Link>*/}
+      {/*    <Link to="/users/roles" state={{ permissions: userPermissions }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Create Role*/}
+      {/*    </Link>*/}
+      {/*    <Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Add Permission*/}
+      {/*    </Link>*/}
+      {/*    <Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Add Role*/}
+      {/*    </Link>*/}
+      {/*    <Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Delete Role*/}
+      {/*    </Link>*/}
+      {/*    <Link to="/users/permissions/delete" state={{ users: users, permissions: userPermissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+      {/*      Delete Permission*/}
+      {/*    </Link>*/}
+      {/*  </div>*/}
+      {/*</footer>*/}
     </div>
     )}
   </PageComponent>
