@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {getUserPermissions} from "../utils/utils.jsx";
 import axiosClient from "../axios.js";
 
 function DeletePermission(){
   const location = useLocation();
+  const navigate = useNavigate();
   const { users, permissions } = location.state || { users: [], permissions: [] };
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPermission, setSelectedPermission] = useState('');
@@ -39,6 +40,9 @@ function DeletePermission(){
     }
   };
 
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
 
   return (
     <div>
@@ -53,7 +57,8 @@ function DeletePermission(){
           <option key={perm} value={perm}>{perm}</option>
         ))}
       </select>
-      <button onClick={deleteUserPermission}>Delete Permission</button>
+      <button onClick={deleteUserPermission}>Delete Permission</button><br />
+      <button type="button"  onClick={backToManagePanel}>Back</button>
     </div>
   )
 };

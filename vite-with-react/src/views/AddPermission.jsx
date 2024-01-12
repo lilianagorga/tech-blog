@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function AddPermission() {
   const { userPermissions, showToast, setUserPermissions } = useStateContext();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const { users } = location.state || { users: [] };
 
   const handleSubmit = async (event) => {
@@ -47,6 +48,9 @@ function AddPermission() {
 
   };
 
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
 
   return (
     <div>
@@ -82,7 +86,8 @@ function AddPermission() {
             ))}
           </select>
         </div>
-        <button type="submit">Add Permission</button>
+        <button type="submit">Add Permission</button><br />
+        <button type="button"  onClick={backToManagePanel}>Back</button>
       </form>
     </div>
   );

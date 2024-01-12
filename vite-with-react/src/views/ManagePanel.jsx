@@ -18,7 +18,14 @@ function ManagePanel() {
         const usersResponse = await axiosClient.get('/users/manage-panels');
         if (isMounted) {
           console.log("users:", usersResponse.data);
-          setUsers(usersResponse.data.users || []);
+          const filteredUsers = usersResponse.data.users.filter(user => {
+            const userPermissions = getUserPermissions(user);
+            const userRoles = getUserRoles(user);
+            return userPermissions.length > 0 && userRoles.length > 0;
+          });
+          setUsers(filteredUsers || []);
+
+          // setUsers(usersResponse.data.users || []);
           if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
             setUserPermissions(usersResponse.data.permissions || []);
             console.log(usersResponse.data.permissions);

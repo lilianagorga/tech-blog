@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
 import axiosClient from "../axios.js";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function AddRole() {
   const { userRoles, showToast, setUserRoles } = useStateContext();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRoles, setSelectedRoles] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const { users } = location.state || { users: [] };
 
   const handleSubmit = async (event) => {
@@ -48,6 +49,10 @@ function AddRole() {
 
   };
 
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
+
   return (
     <div>
       <h2>Add Role</h2>
@@ -83,7 +88,8 @@ function AddRole() {
           </select>
 
         </div>
-        <button type="submit">Add Role</button>
+        <button type="submit">Add Role</button><br />
+        <button type="button"  onClick={backToManagePanel}>Back</button>
       </form>
     </div>
   );

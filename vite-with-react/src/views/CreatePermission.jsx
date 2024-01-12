@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axiosClient from "../axios.js";
+import { useNavigate } from "react-router-dom";
 
 function CreatePermission() {
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +15,11 @@ function CreatePermission() {
       console.error("Error creating permission", error);
     }
   };
+
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
+
 
   return (
     <div>
@@ -26,7 +33,8 @@ function CreatePermission() {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <button type="submit">Create Permission</button>
+        <button type="submit">Create Permission</button><br />
+        <button type="button" onClick={backToManagePanel}>Back</button>
       </form>
     </div>
   );

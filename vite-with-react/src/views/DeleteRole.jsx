@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../axios.js";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function DeleteRole(){
   const location = useLocation();
+  const navigate = useNavigate();
   const { users } = location.state || { users: [] };
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRoleId, setSelectedRoleId] = useState('');
@@ -37,6 +38,10 @@ function DeleteRole(){
     }
   };
 
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
+
   return (
     <div>
       <h1>Delete Role</h1>
@@ -52,7 +57,8 @@ function DeleteRole(){
         ))}
       </select>
 
-      <button onClick={deleteUserRole}>Delete Role</button>
+      <button onClick={deleteUserRole}>Delete Role</button><br />
+      <button type="button"  onClick={backToManagePanel}>Back</button>
     </div>
   )
 }

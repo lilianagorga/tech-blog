@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axiosClient from "../axios.js";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function CreateRole() {
   const [name, setName] = useState("");
   const [selectedPermissions, setSelectedPermissions] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const { permissions } = location.state || { permissions: [] };
 
   const handlePermissionChange = (e) => {
@@ -29,6 +30,10 @@ function CreateRole() {
       console.error("Error creating role", error);
     }
   };
+
+  const backToManagePanel = () => {
+    navigate('/users/manage-panels');
+  }
 
   return (
     <div>
@@ -56,7 +61,8 @@ function CreateRole() {
             </div>
           ))}
         </div>
-        <button type="submit">Create Role</button>
+        <button type="submit">Create Role</button><br />
+        <button type="button"  onClick={backToManagePanel}>Back</button>
       </form>
     </div>
   );
