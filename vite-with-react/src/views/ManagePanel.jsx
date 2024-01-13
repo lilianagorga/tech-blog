@@ -13,52 +13,51 @@ function ManagePanel() {
 
   useEffect(() => {
     let isMounted = true;
-    const fetchUsersWithRolesAndPermissions = async () => {
-      try {
-        const usersResponse = await axiosClient.get('/users/manage-panels');
-        if (isMounted) {
-          console.log("users:", usersResponse.data);
-          const filteredUsers = usersResponse.data.users.filter(user => {
-            const userPermissions = getUserPermissions(user);
-            const userRoles = getUserRoles(user);
-            return userPermissions.length > 0 && userRoles.length > 0;
-          });
-          setUsers(filteredUsers || []);
-
-          // setUsers(usersResponse.data.users || []);
-          if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
-            setUserPermissions(usersResponse.data.permissions || []);
-            console.log(usersResponse.data.permissions);
+      const fetchUsersWithRolesAndPermissions = async ()=>{
+        try {
+          const usersResponse = await axiosClient.get('/users/manage-panels');
+          if (isMounted) {
+            console.log("users:", usersResponse.data);
+            const filteredUsers = usersResponse.data.users.filter(user=>{
+              const userPermissions = getUserPermissions(user);
+              const userRoles = getUserRoles(user);
+              return userPermissions.length > 0 && userRoles.length > 0;
+            });
+            setUsers(filteredUsers || []);
+            if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
+              setUserPermissions(usersResponse.data.permissions || []);
+              console.log(usersResponse.data.permissions);
+            }
+            if (JSON.stringify(userRoles) !== JSON.stringify(usersResponse.data.roles)) {
+              setUserRoles(usersResponse.data.roles || []);
+              console.log(usersResponse.data.roles);
+            }
+            setLoading(false);
+            setIsAdmin(usersResponse.data.isAdmin);
           }
-          if (JSON.stringify(userRoles) !== JSON.stringify(usersResponse.data.roles)) {
-            setUserRoles(usersResponse.data.roles || []);
-            console.log(usersResponse.data.roles);
+        } catch (error) {
+          if (isMounted) {
+            console.error("An error occurred in fetchUsers", error);
+            showToast("Error to load data", true);
           }
           setLoading(false);
-          setIsAdmin(usersResponse.data.isAdmin);
         }
-      } catch (error) {
-        if (isMounted) {
-          console.error("An error occurred in fetchUsers", error);
-          showToast("Error to load data", true);
-        }
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchUsersWithRolesAndPermissions().catch(error => {
-      console.error("An error occurred in fetchUsers", error);
-      showToast("An unexpected error occurred", true);
-    });
+      fetchUsersWithRolesAndPermissions().catch(error=>{
+        console.error("An error occurred in fetchUsers", error);
+        showToast("An unexpected error occurred", true);
+      });
     return () => {
       isMounted = false;
+      console.log('ManagePanel Unmounting');
     };
-  }, [showToast, setUserRoles, setUserPermissions, setIsAdmin, userPermissions, userRoles]);
+  }, []);
 
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
-
+  console.log('ManagePanel Rendering');
   console.log('user role:',userRoles);
   console.log('user permission:', userPermissions);
   console.log('current user from manage panel:', currentUser);
@@ -72,11 +71,6 @@ function ManagePanel() {
         <aside className="col-span-2 bg-gray-200 p-4" aria-label="Sidebar">
           <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
             <ul className="space-y-2">
-              {/*<li>*/}
-              {/*  <a href="/" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">*/}
-              {/*    <span className="ml-3">Home</span>*/}
-              {/*  </a>*/}
-              {/*</li>*/}
               <li>
                 <a href="/posts" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <span className="ml-3">Posts</span>

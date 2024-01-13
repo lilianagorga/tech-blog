@@ -9,28 +9,53 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cache;
 
 class ManagePanelController extends Controller
 {
+//  public function managePanels(Request $request): Response
+//  {
+//    if ($request->user()->canAccessPanel()) {
+//      $users = User::with(['roles.permissions', 'permissions'])->get();
+//      $roles = Role::all()->pluck('name');
+//      $permissions = Permission::all()->pluck('name');
+//      $isAdmin = $request->user()->isAdmin();
+//      $data = [
+//        'isAdmin' => $isAdmin,
+//        'permissions' => $permissions,
+//        'roles' => $roles,
+//        'users' => $users,
+//      ];
+//
+//      return response()->json($data, Response::HTTP_OK);
+//    } else {
+//      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+//    }
+//  }
+
   public function managePanels(Request $request): Response
   {
-    if ($request->user()->canAccessPanel()) {
+    if (!$request->user()->canAccessPanel()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+
+    $data = Cache::remember('manage-panels', 60, function () use ($request) {
       $users = User::with(['roles.permissions', 'permissions'])->get();
       $roles = Role::all()->pluck('name');
       $permissions = Permission::all()->pluck('name');
       $isAdmin = $request->user()->isAdmin();
-      $data = [
+
+      return [
         'isAdmin' => $isAdmin,
         'permissions' => $permissions,
         'roles' => $roles,
         'users' => $users,
       ];
+    });
 
-      return response()->json($data, Response::HTTP_OK);
-    } else {
-      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
-    }
+    return response()->json($data, Response::HTTP_OK);
   }
+
 
   public function createRole(Request $request): Response
   {
@@ -56,6 +81,7 @@ class ManagePanelController extends Controller
         }
       }
 
+      Cache::forget('manage-panels');
       return response()->json($role, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
@@ -81,6 +107,7 @@ class ManagePanelController extends Controller
       }
 
       $user->assignRole($roles);
+      Cache::forget('manage-panels');
 
       return response()->json(['message' => 'Roles updated successfully'], Response::HTTP_OK);
     } else {
@@ -127,6 +154,7 @@ class ManagePanelController extends Controller
         'guard_name' => 'api'
       ]);
 
+      Cache::forget('manage-panels');
       return response()->json($permission, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
@@ -154,6 +182,7 @@ class ManagePanelController extends Controller
         $user->removeRole($role);
       }
 
+      Cache::forget('manage-panels');
       return response()->json(['message' => 'Roles deleted successfully'], Response::HTTP_OK);
     } catch (ModelNotFoundException $e) {
       return response()->json(['message' => 'User or Role not found'], Response::HTTP_NOT_FOUND);
@@ -193,7 +222,7 @@ class ManagePanelController extends Controller
           }
         }
       }
-
+      Cache::forget('manage-panels');
       return response()->json(['message' => 'Permission deleted successfully'], Response::HTTP_OK);
     } catch (ModelNotFoundException $e) {
       return response()->json(['message' => 'Permission not found'], Response::HTTP_NOT_FOUND);

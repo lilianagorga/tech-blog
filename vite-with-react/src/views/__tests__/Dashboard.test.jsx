@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import Dashboard from '../Dashboard';
-import router from "../../router.jsx";
 
 describe('Dashboard Component', () => {
   it('should render correctly', () => {
@@ -32,7 +31,7 @@ describe('Dashboard Component', () => {
 describe('Dashboard Component', () => {
   it('renders the content', async() => {
     const mockData = {
-      posts: [{ id: 1, title: "Post di esempio" }]
+      posts: [{ id: 1, title: "Example post" }]
     };
     const router = createMemoryRouter([{ path: '/', element: <Dashboard /> }]);
     render(<RouterProvider router={router}><Dashboard data={mockData} /></RouterProvider>);
