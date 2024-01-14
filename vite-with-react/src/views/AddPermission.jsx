@@ -4,7 +4,7 @@ import axiosClient from "../axios.js";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function AddPermission() {
-  const { userPermissions, showToast, setUserPermissions } = useStateContext();
+  const { permissions, showToast, setPermissions } = useStateContext();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedPermissions, setSelectedPermissions] = useState('');
   const location = useLocation();
@@ -30,8 +30,8 @@ function AddPermission() {
 
     if (response.status === 200) {
       showToast('Permission added successfully');
-      const updatedPermissions = Array.isArray(selectedPermissions) ? [...userPermissions, ...selectedPermissions] : [...userPermissions, selectedPermissions];
-      setUserPermissions(updatedPermissions);
+      const updatedPermissions = Array.isArray(selectedPermissions) ? [...permissions, ...selectedPermissions] : [...permissions, selectedPermissions];
+      setPermissions(updatedPermissions);
       localStorage.setItem('permissions', JSON.stringify(updatedPermissions));
     }
   } catch (error) {
@@ -44,7 +44,7 @@ function AddPermission() {
     }
   }
     console.log('user id:', selectedUserId);
-    console.log('User Permissions:', userPermissions);
+    console.log('User Permissions:', permissions);
 
   };
 
@@ -79,7 +79,7 @@ function AddPermission() {
             onChange={(e) => setSelectedPermissions(e.target.value)}
           >
             <option value="">Select Permission</option>
-            {userPermissions.map((permission, index) => (
+            {permissions.map((permission, index) => (
               <option key={index} value={permission.name}>
                 {permission}
               </option>

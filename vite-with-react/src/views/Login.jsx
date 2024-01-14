@@ -5,7 +5,7 @@ import axiosClient from "../axios.js";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 
 export default function Login() {
-  const {setCurrentUser, setUserToken, setUserPermissions} = useStateContext();
+  const {setCurrentUser, setUserToken, setPermissions} = useStateContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ __html: '' });
@@ -22,7 +22,7 @@ export default function Login() {
       .then(({ data }) => {
         setCurrentUser(data.user)
         setUserToken(data.token)
-        setUserPermissions(data.permissions || []);
+        setPermissions(data.permissions || []);
 
         if (data.permissions && data.permissions.length > 0) {
           navigate("/users/manage-panels");

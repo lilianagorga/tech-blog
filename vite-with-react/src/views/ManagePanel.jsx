@@ -4,36 +4,62 @@ import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
 import {getUserPermissions} from "../utils/utils.jsx";
 import PageComponent from "../components/PageComponent.jsx";
+import PermissionsModal from "../components/PermissionsModal.jsx";
+import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
 
 function ManagePanel() {
-  const { showToast, userPermissions, setUserPermissions, userRoles, setUserRoles, currentUser } = useStateContext();
+  const { showToast, permissions, setPermissions, roles, setRoles, currentUser } = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [dropdownValue, setDropdownValue] = useState('');
+  const [permissionName, setPermissionName] = useState('');
+  const [permissionToDelete, setPermissionToDelete] = useState('');
+
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [showUserPermissionsModal, setShowUserPermissionsModal] = useState(false);
+
+  const joinedPermissions = [];
+
+  const handlePermissionsModalToggle = () => {
+    setShowPermissionsModal(!showPermissionsModal);
+  };
+
+  const handleUserPermissionsModalToggle = () => {
+    setShowUserPermissionsModal(!showUserPermissionsModal);
+  };
+  const handleDropdownChange = (e) => setDropdownValue(e.target.value);
 
   useEffect(() => {
     let isMounted = true;
       const fetchUsersWithRolesAndPermissions = async ()=>{
         try {
-          const usersResponse = await axiosClient.get('/users/manage-panels');
+          const response = await axiosClient.get('/users/manage-panels');
+
           if (isMounted) {
-            console.log("users:", usersResponse.data);
-            const filteredUsers = usersResponse.data.users.filter(user=>{
+            console.log("response:", response.data);
+
+            const filteredUsers = response.data.users.filter(user=>{
               const userPermissions = getUserPermissions(user);
               const userRoles = getUserRoles(user);
-              return userPermissions.length > 0 && userRoles.length > 0;
+
+              return userPermissions.length > 0 || userRoles.length > 0;
             });
+
             setUsers(filteredUsers || []);
-            if (JSON.stringify(userPermissions) !== JSON.stringify(usersResponse.data.permissions)) {
-              setUserPermissions(usersResponse.data.permissions || []);
-              console.log(usersResponse.data.permissions);
+
+            if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
+              setPermissions(response.data.permissions || []);
+              console.log(response.data.permissions);
             }
-            if (JSON.stringify(userRoles) !== JSON.stringify(usersResponse.data.roles)) {
-              setUserRoles(usersResponse.data.roles || []);
-              console.log(usersResponse.data.roles);
+
+            if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
+              setRoles(response.data.roles || []);
+              console.log(response.data.roles);
             }
+
             setLoading(false);
-            setIsAdmin(usersResponse.data.isAdmin);
+            setIsAdmin(response.data.isAdmin);
           }
         } catch (error) {
           if (isMounted) {
@@ -54,12 +80,45 @@ function ManagePanel() {
     };
   }, []);
 
+  const handleCreatePermission = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axiosClient.post('/users/permissions', { name: permissionName });
+      if (response.status === 201) {
+        const updatedPermissions = [...permissions, permissionName];
+        // localStorage.setItem('permissions', JSON.stringify(updatedPermissions));
+        setPermissions(updatedPermissions)
+        setShowPermissionsModal(false);
+        setPermissionName('');
+        console.log("Permission created successfully:", response.data);
+      }
+    } catch (error) {
+      console.error("Error creating permission", error);
+    }
+  };
+
+  const handleDeletePermission = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axiosClient.delete(`/users/permissions/delete?name=${permissionToDelete}`);
+      if (response.status === 204) {
+        setShowPermissionsModal(false);
+        const updatedPermissions = permissions.filter(permission => permission !== permissionToDelete);
+        setPermissions(updatedPermissions);
+        console.log("Permission created successfully:", response.data);
+      }
+    } catch (error) {
+      console.error("Error creating permission", error);
+    }
+  };
+
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
+
   console.log('ManagePanel Rendering');
-  console.log('user role:',userRoles);
-  console.log('user permission:', userPermissions);
+  console.log('user role:',roles);
+  console.log('user permission:', permissions);
   console.log('current user from manage panel:', currentUser);
 
   return (
@@ -114,24 +173,47 @@ function ManagePanel() {
       </div>
       <footer className="mt-4 p-4 bg-gray-200">
         <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">
-          <Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Create Permission
-          </Link>
-          <Link to="/users/roles" state={{ permissions: userPermissions }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Create Role
-          </Link>
-          <Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Add Permission
-          </Link>
-          <Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Add Role
-          </Link>
-          <Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Delete Role
-          </Link>
-          <Link to="/users/permissions/delete" state={{ users: users, permissions: userPermissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>
-            Delete Permission
-          </Link>
+          {/*<Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Create Permission*/}
+          {/*</Link>*/}
+
+          {/*<Link to="/users/roles" state={{ permissions: permissions }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Create Role*/}
+          {/*</Link>*/}
+
+          {/*<Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Add Permission*/}
+          {/*</Link>*/}
+
+          {/*<Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Add Role*/}
+          {/*</Link>*/}
+
+          {/*<Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Delete Role*/}
+          {/*</Link>*/}
+
+          {/*<Link to="/users/permissions/delete" state={{ users: users, permissions: permissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
+          {/*  Delete Permission*/}
+          {/*</Link>*/}
+
+          <PermissionsModal
+            showModal={showPermissionsModal}
+            handleModalToggle={handlePermissionsModalToggle}
+            permissionName={permissionName}
+            setPermissionName={setPermissionName}
+            permissions={permissions}
+            setPermissionToDelete={setPermissionToDelete}
+            handleCreatePermission={handleCreatePermission}
+            handleDeletePermission={handleDeletePermission}
+          />
+
+          <UserPermissionsModal
+            showModal={showUserPermissionsModal}
+            handleModalToggle={handleUserPermissionsModalToggle}
+            users={users}
+          />
+
         </div>
       </footer>
     </div>

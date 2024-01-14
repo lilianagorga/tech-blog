@@ -20,7 +20,6 @@ function CreatePermission() {
     navigate('/users/manage-panels');
   }
 
-
   return (
     <div>
       <h2>Create New Permission</h2>

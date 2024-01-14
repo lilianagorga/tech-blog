@@ -16,8 +16,8 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setUserToken, setCurrentUser, userPermissions } = useStateContext();
-  const canAccessPanel = userPermissions.length > 0;
+  const { currentUser, userToken, setUserToken, setCurrentUser, permissions } = useStateContext();
+  const canAccessPanel = permissions.length > 0;
 
   if (!userToken) {
     return <Navigate to="/user/login" />

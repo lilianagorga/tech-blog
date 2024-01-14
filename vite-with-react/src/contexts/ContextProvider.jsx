@@ -33,8 +33,8 @@ const getDefaultPermissions = () => {
 const StateContext = createContext({
   currentUser: getDefaultCurrentUser(),
   userToken: localStorage.getItem('TOKEN') || null,
-  userRoles: getDefaultRoles(),
-  userPermissions: getDefaultPermissions(),
+  roles: getDefaultRoles(),
+  permissions: getDefaultPermissions(),
   questionTypes: ['text', "select", "radio", "checkbox", "textarea"],
   toast: {
     message: '',
@@ -42,16 +42,16 @@ const StateContext = createContext({
   },
   setCurrentUser: () => {},
   setUserToken: () => {},
-  setUserRoles: () => {},
-  setUserPermissions: () => {},
+  setRoles: () => {},
+  setPermissions: () => {},
   showToast: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(getDefaultCurrentUser());
   const [userToken, setUserToken] = useState(localStorage.getItem('TOKEN') || '');
-  const [userRoles, setUserRoles] = useState(getDefaultRoles());
-  const [userPermissions, setUserPermissions] = useState(getDefaultPermissions());
+  const [roles, setRoles] = useState(getDefaultRoles());
+  const [permissions, setPermissions] = useState(getDefaultPermissions());
   const [toast, setToast] = useState({ message: '', show: false });
 
   const handleSetUserToken = (token) => {
@@ -72,22 +72,22 @@ export const ContextProvider = ({ children }) => {
     setCurrentUser(user);
   };
 
-  const handleSetUserRoles = (roles) => {
+  const handleSetRoles = (roles) => {
     if (roles) {
       localStorage.setItem('roles', JSON.stringify(roles));
     } else {
       localStorage.removeItem('roles');
     }
-    setUserRoles(roles);
+    setRoles(roles);
   };
 
-  const handleSetUserPermissions = (permissions) => {
+  const handleSetPermissions = (permissions) => {
     if (permissions) {
       localStorage.setItem('permissions', JSON.stringify(permissions));
     } else {
       localStorage.removeItem('permissions');
     }
-    setUserPermissions(permissions);
+    setPermissions(permissions);
   };
 
   const showToast = (message) => {
@@ -99,8 +99,8 @@ export const ContextProvider = ({ children }) => {
     <StateContext.Provider value={{
       currentUser, setCurrentUser: handleSetCurrentUser,
       userToken, setUserToken: handleSetUserToken,
-      userRoles, setUserRoles: handleSetUserRoles,
-      userPermissions, setUserPermissions: handleSetUserPermissions,
+      roles, setRoles: handleSetRoles,
+      permissions, setPermissions: handleSetPermissions,
       toast, showToast,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>

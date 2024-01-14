@@ -15,7 +15,6 @@ import Post from "./views/Post.jsx";
 import Category from "./views/Category.jsx";
 import Comment from "./views/Comment.jsx";
 
-
 const router = createBrowserRouter([
   {
     path: '/',
