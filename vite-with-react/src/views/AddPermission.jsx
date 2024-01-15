@@ -71,6 +71,7 @@ function AddPermission() {
             ))}
           </select>
         </div>
+
         <div>
           <label htmlFor="permissionSelect">Select Permission:</label>
           <select

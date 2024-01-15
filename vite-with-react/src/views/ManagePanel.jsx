@@ -37,7 +37,7 @@ function ManagePanel() {
           const response = await axiosClient.get('/users/manage-panels');
 
           if (isMounted) {
-            console.log("response:", response.data);
+            // console.log("response:", response.data);
 
             const filteredUsers = response.data.users.filter(user=>{
               const userPermissions = getUserPermissions(user);
@@ -50,12 +50,12 @@ function ManagePanel() {
 
             if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
               setPermissions(response.data.permissions || []);
-              console.log(response.data.permissions);
+              // console.log(response.data.permissions);
             }
 
             if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
               setRoles(response.data.roles || []);
-              console.log(response.data.roles);
+              // console.log(response.data.roles);
             }
 
             setLoading(false);
@@ -76,7 +76,7 @@ function ManagePanel() {
       });
     return () => {
       isMounted = false;
-      console.log('ManagePanel Unmounting');
+      // console.log('ManagePanel Unmounting');
     };
   }, []);
 
@@ -115,11 +115,11 @@ function ManagePanel() {
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
-
-  console.log('ManagePanel Rendering');
-  console.log('user role:',roles);
-  console.log('user permission:', permissions);
-  console.log('current user from manage panel:', currentUser);
+  //
+  // console.log('ManagePanel Rendering');
+  // console.log('user role:',roles);
+  // console.log('user permission:', permissions);
+  // console.log('current user from manage panel:', currentUser);
 
   return (
   <PageComponent title="Manage Panel">
@@ -212,6 +212,7 @@ function ManagePanel() {
             showModal={showUserPermissionsModal}
             handleModalToggle={handleUserPermissionsModalToggle}
             users={users}
+            permissions={permissions}
           />
 
         </div>

@@ -146,20 +146,13 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
-    $user = User::factory()->create();
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
-    /** @var User $user */
-    $user->assignRole($role->name);
-    $rolesData = [
-      'user_id' => $user->id,
-      'roles' => [$role->name]
-    ];
+    $rolesData = ['name' => $role->name];
 
     $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
 
-    $response->assertStatus(Response::HTTP_OK);
-    $response->assertJson(['message' => 'Roles deleted successfully']);
-    $this->assertFalse($user->hasRole('TestRole'));
+    $response->assertStatus(Response::HTTP_NO_CONTENT);
+    $this->assertDatabaseMissing('roles', ['name' => 'TestRole']);
   }
 
   public function test_delete_role_denied_for_user_with_panel_access_but_not_admin()
@@ -170,15 +163,12 @@ class ManagePanelTest extends TestCase
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
     /** @var User $user */
     $user->assignRole($role->name);
-    $rolesData = [
-      'user_id' => $user->id,
-      'roles' => [$role->name]
-    ];
+    $rolesData = ['name' => $role->name];
 
     $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
-    $this->assertTrue($user->hasRole('TestRole'));
+    $this->assertDatabaseHas('roles', ['name' => 'TestRole']);
   }
 
   public function test_delete_permission_successfully_by_admin()
@@ -254,10 +244,9 @@ class ManagePanelTest extends TestCase
     Sanctum::actingAs($admin);
     $user = User::factory()->create();
     Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
-
     $rolesData = [
       'user_id' => $user->id,
-      'roles' => ['TestRole']
+      'name' => 'TestRole'
     ];
 
     $response = $this->postJson('/api/users/roles/add', $rolesData);
@@ -276,7 +265,7 @@ class ManagePanelTest extends TestCase
 
     $rolesData = [
       'user_id' => $user->id,
-      'roles' => ['TestRole']
+      'name' => 'TestRole'
     ];
 
     $response = $this->postJson('/api/users/roles/add', $rolesData);
@@ -294,7 +283,7 @@ class ManagePanelTest extends TestCase
 
     $permissionsData = [
       'user_id' => $user->id,
-      'permissions' => ['TestPermission']
+      'name' => 'TestPermission'
     ];
 
     $response = $this->postJson('/api/users/permissions/add', $permissionsData);
@@ -313,7 +302,7 @@ class ManagePanelTest extends TestCase
 
     $permissionsData = [
       'user_id' => $user->id,
-      'permissions' => ['TestPermission']
+      'name' => 'TestPermission'
     ];
 
     $response = $this->postJson('/api/users/permissions/add', $permissionsData);
