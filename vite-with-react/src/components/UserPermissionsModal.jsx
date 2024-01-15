@@ -196,6 +196,7 @@ import axiosClient from "../axios.js";
 
 function UserPermissionsModal({ showModal, handleModalToggle, users, permissions }) {
   const [permissionToAdd, setPermissionToAdd] = useState({});
+  const [permissionToRevoke, setPermissionToRevoke] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
   const [userPermissionNames, setUserPermissionNames] = useState([]);
 
@@ -234,7 +235,6 @@ function UserPermissionsModal({ showModal, handleModalToggle, users, permissions
       try {
         const response = await axiosClient.post('/permissions/add', payload);
         if (response.status === 200) {
-          // Manually update the user's permissions in the state
           const newUserPermissions = [...selectedUser.permissions, permissionToAdd];
           const updatedUser = { ...selectedUser, permissions: newUserPermissions };
           console.log("selectedUser", selectedUser.permissions);
@@ -254,6 +254,35 @@ function UserPermissionsModal({ showModal, handleModalToggle, users, permissions
       }
     } else {
       console.log("Missing permissionToAdd or selectedUser");
+    }
+  };
+
+  const handleRevokePermission = async (e) => {
+    e.preventDefault();
+    if (permissionToRevoke && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: permissionToRevoke.name
+      };
+      try {
+        const response = await axiosClient.post('/permissions/revoke', payload);
+        if (response.status === 200) {
+          const revokedUserPermissions = [...selectedUser.permissions, permissionToRevoke];
+          const updatedUser = { ...selectedUser, permissions: revokedUserPermissions };
+          console.log("selectedUser", selectedUser.permissions);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.permissions);
+          buildAddablePermissions(updatedUser, permissions);
+          handleModalToggle()
+          console.log("Permission revoked successfully");
+        } else {
+          console.log("Permission nor revoked");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      console.log("Missing permissionToRevoke or selectedUser");
     }
   };
 
@@ -339,6 +368,37 @@ function UserPermissionsModal({ showModal, handleModalToggle, users, permissions
                     >
                       Assign
                     </button>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <div>
+                  <label htmlFor="permissionSelect">Select Permission:</label>
+                  <select
+                    id="permissionSelect"
+                    onChange={(e) => {
+                      const selectedPermission = userPermissionNames.find(permission => permission.name === e.target.value);
+                      setPermissionToRevoke(selectedPermission || {});
+                    }}
+                  >
+                    <option value="">Select Permission</option>
+                    {userPermissionNames.map((permission, index) => (
+                      <option
+                        key={index}
+                        value={permission.name}
+                        disabled={!permission.disabled}
+                      >
+                        {permission.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleRevokePermission}
+                  >
+                    Revoke
+                  </button>
                 </div>
               </div>
 

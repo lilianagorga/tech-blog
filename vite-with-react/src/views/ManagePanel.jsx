@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
 import {getUserPermissions} from "../utils/utils.jsx";
@@ -10,7 +9,7 @@ import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
 
 function ManagePanel() {
-  const { showToast, permissions, setPermissions, roles, setRoles, currentUser } = useStateContext();
+  const { showToast, permissions, setPermissions, roles, setRoles } = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -212,29 +211,6 @@ function ManagePanel() {
       </div>
       <footer className="mt-4 p-4 bg-gray-200">
         <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">
-          {/*<Link to="/users/permissions" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Create Permission*/}
-          {/*</Link>*/}
-
-          {/*<Link to="/users/roles" state={{ permissions: permissions }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Create Role*/}
-          {/*</Link>*/}
-
-          {/*<Link to="/users/permissions/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Add Permission*/}
-          {/*</Link>*/}
-
-          {/*<Link to="/users/roles/add" state={{ users: users }} className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Add Role*/}
-          {/*</Link>*/}
-
-          {/*<Link to="/users/roles/delete" state={{ users: users }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Delete Role*/}
-          {/*</Link>*/}
-
-          {/*<Link to="/users/permissions/delete" state={{ users: users, permissions: permissions }} className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded ${!isAdmin ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={e => !isAdmin && e.preventDefault()}>*/}
-          {/*  Delete Permission*/}
-          {/*</Link>*/}
 
           <PermissionsModal
             showModal={showPermissionsModal}

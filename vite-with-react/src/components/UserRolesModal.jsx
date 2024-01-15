@@ -3,6 +3,7 @@ import axiosClient from "../axios.js";
 
 function UserRolesModal({ showModal, handleModalToggle, users, roles }) {
   const [roleToAdd, setRoleToAdd] = useState({});
+  const [roleToRevoke, setRoleToRevoke] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
   const [userRoleNames, setUserRoleNames] = useState([]);
 
@@ -60,6 +61,35 @@ function UserRolesModal({ showModal, handleModalToggle, users, roles }) {
       }
     } else {
       console.log("Missing roleToAdd or selectedUser");
+    }
+  };
+
+  const handleRevokeRole = async (e) => {
+    e.preventDefault();
+    if (roleToRevoke && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: roleToRevoke.name
+      };
+      try {
+        const response = await axiosClient.post('/roles/revoke', payload);
+        if (response.status === 200) {
+          const revokedUserRoles = [...selectedUser.roles, roleToRevoke];
+          const updatedUser = { ...selectedUser, roles: revokedUserRoles };
+          console.log("selectedUser", selectedUser.roles);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.roles);
+          buildAddableRoles(updatedUser, roles);
+          handleModalToggle()
+          console.log("Role revoked successfully");
+        } else {
+          console.log("Role not revoked");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      console.log("Missing roleToRevoke or selectedUser");
     }
   };
 
@@ -144,6 +174,37 @@ function UserRolesModal({ showModal, handleModalToggle, users, roles }) {
                     onClick={handleAssignRole}
                   >
                     Assign
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <div>
+                  <label htmlFor="roleSelect">Select Role:</label>
+                  <select
+                    id="roleSelect"
+                    onChange={(e) => {
+                      const selectedRole = userRoleNames.find(role => role.name === e.target.value);
+                      setRoleToRevoke(selectedRole || {});
+                    }}
+                  >
+                    <option value="">Select Role</option>
+                    {userRoleNames.map((role, index) => (
+                      <option
+                        key={index}
+                        value={role.name}
+                        disabled={!role.disabled}
+                      >
+                        {role.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleRevokeRole}
+                  >
+                    Revoke
                   </button>
                 </div>
               </div>
