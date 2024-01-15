@@ -30,11 +30,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::get('/manage-panels', [ManagePanelController::class, 'managePanels']);
   Route::post('/roles', [ManagePanelController::class, 'createRole']);
-  Route::post('/roles/add', [ManagePanelController::class, 'addRoles']);
+  Route::post('/roles/add', [ManagePanelController::class, 'addRole']);
   Route::delete('/roles/delete', [ManagePanelController::class, 'deleteRole']);
+  Route::post('/roles/revoke', [ManagePanelController::class, 'revokeRole']);
   Route::post('/permissions', [ManagePanelController::class, 'createPermission']);
-  Route::post('/permissions/add', [ManagePanelController::class, 'addPermissions']);
+  Route::post('/permissions/add', [ManagePanelController::class, 'addPermission']);
   Route::delete('/permissions/delete', [ManagePanelController::class, 'deletePermission']);
+  Route::post('/permissions/revoke', [ManagePanelController::class, 'revokePermission']);
 
   Route::apiResource('posts', PostController::class);
   Route::apiResource('categories', CategoryController::class);

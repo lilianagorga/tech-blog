@@ -242,6 +242,7 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
+    /** @var User $user */
     $user = User::factory()->create();
     Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
     $rolesData = [
@@ -260,6 +261,7 @@ class ManagePanelTest extends TestCase
   {
     $developer = $this->createUserWithSpecificRoleAndPermissions();
     Sanctum::actingAs($developer);
+    /** @var User $user */
     $user = User::factory()->create();
     Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
 
@@ -278,6 +280,7 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
+    /** @var User $user */
     $user = User::factory()->create();
     Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
 
@@ -297,6 +300,7 @@ class ManagePanelTest extends TestCase
   {
     $developer = $this->createUserWithSpecificRoleAndPermissions();
     Sanctum::actingAs($developer);
+    /** @var User $user */
     $user = User::factory()->create();
     Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
 
@@ -309,6 +313,90 @@ class ManagePanelTest extends TestCase
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertFalse($user->hasPermissionTo('TestPermission'));
+  }
+
+  public function test_revoke_role_successfully_by_admin()
+  {
+    $admin = $this->addRolesAndPermissionsToAdmin();
+    Sanctum::actingAs($admin);
+    /** @var User $user */
+    $user = User::factory()->create();
+    $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
+    $user->assignRole($role);
+
+    $rolesData = [
+      'user_id' => $user->id,
+      'name' => $role->name
+    ];
+
+    $response = $this->postJson('/api/roles/revoke', $rolesData);
+
+    $response->assertStatus(Response::HTTP_OK);
+    $response->assertJson(['message' => 'Role revoked successfully']);
+    $this->assertFalse($user->hasRole('TestRole'));
+  }
+
+  public function test_revoke_role_denied_for_user_with_panel_access_but_not_admin()
+  {
+    $developer = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($developer);
+    /** @var User $user */
+    $user = User::factory()->create();
+    $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
+    $user->assignRole($role);
+
+    $rolesData = [
+      'user_id' => $user->id,
+      'name' => $role->name
+    ];
+
+    $response = $this->postJson('/api/roles/revoke', $rolesData);
+
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
+    $response->assertJson(['message' => 'Access Forbidden']);
+    $this->assertTrue($user->hasRole('TestRole'));
+  }
+
+  public function test_revoke_permission_successfully_by_admin()
+  {
+    $admin = $this->addRolesAndPermissionsToAdmin();
+    Sanctum::actingAs($admin);
+    /** @var User $user */
+    $user = User::factory()->create();
+    $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+    $user->givePermissionTo($permission);
+
+    $permissionsData = [
+      'user_id' => $user->id,
+      'name' => $permission->name
+    ];
+
+    $response = $this->postJson('/api/permissions/revoke', $permissionsData);
+
+    $response->assertStatus(Response::HTTP_OK);
+    $response->assertJson(['message' => 'Permission revoked successfully']);
+    $this->assertFalse($user->hasPermissionTo('TestPermission'));
+  }
+
+  public function test_revoke_permission_denied_for_user_with_panel_access_but_not_admin()
+  {
+    $developer = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($developer);
+    /** @var User $user */
+    $user = User::factory()->create();
+    $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
+    $user->givePermissionTo($permission);
+
+    $permissionsData = [
+      'user_id' => $user->id,
+      'name' => $permission->name
+    ];
+
+    $response = $this->postJson('/api/permissions/revoke', $permissionsData);
+
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
+    $response->assertJson(['message' => 'Access Forbidden']);
+    $this->assertTrue($user->hasPermissionTo('TestPermission'));
   }
 
 
