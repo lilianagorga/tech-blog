@@ -7,7 +7,7 @@ import axiosClient from "../axios.js";
 
 const navigation = [
   { name: 'Dashboard', to: '/dashboard' },
-  { name: 'Manage Panel', to: '/users/manage-panels' }
+  { name: 'Manage Panel', to: '/manage-panels' }
 ];
 
 

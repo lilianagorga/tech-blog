@@ -232,7 +232,7 @@ function UserPermissionsModal({ showModal, handleModalToggle, users, permissions
         name: permissionToAdd.name
       };
       try {
-        const response = await axiosClient.post('/users/permissions/add', payload);
+        const response = await axiosClient.post('/permissions/add', payload);
         if (response.status === 200) {
           // Manually update the user's permissions in the state
           const newUserPermissions = [...selectedUser.permissions, permissionToAdd];

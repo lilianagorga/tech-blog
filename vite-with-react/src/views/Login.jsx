@@ -25,7 +25,7 @@ export default function Login() {
         setPermissions(data.permissions || []);
 
         if (data.permissions && data.permissions.length > 0) {
-          navigate("/users/manage-panels");
+          navigate("/manage-panels");
         } else {
           navigate("/dashboard");
         }

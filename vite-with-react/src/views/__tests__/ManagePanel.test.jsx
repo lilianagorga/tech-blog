@@ -21,7 +21,7 @@ let isAdminResponse = true;
 vi.mock("../../axios.js", () => ({
   default: {
     get: vi.fn((url) => {
-      if (url === '/users/manage-panels') {
+      if (url === '/manage-panels') {
         return Promise.resolve({
           data: {
             users: [
@@ -118,7 +118,7 @@ describe('ManagePanel Component', () => {
         </RouterProvider>
     );
     await waitFor(() => {
-      expect(axiosClient.get).toHaveBeenCalledWith('/users/manage-panels');
+      expect(axiosClient.get).toHaveBeenCalledWith('/manage-panels');
     });
   });
 

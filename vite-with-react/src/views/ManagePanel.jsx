@@ -34,7 +34,7 @@ function ManagePanel() {
     let isMounted = true;
       const fetchUsersWithRolesAndPermissions = async ()=>{
         try {
-          const response = await axiosClient.get('/users/manage-panels');
+          const response = await axiosClient.get('/manage-panels');
 
           if (isMounted) {
             // console.log("response:", response.data);
@@ -83,7 +83,7 @@ function ManagePanel() {
   const handleCreatePermission = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post('/users/permissions', { name: permissionName });
+      const response = await axiosClient.post('/permissions', { name: permissionName });
       if (response.status === 201) {
         const updatedPermissions = [...permissions, permissionName];
         // localStorage.setItem('permissions', JSON.stringify(updatedPermissions));

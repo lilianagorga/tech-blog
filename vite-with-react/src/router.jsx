@@ -25,7 +25,7 @@ const router = createBrowserRouter([
         element: <Dashboard/>,
       },
       {
-        path: 'users/manage-panels',
+        path: 'manage-panels',
         element: <ManagePanel/>
       },
     ]
@@ -45,27 +45,27 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/users/permissions/add',
+    path: '/permissions/add',
     element: <AddPermission />
   },
   {
-    path: '/users/roles/add',
+    path: '/roles/add',
     element: <AddRole />,
   },
   {
-    path: '/users/roles',
+    path: '/roles',
     element: <CreateRole />,
   },
   {
-    path: '/users/permissions',
+    path: '/permissions',
     element: <CreatePermission />,
   },
   {
-    path: '/users/permissions/delete',
+    path: '/permissions/delete',
     element: <DeletePermission />,
   },
   {
-    path: '/users/roles/delete',
+    path: '/roles/delete',
     element: <DeleteRole />,
   },
 

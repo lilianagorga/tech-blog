@@ -25,7 +25,7 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
-    $response = $this->getJson('/api/users/manage-panels');
+    $response = $this->getJson('/api/manage-panels');
     $users = User::with('roles', 'permissions')->get()->toArray();
     $roles = Role::all()->pluck('name')->toArray();
     $permissions = Permission::all()->pluck('name')->toArray();
@@ -43,7 +43,7 @@ class ManagePanelTest extends TestCase
     $user = $this->createUser();
     Sanctum::actingAs($user);
     Permission::findOrCreate('manage panels', 'api');
-    $response = $this->getJson('/api/users/manage-panels');
+    $response = $this->getJson('/api/manage-panels');
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $response->assertJson(['message' => 'Access Forbidden']);
   }
@@ -75,7 +75,7 @@ class ManagePanelTest extends TestCase
       'name' => 'NewRole',
       'permissions' => ['edit posts', 'edit categories']
     ];
-    $response = $this->postJson('/api/users/roles', $roleData);
+    $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_CREATED);
     $response->assertJson(['name' => 'NewRole']);
     $this->assertDatabaseHas('roles', ['name' => 'NewRole']);
@@ -93,7 +93,7 @@ class ManagePanelTest extends TestCase
       'name' => 'NewRole',
       'permissions' => ['edit posts', 'edit categories']
     ];
-    $response = $this->postJson('/api/users/roles', $roleData);
+    $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('roles', ['name' => 'NewRole']);
   }
@@ -106,7 +106,7 @@ class ManagePanelTest extends TestCase
       'name' => 'Marketer',
       'permissions' => ['edit comments']
     ];
-    $response = $this->postJson('/api/users/roles', $roleData);
+    $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('roles', ['name' => 'Marketer']);
   }
@@ -120,7 +120,7 @@ class ManagePanelTest extends TestCase
       'name' => 'new permission'
     ];
 
-    $response = $this->postJson('/api/users/permissions', $permissionData);
+    $response = $this->postJson('/api/permissions', $permissionData);
 
     $response->assertStatus(Response::HTTP_CREATED);
     $response->assertJson(['name' => 'new permission']);
@@ -136,7 +136,7 @@ class ManagePanelTest extends TestCase
       'name' => 'edit posts'
     ];
 
-    $response = $this->postJson('/api/users/permissions', $permissionData);
+    $response = $this->postJson('/api/permissions', $permissionData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('permissions', ['name' => 'edit posts']);
@@ -149,7 +149,7 @@ class ManagePanelTest extends TestCase
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
     $rolesData = ['name' => $role->name];
 
-    $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
+    $response = $this->deleteJson('/api/roles/delete', $rolesData);
 
     $response->assertStatus(Response::HTTP_NO_CONTENT);
     $this->assertDatabaseMissing('roles', ['name' => 'TestRole']);
@@ -165,7 +165,7 @@ class ManagePanelTest extends TestCase
     $user->assignRole($role->name);
     $rolesData = ['name' => $role->name];
 
-    $response = $this->deleteJson('/api/users/roles/delete', $rolesData);
+    $response = $this->deleteJson('/api/roles/delete', $rolesData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseHas('roles', ['name' => 'TestRole']);
@@ -180,7 +180,7 @@ class ManagePanelTest extends TestCase
 
   $permissionsData = ['name' => $permission->name];
 
-  $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+  $response = $this->deleteJson('/api/permissions/delete', $permissionsData);
   $response->assertStatus(Response::HTTP_NO_CONTENT);
 
   $this->assertDatabaseMissing('permissions', ['name' => 'TestPermission']);
@@ -198,7 +198,7 @@ class ManagePanelTest extends TestCase
     $user->assignRole($role->name);
     $permissionsData = ['name' => $permission->name];
 
-    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+    $response = $this->deleteJson('/api/permissions/delete', $permissionsData);
     $response->assertStatus(Response::HTTP_NO_CONTENT);
 
     $this->assertDatabaseMissing('permissions', ['name' => 'TestPermission']);
@@ -217,7 +217,7 @@ class ManagePanelTest extends TestCase
       'name' => $permission->name
     ];
 
-    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+    $response = $this->deleteJson('/api/permissions/delete', $permissionsData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseHas('permissions', ['name' => 'TestPermission']);
@@ -232,7 +232,7 @@ class ManagePanelTest extends TestCase
 
     $permissionsData = ['name' => $permission->name];
 
-    $response = $this->deleteJson('/api/users/permissions/delete', $permissionsData);
+    $response = $this->deleteJson('/api/permissions/delete', $permissionsData);
     $response->assertStatus(Response::HTTP_FORBIDDEN);
 
     $this->assertDatabaseHas('permissions', ['name' => 'TestPermission']);
@@ -249,7 +249,7 @@ class ManagePanelTest extends TestCase
       'name' => 'TestRole'
     ];
 
-    $response = $this->postJson('/api/users/roles/add', $rolesData);
+    $response = $this->postJson('/api/roles/add', $rolesData);
 
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJson(['message' => 'Roles updated successfully']);
@@ -268,7 +268,7 @@ class ManagePanelTest extends TestCase
       'name' => 'TestRole'
     ];
 
-    $response = $this->postJson('/api/users/roles/add', $rolesData);
+    $response = $this->postJson('/api/roles/add', $rolesData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertFalse($user->hasRole('TestRole'));
@@ -286,7 +286,7 @@ class ManagePanelTest extends TestCase
       'name' => 'TestPermission'
     ];
 
-    $response = $this->postJson('/api/users/permissions/add', $permissionsData);
+    $response = $this->postJson('/api/permissions/add', $permissionsData);
 
     $response->assertStatus(Response::HTTP_OK);
     $response->assertJson(['message' => 'Permissions updated successfully']);
@@ -305,7 +305,7 @@ class ManagePanelTest extends TestCase
       'name' => 'TestPermission'
     ];
 
-    $response = $this->postJson('/api/users/permissions/add', $permissionsData);
+    $response = $this->postJson('/api/permissions/add', $permissionsData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertFalse($user->hasPermissionTo('TestPermission'));
