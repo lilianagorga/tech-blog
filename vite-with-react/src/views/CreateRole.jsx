@@ -21,7 +21,7 @@ function CreateRole() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post('/users/roles', {
+      const response = await axiosClient.post('/roles', {
         name,
         permissions: selectedPermissions
       });
@@ -32,7 +32,7 @@ function CreateRole() {
   };
 
   const backToManagePanel = () => {
-    navigate('/users/manage-panels');
+    navigate('/manage-panels');
   }
 
   return (

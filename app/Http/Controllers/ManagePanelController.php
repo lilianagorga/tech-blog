@@ -42,7 +42,7 @@ class ManagePanelController extends Controller
       $validatedData = $request->validate(
         [
           'name' => 'required|string',
-          'permissions' => 'sometimes|array'
+//          'permissions' => 'sometimes|array'
         ]
       );
 
@@ -51,20 +51,26 @@ class ManagePanelController extends Controller
         'guard_name' => 'api'
       ]);
 
-      if ($validatedData['permissions']) {
-        $permissions = Permission::whereIn('name', $validatedData['permissions'])->get();
-
-        foreach ($permissions as $permission) {
-          $role->givePermissionTo($permission);
-          $permission->assignRole($role);
-        }
-      }
-
       Cache::forget('manage-panels');
       return response()->json($role, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
+
+//      if ($validatedData['permissions']) {
+//        $permissions = Permission::whereIn('name', $validatedData['permissions'])->get();
+//
+//        foreach ($permissions as $permission) {
+//          $role->givePermissionTo($permission);
+//          $permission->assignRole($role);
+//        }
+//      }
+//
+//      Cache::forget('manage-panels');
+//      return response()->json($role, Response::HTTP_CREATED);
+//    } else {
+//      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+//    }
   }
 
   public function addRole(Request $request): Response

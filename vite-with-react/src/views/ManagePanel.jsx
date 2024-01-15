@@ -6,6 +6,8 @@ import {getUserPermissions} from "../utils/utils.jsx";
 import PageComponent from "../components/PageComponent.jsx";
 import PermissionsModal from "../components/PermissionsModal.jsx";
 import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
+import RolesModal from "../components/RolesModal.jsx";
+import UserRolesModal from "../components/UserRolesModal.jsx";
 
 function ManagePanel() {
   const { showToast, permissions, setPermissions, roles, setRoles, currentUser } = useStateContext();
@@ -19,7 +21,22 @@ function ManagePanel() {
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [showUserPermissionsModal, setShowUserPermissionsModal] = useState(false);
 
+  const [roleName, setRoleName] = useState('');
+  const [roleToDelete, setRoleToDelete] = useState('');
+
+  const [showRolesModal, setShowRolesModal] = useState(false);
+  const [showUserRolesModal, setShowUserRolesModal] = useState(false);
+
   const joinedPermissions = [];
+  const joinedRoles = [];
+
+  const handleRolesModalToggle = () => {
+    setShowRolesModal(!showRolesModal);
+  }
+
+  const handleUserRolesModalToggle = () => {
+    setShowUserRolesModal(!showUserRolesModal);
+  }
 
   const handlePermissionsModalToggle = () => {
     setShowPermissionsModal(!showPermissionsModal);
@@ -37,7 +54,6 @@ function ManagePanel() {
           const response = await axiosClient.get('/manage-panels');
 
           if (isMounted) {
-            // console.log("response:", response.data);
 
             const filteredUsers = response.data.users.filter(user=>{
               const userPermissions = getUserPermissions(user);
@@ -50,12 +66,10 @@ function ManagePanel() {
 
             if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
               setPermissions(response.data.permissions || []);
-              // console.log(response.data.permissions);
             }
 
             if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
               setRoles(response.data.roles || []);
-              // console.log(response.data.roles);
             }
 
             setLoading(false);
@@ -76,9 +90,40 @@ function ManagePanel() {
       });
     return () => {
       isMounted = false;
-      // console.log('ManagePanel Unmounting');
     };
   }, []);
+
+  const handleCreateRole = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axiosClient.post('/roles', { name: roleName });
+      if (response.status === 201) {
+        const updatedRoles = [...roles, roleName];
+        setRoles(updatedRoles)
+        setShowRolesModal(false);
+        setRoleName('');
+        console.log("Role created successfully:", response.data);
+      }
+    } catch (error) {
+        console.log("Error creating role", error);
+      }
+    };
+
+  const handleDeleteRole = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axiosClient.delete(`/roles/delete?name=${roleToDelete}`);
+      if (response.status === 204) {
+        setShowRolesModal(false);
+        const updatedRoles = roles.filter(role => role !== roleToDelete);
+        setRoles(updatedRoles);
+        console.log("Role deleted successfully:", response.data);
+      }
+    } catch (error) {
+      console.log("Error deleting role", error);
+    }
+  }
+
 
   const handleCreatePermission = async (e) => {
     e.preventDefault();
@@ -86,7 +131,6 @@ function ManagePanel() {
       const response = await axiosClient.post('/permissions', { name: permissionName });
       if (response.status === 201) {
         const updatedPermissions = [...permissions, permissionName];
-        // localStorage.setItem('permissions', JSON.stringify(updatedPermissions));
         setPermissions(updatedPermissions)
         setShowPermissionsModal(false);
         setPermissionName('');
@@ -100,26 +144,21 @@ function ManagePanel() {
   const handleDeletePermission = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.delete(`/users/permissions/delete?name=${permissionToDelete}`);
+      const response = await axiosClient.delete(`/permissions/delete?name=${permissionToDelete}`);
       if (response.status === 204) {
         setShowPermissionsModal(false);
         const updatedPermissions = permissions.filter(permission => permission !== permissionToDelete);
         setPermissions(updatedPermissions);
-        console.log("Permission created successfully:", response.data);
+        console.log("Permission deleted successfully:", response.data);
       }
     } catch (error) {
-      console.error("Error creating permission", error);
+      console.error("Error deleting permission", error);
     }
   };
 
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
-  //
-  // console.log('ManagePanel Rendering');
-  // console.log('user role:',roles);
-  // console.log('user permission:', permissions);
-  // console.log('current user from manage panel:', currentUser);
 
   return (
   <PageComponent title="Manage Panel">
@@ -213,6 +252,24 @@ function ManagePanel() {
             handleModalToggle={handleUserPermissionsModalToggle}
             users={users}
             permissions={permissions}
+          />
+
+          <RolesModal
+            showModal={showRolesModal}
+            handleModalToggle={handleRolesModalToggle}
+            roleName={roleName}
+            setRoleName={setRoleName}
+            roles={roles}
+            setRoleToDelete={setRoleToDelete}
+            handleCreateRole={handleCreateRole}
+            handleDeleteRole={handleDeleteRole}
+          />
+
+          <UserRolesModal
+            showModal={showUserRolesModal}
+            handleModalToggle={handleUserRolesModalToggle}
+            users={users}
+            roles={roles}
           />
 
         </div>
