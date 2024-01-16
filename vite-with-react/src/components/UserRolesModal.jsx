@@ -1,97 +1,18 @@
-import React, {useEffect, useRef, useState} from "react";
-import axiosClient from "../axios.js";
+import React, {useEffect, useRef } from "react";
+import { useStateContext } from '../contexts/ContextProvider';
+import { refreshUserRoleLists } from "../utils/utils.jsx";
 
-function UserRolesModal({ showModal, handleModalToggle, users, roles }) {
-  const [roleToAdd, setRoleToAdd] = useState({});
-  const [roleToRevoke, setRoleToRevoke] = useState({});
-  const [selectedUser, setSelectedUser] = useState({});
-  const [userRoleNames, setUserRoleNames] = useState([]);
+function UserRolesModal({
+                          showModal,
+                          handleModalToggle,
+                          users,
+                          roles,
+                          handleRevokeRole,
+                          handleAssignRole
+}) {
+const { setRoleToAdd, setRoleToRevoke, setSelectedUser, userRoleNames, setUserRoleNames } = useStateContext();
 
   const modalRef = useRef();
-
-  const getUserRoles = (user) => {
-    return user.roles.map(role => role.name).join(', ');
-  };
-
-  const buildAddableRoles = (user, listOfRoles) => {
-    const roles = getUserRoles(user);
-    let updatedRoles = listOfRoles.map(role => {
-      return {
-        name: role,
-        disabled: roles.includes(role)
-      };
-    });
-
-    updatedRoles.sort((a, b) => {
-      if (a.disabled && !b.disabled) return 1;
-      if (!a.disabled && b.disabled) return -1;
-      return a.name.localeCompare(b.name);
-    });
-
-    setUserRoleNames(updatedRoles);
-  }
-
-  useEffect(() => {
-
-  }, [selectedUser, userRoleNames]);
-
-  const handleAssignRole = async (event) => {
-    event.preventDefault();
-    if (roleToAdd && selectedUser) {
-      const payload = {
-        user_id: selectedUser.id,
-        name: roleToAdd.name
-      };
-      try {
-        const response = await axiosClient.post('/roles/add', payload);
-        if (response.status === 200) {
-          const newUserRoles = [...selectedUser.roles, roleToAdd];
-          const updatedUser = { ...selectedUser, roles: newUserRoles };
-          console.log("selectedUser", selectedUser.roles);
-          setSelectedUser(updatedUser);
-          console.log("updatedUser", updatedUser.roles);
-          buildAddableRoles(updatedUser, roles);
-          handleModalToggle()
-          console.log("Role added successfully");
-        } else {
-          console.log("Role not added");
-        }
-      } catch (error) {
-        console.error("Error", error);
-      }
-    } else {
-      console.log("Missing roleToAdd or selectedUser");
-    }
-  };
-
-  const handleRevokeRole = async (e) => {
-    e.preventDefault();
-    if (roleToRevoke && selectedUser) {
-      const payload = {
-        user_id: selectedUser.id,
-        name: roleToRevoke.name
-      };
-      try {
-        const response = await axiosClient.post('/roles/revoke', payload);
-        if (response.status === 200) {
-          const revokedUserRoles = [...selectedUser.roles, roleToRevoke];
-          const updatedUser = { ...selectedUser, roles: revokedUserRoles };
-          console.log("selectedUser", selectedUser.roles);
-          setSelectedUser(updatedUser);
-          console.log("updatedUser", updatedUser.roles);
-          buildAddableRoles(updatedUser, roles);
-          handleModalToggle()
-          console.log("Role revoked successfully");
-        } else {
-          console.log("Role not revoked");
-        }
-      } catch (error) {
-        console.error("Error", error);
-      }
-    } else {
-      console.log("Missing roleToRevoke or selectedUser");
-    }
-  };
 
   useEffect(() => {
     if (showModal) {
@@ -136,7 +57,7 @@ function UserRolesModal({ showModal, handleModalToggle, users, roles }) {
                     const selectedUserName = e.target.value;
                     const selectedUserObject = users.find(user => user.name === selectedUserName);
                     setSelectedUser(selectedUserObject);
-                    buildAddableRoles(selectedUserObject, roles);
+                    refreshUserRoleLists(selectedUserObject, roles, setUserRoleNames);
                   }}>
                   <option value="">Select User</option>
                   {

@@ -45,11 +45,11 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/permissions/add',
+    path: '/permissions/assign',
     element: <AddPermission />
   },
   {
-    path: '/roles/add',
+    path: '/roles/assign',
     element: <AddRole />,
   },
   {

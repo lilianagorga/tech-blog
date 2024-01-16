@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
-import { getUserPermissions } from "../utils/utils.jsx";
+import { getUserPermissions, refreshUserPermissionList, getUserRoles, refreshUserRoleLists } from "../utils/utils.jsx";
 import PageComponent from "../components/PageComponent.jsx";
 import PermissionsModal from "../components/PermissionsModal.jsx";
 import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
@@ -9,7 +9,7 @@ import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
 
 function ManagePanel() {
-  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames } = useStateContext();
+  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames } = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -74,30 +74,6 @@ function ManagePanel() {
               setIsAdmin(response.data.isAdmin);
               setRolesWithAssociatedPermissions(response.data.rolesWithAssociatedPermissions);
             });
-
-          // if (isMounted) {
-          //   const filteredUsers = response.data.users.filter(user=>{
-          //     const userPermissions = getUserPermissions(user);
-          //     const userRoles = getUserRoles(user);
-          //
-          //     return userPermissions.length > 0 || userRoles.length > 0;
-          //   });
-          //
-          //   setUsers(filteredUsers || []);
-          //
-          //   if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
-          //     setPermissions(response.data.permissions || []);
-          //   }
-          //
-          //   if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
-          //     setRoles(response.data.roles || []);
-          //   }
-          //
-          //   setLoading(false);
-          //   setIsAdmin(response.data.isAdmin);
-          //   setRolesWithAssociatedPermissions(response.data.rolesWithAssociatedPermissions);
-          //   console.log("rolesWithAssociatedPermissions", rolesWithAssociatedPermissions);
-          // }
         } catch (error) {
           if (isMounted) {
             console.error("An error occurred in fetchUsers", error);
@@ -179,25 +155,6 @@ function ManagePanel() {
     }
   };
 
-  // refreshUserPermissionList
-  const buildAddablePermissions = (user, listOfPermissions) => {
-    const perms = getUserPermissions(user);
-    let updatedPermissions = listOfPermissions.map(permission => {
-      return {
-        name: permission,
-        disabled: perms.includes(permission)
-      };
-    });
-
-    updatedPermissions.sort((a, b) => {
-      if (a.disabled && !b.disabled) return 1;
-      if (!a.disabled && b.disabled) return -1;
-      return a.name.localeCompare(b.name);
-    });
-
-    setUserPermissionNames(updatedPermissions);
-  }
-
   const handleAssignPermission = async (event) => {
     event.preventDefault();
     if (permissionToAdd && selectedUser) {
@@ -206,25 +163,25 @@ function ManagePanel() {
         name: permissionToAdd.name
       };
       try {
-        const response = await axiosClient.post('/permissions/add', payload);
+        const response = await axiosClient.post('/permissions/assign', payload);
         if (response.status === 200) {
           const newUserPermissions = [...selectedUser.permissions, permissionToAdd];
           const updatedUser = { ...selectedUser, permissions: newUserPermissions };
           console.log("selectedUser", selectedUser.permissions);
           setSelectedUser(updatedUser);
           console.log("updatedUser", updatedUser.permissions);
-          buildAddablePermissions(updatedUser, permissions);
+          refreshUserPermissionList(updatedUser, permissions, setUserPermissionNames);
           handleUserPermissionsModalToggle()
-          console.log("Permission added successfully");
+          showToast("Permission added successfully");
           window.location.reload();
         } else {
-          console.log("Permission not added");
+          showToast("Permission not added");
         }
       } catch (error) {
         console.error("Error", error);
       }
     } else {
-      console.log("Missing permissionToAdd or selectedUser");
+      showToast("Missing permissionToAdd or selectedUser");
     }
   };
 
@@ -243,23 +200,79 @@ function ManagePanel() {
           console.log("selectedUser", selectedUser.permissions);
           setSelectedUser(updatedUser);
           console.log("updatedUser", updatedUser.permissions);
-          buildAddablePermissions(updatedUser, permissions);
+          refreshUserPermissionList(updatedUser, permissions, setUserPermissionNames);
           handleUserPermissionsModalToggle()
-          console.log("Permission revoked successfully");
+          showToast("Permission revoked successfully");
           window.location.reload();
         } else {
-          console.log("Permission nor revoked");
+          showToast("Permission nor revoked");
         }
       } catch (error) {
         console.error("Error", error);
       }
     } else {
-      console.log("Missing permissionToRevoke or selectedUser");
+      showToast("Missing permissionToRevoke or selectedUser");
     }
   };
 
-  const getUserRoles = (user) => {
-    return user.roles.map(role => role.name).join(', ');
+  const handleAssignRole = async (event) => {
+    event.preventDefault();
+    if (roleToAdd && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: roleToAdd.name
+      };
+      try {
+        const response = await axiosClient.post('/roles/assign', payload);
+        if (response.status === 200) {
+          const newUserRoles = [...selectedUser.roles, roleToAdd];
+          const updatedUser = { ...selectedUser, roles: newUserRoles };
+          console.log("selectedUser", selectedUser.roles);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.roles);
+          refreshUserRoleLists(updatedUser, roles, setUserRoleNames);
+          handleUserRolesModalToggle()
+          showToast("Role added successfully");
+          window.location.reload();
+        } else {
+          showToast("Role not added");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      showToast("Missing roleToAdd or selectedUser");
+    }
+  };
+
+  const handleRevokeRole = async (e) => {
+    e.preventDefault();
+    if (roleToRevoke && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: roleToRevoke.name
+      };
+      try {
+        const response = await axiosClient.post('/roles/revoke', payload);
+        if (response.status === 200) {
+          const revokedUserRoles = [...selectedUser.roles, roleToRevoke];
+          const updatedUser = { ...selectedUser, roles: revokedUserRoles };
+          console.log("selectedUser", selectedUser.roles);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.roles);
+          refreshUserRoleLists(updatedUser, roles, setUserRoleNames);
+          handleUserRolesModalToggle()
+          showToast("Role revoked successfully");
+          window.location.reload();
+        } else {
+          showToast("Role not revoked");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      showToast("Missing roleToRevoke or selectedUser");
+    }
   };
 
   return (
@@ -288,7 +301,6 @@ function ManagePanel() {
             permissions={permissions}
             handleAssignPermission={handleAssignPermission}
             handleRevokePermission={handleRevokePermission}
-            buildAddablePermissions={buildAddablePermissions}
           />
 
           <RolesModal
@@ -307,6 +319,8 @@ function ManagePanel() {
             handleModalToggle={handleUserRolesModalToggle}
             users={users}
             roles={roles}
+            handleAssignRole={handleAssignRole}
+            handleRevokeRole={handleRevokeRole}
           />
 
         </aside>

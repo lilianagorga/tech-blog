@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
+import { refreshUserPermissionList } from "../utils/utils.jsx";
 
 function UserPermissionsModal({
                                 showModal,
@@ -7,12 +8,9 @@ function UserPermissionsModal({
                                 users,
                                 permissions,
                                 handleAssignPermission,
-                                handleRevokePermission,
-                                buildAddablePermissions
-
-
+                                handleRevokePermission
 }) {
-  const { setPermissionToAdd, setPermissionToRevoke, setSelectedUser, userPermissionNames } = useStateContext();
+  const { setPermissionToAdd, setPermissionToRevoke, setSelectedUser, userPermissionNames, setUserPermissionNames } = useStateContext();
 
   const modalRef = useRef();
 
@@ -59,7 +57,7 @@ function UserPermissionsModal({
                     const selectedUserName = e.target.value;
                     const selectedUserObject = users.find(user => user.name === selectedUserName);
                     setSelectedUser(selectedUserObject);
-                    buildAddablePermissions(selectedUserObject, permissions);
+                    refreshUserPermissionList(selectedUserObject, permissions, setUserPermissionNames);
                   }}>
                   <option value="">Select User</option>
                   {

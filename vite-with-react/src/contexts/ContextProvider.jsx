@@ -30,55 +30,18 @@ const getDefaultPermissions = () => {
   }
 };
 
-// const getPermissionToAdd = () => {
-//   try {
-//     const permissionToAdd = localStorage.getItem('permissionToAdd');
-//     return permissionToAdd ? JSON.parse(permissionToAdd) : {};
-//   } catch (error) {
-//     console.error("Error parsing permissionToAdd from localStorage:", error);
-//   }
-// }
-//
-// const getPermissionToRevoke = () => {
-//   try {
-//     const permissionToRevoke = localStorage.getItem('permissionToRevoke');
-//     return permissionToRevoke ? JSON.parse(permissionToRevoke) : {};
-//   } catch (error) {
-//     console.error("Error parsing permissionToRevoke from localStorage:", error);
-//   }
-// }
-//
-// const getSelectedUser = () => {
-//   try {
-//     const selectedUser = localStorage.getItem('selectedUser');
-//     return selectedUser ? JSON.parse(selectedUser) : {};
-//   } catch (error) {
-//     console.error("Error parsing selectedUser from localStorage:", error);
-//   }
-// }
-//
-// const getUserPermissionNames = () => {
-//   try {
-//     const userPermissionNames = localStorage.getItem('userPermissionNames');
-//     return userPermissionNames ? JSON.parse(userPermissionNames) : [];
-//   } catch (error) {
-//     console.error("Error parsing userPermissionNames from localStorage:", error);
-//   }
-// }
-
 const StateContext = createContext({
   currentUser: getDefaultCurrentUser(),
   userToken: localStorage.getItem('TOKEN') || null,
   roles: getDefaultRoles(),
   permissions: getDefaultPermissions(),
-  // permissionToAdd: getPermissionToAdd(),
-  // permissionToRevoke: getPermissionToRevoke(),
-  // selectedUser: getSelectedUser(),
-  // userPermissionNames: getUserPermissionNames(),
   permissionToAdd: {},
   permissionToRevoke: {},
   selectedUser: {},
   userPermissionNames: [],
+  roleToAdd: {},
+  roleToRevoke: {},
+  userRoleNames: [],
   questionTypes: ['text', "select", "radio", "checkbox", "textarea"],
   toast: {
     message: '',
@@ -92,6 +55,9 @@ const StateContext = createContext({
   setPermissionToRevoke: () => {},
   setSelectedUser: () => {},
   setUserPermissionNames: () => {},
+  setRoleToRevoke: () => {},
+  setRoleToAdd: () => {},
+  setUserRoleNames: () => {},
   showToast: () => {},
 });
 
@@ -105,6 +71,9 @@ export const ContextProvider = ({ children }) => {
   const [permissionToRevoke, setPermissionToRevoke] = useState({});
   const [selectedUser, setSelectedUser] = useState({});
   const [userPermissionNames, setUserPermissionNames] = useState([]);
+  const [roleToRevoke, setRoleToRevoke] = useState({});
+  const [userRoleNames, setUserRoleNames] = useState([]);
+  const [roleToAdd, setRoleToAdd] = useState({});
 
   const handleSetUserToken = (token) => {
     if (token) {
@@ -142,42 +111,6 @@ export const ContextProvider = ({ children }) => {
     setPermissions(permissions);
   };
 
-  // const handleSetPermissionToAdd = (permissionToAdd) => {
-  //   if (permissionToAdd) {
-  //     localStorage.setItem('permissionToAdd', JSON.stringify(permissionToAdd));
-  //   } else {
-  //     localStorage.removeItem('permissionToAdd');
-  //   }
-  //   setPermissionToAdd(permissionToAdd);
-  // }
-  //
-  // const handleSetPermissionToRevoke = (permissionToRevoke) => {
-  //   if (permissionToRevoke) {
-  //     localStorage.setItem('permissionToRevoke', JSON.stringify(permissionToRevoke));
-  //   } else {
-  //     localStorage.removeItem('permissionToRevoke');
-  //   }
-  //   setPermissionToRevoke(permissionToRevoke);
-  // }
-  //
-  // const handleSetSelectedUser = (selectedUser) => {
-  //   if (selectedUser) {
-  //     localStorage.setItem('selectedUser', JSON.stringify(selectedUser));
-  //   } else {
-  //     localStorage.removeItem('selectedUser');
-  //   }
-  //   setSelectedUser(selectedUser);
-  // }
-  //
-  // const handleSetUserPermissionNames = (userPermissionNames) => {
-  //   if (userPermissionNames) {
-  //     localStorage.setItem('userPermissionNames', JSON.stringify(userPermissionNames));
-  //   } else {
-  //     localStorage.removeItem('userPermissionNames');
-  //   }
-  //   setUserPermissionNames(userPermissionNames);
-  // }
-
   const showToast = (message) => {
     setToast({ message, show: true });
     setTimeout(() => setToast({ message: '', show: false }), 5000);
@@ -190,11 +123,10 @@ export const ContextProvider = ({ children }) => {
       roles, setRoles: handleSetRoles,
       permissions, setPermissions: handleSetPermissions,
       permissionToAdd, setPermissionToAdd, permissionToRevoke, setPermissionToRevoke,
-      selectedUser, setSelectedUser, userPermissionNames, setUserPermissionNames,
-      // permissionToAdd, setPermissionToAdd: handleSetPermissionToAdd,
-      // permissionToRevoke, setPermissionToRevoke: handleSetPermissionToRevoke,
-      // selectedUser, setSelectedUser: handleSetSelectedUser,
-      // userPermissionNames, setUserPermissionNames: handleSetUserPermissionNames,
+      selectedUser, setSelectedUser,
+      userPermissionNames, setUserPermissionNames,
+      roleToAdd, setRoleToAdd, roleToRevoke, setRoleToRevoke,
+      userRoleNames, setUserRoleNames,
       toast, showToast,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
