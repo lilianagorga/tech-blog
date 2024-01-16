@@ -73,16 +73,11 @@ class ManagePanelTest extends TestCase
     Sanctum::actingAs($admin);
     $roleData = [
       'name' => 'NewRole',
-      'permissions' => ['edit posts', 'edit categories']
     ];
     $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_CREATED);
     $response->assertJson(['name' => 'NewRole']);
     $this->assertDatabaseHas('roles', ['name' => 'NewRole']);
-    $role = Role::findByName('NewRole', 'api');
-    foreach ($roleData['permissions'] as $permissionName) {
-      $this->assertTrue($role->hasPermissionTo($permissionName));
-    }
   }
 
   public function test_create_role_denied_for_non_admin_user()
@@ -91,7 +86,6 @@ class ManagePanelTest extends TestCase
     Sanctum::actingAs($user);
     $roleData = [
       'name' => 'NewRole',
-      'permissions' => ['edit posts', 'edit categories']
     ];
     $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_FORBIDDEN);
@@ -104,11 +98,56 @@ class ManagePanelTest extends TestCase
     Sanctum::actingAs($developer);
     $roleData = [
       'name' => 'Marketer',
-      'permissions' => ['edit comments']
     ];
     $response = $this->postJson('/api/roles', $roleData);
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $this->assertDatabaseMissing('roles', ['name' => 'Marketer']);
+  }
+
+  public function test_update_role_successfully_by_admin()
+  {
+    $admin = $this->addRolesAndPermissionsToAdmin();
+    Sanctum::actingAs($admin);
+    Role::firstOrCreate(['name' => 'Marketer', 'guard_name' => 'api']);
+    Permission::firstOrCreate(['name' => 'edit posts', 'guard_name' => 'api']);
+    Permission::firstOrCreate(['name' => 'delete posts', 'guard_name' => 'api']);
+    $updateData = [
+      'name' => 'Marketer',
+      'permissions' => ['edit posts', 'delete posts']
+    ];
+    $response = $this->putJson('/api/roles', $updateData);
+    $response->assertStatus(Response::HTTP_OK);
+    $response->assertJson([
+      'message' => 'Role permissions updated successfully',
+      'role' => [
+        'name' => 'Marketer',
+        'guard_name' => 'api',
+        'permissions' => [
+          ['name' => 'edit posts', 'guard_name' => 'api'],
+          ['name' => 'delete posts', 'guard_name' => 'api']
+        ]
+      ]
+    ]);
+
+    $updatedRole = Role::findByName('Marketer', 'api');
+    $this->assertTrue($updatedRole->hasPermissionTo('edit posts'));
+    $this->assertTrue($updatedRole->hasPermissionTo('delete posts'));
+    $updatedPermissions = $updatedRole->permissions->pluck('name')->sort()->values();
+    $expectedPermissions = collect($updateData['permissions'])->sort()->values();
+    $this->assertEquals($expectedPermissions, $updatedPermissions);
+    $this->assertEquals('api', $updatedRole->guard_name);
+  }
+
+  public function test_update_role_denied_for_user_with_panel_access_but_not_admin()
+  {
+    $developer = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($developer);
+    $updateData = [
+      'name' => 'SomeRole',
+      'permissions' => ['some_permission']
+    ];
+    $response = $this->putJson('/api/roles', $updateData);
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
   }
 
   public function test_create_permission_successfully()

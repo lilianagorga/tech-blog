@@ -22,6 +22,7 @@ class ManagePanelController extends Controller
     $data = Cache::remember('manage-panels', 60, function () use ($request) {
       $users = User::with(['roles.permissions', 'permissions'])->get();
       $roles = Role::all()->pluck('name');
+      $rolesWithAssociatedPermissions = Role::with('permissions')->get();
       $permissions = Permission::all()->pluck('name');
       $isAdmin = $request->user()->isAdmin();
 
@@ -30,6 +31,7 @@ class ManagePanelController extends Controller
         'permissions' => $permissions,
         'roles' => $roles,
         'users' => $users,
+        'rolesWithAssociatedPermissions' => $rolesWithAssociatedPermissions,
       ];
     });
 
@@ -42,7 +44,6 @@ class ManagePanelController extends Controller
       $validatedData = $request->validate(
         [
           'name' => 'required|string',
-//          'permissions' => 'sometimes|array'
         ]
       );
 
@@ -56,84 +57,33 @@ class ManagePanelController extends Controller
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
-
-//      if ($validatedData['permissions']) {
-//        $permissions = Permission::whereIn('name', $validatedData['permissions'])->get();
-//
-//        foreach ($permissions as $permission) {
-//          $role->givePermissionTo($permission);
-//          $permission->assignRole($role);
-//        }
-//      }
-//
-//      Cache::forget('manage-panels');
-//      return response()->json($role, Response::HTTP_CREATED);
-//    } else {
-//      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
-//    }
   }
 
-  public function addRole(Request $request): Response
+  public function updateRole(Request $request): Response
   {
-    if (!$request->user()->isAdmin()) {
-      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
-    }
+      if (!$request->user()->isAdmin()) {
+        return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+      }
 
-    $validatedData = $request->validate([
-          'user_id' => 'required|integer',
-          'name' => 'required|string|exists:roles,name',
-
+      $validatedData = $request->validate([
+        'name' => 'required|string',
+        'permissions' => 'required|array|min:1',
+        'permissions.*' => 'required|string|exists:permissions,name'
       ]);
 
-      $user = User::find($validatedData['user_id']);
-      $roles = Role::where('name', $validatedData['name'])->first();
+    $role = Role::firstWhere('name', $validatedData['name']);
 
-      if (!$user || !$roles) {
-        return response()->json(['message' => 'User or Roles not found'], Response::HTTP_NOT_FOUND);
-      } else {
-        $user->assignRole($roles);
-        Cache::forget('manage-panels');
-        return response()->json(['message' => 'Roles updated successfully'], Response::HTTP_OK);
-      }
-  }
+    if ($role && $validatedData['permissions']) {
+        $updatedPermissionsList = Permission::whereIn('name', $validatedData['permissions'])->get();
 
-  public function addPermission(Request $request): Response
-  {
-    if (!$request->user()->isAdmin()) {
-      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
-    }
+        $role->syncPermissions($updatedPermissionsList);
 
-    $validatedData = $request->validate([
-      'user_id' => 'required|integer',
-      'name' => 'required|string|exists:permissions,name',
-    ]);
+        $role = $role->load('permissions');
 
-    $user = User::find($validatedData['user_id']);
-    $permission = Permission::where('name', $validatedData['name'])->first();
-
-      if (!$user || !$permission) {
-        return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);
-      } else {
-        $user->givePermissionTo($permission);
-        Cache::forget('manage-panels');
-        return response()->json(['message' => 'Permissions updated successfully'], Response::HTTP_OK);
-      }
-  }
-
-  public function createPermission(Request $request): Response
-  {
-    if ($request->user()->isAdmin()) {
-      $validatedData = $request->validate(
-        ['name' => 'required|string']
-      );
-
-      $permission = Permission::create([
-        'name' => $validatedData['name'],
-        'guard_name' => 'api'
-      ]);
-
-      Cache::forget('manage-panels');
-      return response()->json($permission, Response::HTTP_CREATED);
+        return response()->json([
+          'message' => 'Role permissions updated successfully',
+          'role' => $role
+        ]);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
@@ -158,11 +108,77 @@ class ManagePanelController extends Controller
         $role->delete();
         Cache::forget('manage-panels');
         return response()->json(['message' => 'Role deleted successfully'],
-        Response::HTTP_NO_CONTENT);
+          Response::HTTP_NO_CONTENT);
       }
       return response()->json(['message' => 'Role not found'], Response::HTTP_NOT_FOUND);
     } catch (Exception $e) {
       return response()->json(['message' => 'Failed to delete role', 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public function addRole(Request $request): Response
+  {
+    if (!$request->user()->isAdmin()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+
+    $validatedData = $request->validate([
+      'user_id' => 'required|integer',
+      'name' => 'required|string|exists:roles,name',
+
+    ]);
+
+    $user = User::find($validatedData['user_id']);
+    $roles = Role::where('name', $validatedData['name'])->first();
+
+    if (!$user || !$roles) {
+      return response()->json(['message' => 'User or Roles not found'], Response::HTTP_NOT_FOUND);
+    } else {
+      $user->assignRole($roles);
+      Cache::forget('manage-panels');
+      return response()->json(['message' => 'Roles updated successfully'], Response::HTTP_OK);
+    }
+  }
+
+  public function revokeRole(Request $request): Response
+  {
+    if (!$request->user()->isAdmin()) {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+
+    $validatedData = $request->validate([
+      'user_id' => 'required|integer',
+      'name' => 'required|string|exists:roles,name',
+    ]);
+
+    $user = User::find($validatedData['user_id']);
+    $role = Role::where('name', $validatedData['name'])->first();
+
+    if (!$user || !$role) {
+      return response()->json(['message' => 'User or Role not found'], Response::HTTP_NOT_FOUND);
+    } else {
+      $user->removeRole($role);
+      Cache::forget('manage-panels');
+      return response()->json(['message' => 'Role revoked successfully'], Response::HTTP_OK);
+    }
+  }
+
+  public function createPermission(Request $request): Response
+  {
+    if ($request->user()->isAdmin()) {
+      $validatedData = $request->validate(
+        ['name' => 'required|string']
+      );
+
+      $permission = Permission::create([
+        'name' => $validatedData['name'],
+        'guard_name' => 'api'
+      ]);
+
+      Cache::forget('manage-panels');
+      return response()->json($permission, Response::HTTP_CREATED);
+    } else {
+      return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
   }
 
@@ -191,7 +207,7 @@ class ManagePanelController extends Controller
     }
   }
 
-  public function revokeRole(Request $request): Response
+  public function addPermission(Request $request): Response
   {
     if (!$request->user()->isAdmin()) {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
@@ -199,19 +215,19 @@ class ManagePanelController extends Controller
 
     $validatedData = $request->validate([
       'user_id' => 'required|integer',
-      'name' => 'required|string|exists:roles,name',
+      'name' => 'required|string|exists:permissions,name',
     ]);
 
     $user = User::find($validatedData['user_id']);
-    $role = Role::where('name', $validatedData['name'])->first();
+    $permission = Permission::where('name', $validatedData['name'])->first();
 
-    if (!$user || !$role) {
-      return response()->json(['message' => 'User or Role not found'], Response::HTTP_NOT_FOUND);
-    } else {
-      $user->removeRole($role);
-      Cache::forget('manage-panels');
-      return response()->json(['message' => 'Role revoked successfully'], Response::HTTP_OK);
-    }
+      if (!$user || !$permission) {
+        return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);
+      } else {
+        $user->givePermissionTo($permission);
+        Cache::forget('manage-panels');
+        return response()->json(['message' => 'Permissions updated successfully'], Response::HTTP_OK);
+      }
   }
 
   public function revokePermission(Request $request): Response

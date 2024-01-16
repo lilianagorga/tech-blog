@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from "../axios.js";
-import {getUserPermissions} from "../utils/utils.jsx";
+import { getUserPermissions } from "../utils/utils.jsx";
 import PageComponent from "../components/PageComponent.jsx";
 import PermissionsModal from "../components/PermissionsModal.jsx";
 import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
@@ -9,7 +9,7 @@ import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
 
 function ManagePanel() {
-  const { showToast, permissions, setPermissions, roles, setRoles } = useStateContext();
+  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames } = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -26,8 +26,9 @@ function ManagePanel() {
   const [showRolesModal, setShowRolesModal] = useState(false);
   const [showUserRolesModal, setShowUserRolesModal] = useState(false);
 
-  const joinedPermissions = [];
-  const joinedRoles = [];
+  const [rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions] = useState([]);
+
+  // [{name: 'role name', checked: true}, {name: 'role name', checked: false}, {....}]
 
   const handleRolesModalToggle = () => {
     setShowRolesModal(!showRolesModal);
@@ -50,30 +51,53 @@ function ManagePanel() {
     let isMounted = true;
       const fetchUsersWithRolesAndPermissions = async ()=>{
         try {
-          const response = await axiosClient.get('/manage-panels');
+          await axiosClient.get('/manage-panels')
+            .then(response => {
+              const filteredUsers = response.data.users.filter(user=>{
+                const userPermissions = getUserPermissions(user);
+                const userRoles = getUserRoles(user);
 
-          if (isMounted) {
+                return userPermissions.length > 0 || userRoles.length > 0;
+              });
 
-            const filteredUsers = response.data.users.filter(user=>{
-              const userPermissions = getUserPermissions(user);
-              const userRoles = getUserRoles(user);
+              setUsers(filteredUsers || []);
 
-              return userPermissions.length > 0 || userRoles.length > 0;
+              if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
+                setPermissions(response.data.permissions || []);
+              }
+
+              if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
+                setRoles(response.data.roles || []);
+              }
+
+              setLoading(false);
+              setIsAdmin(response.data.isAdmin);
+              setRolesWithAssociatedPermissions(response.data.rolesWithAssociatedPermissions);
             });
 
-            setUsers(filteredUsers || []);
-
-            if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
-              setPermissions(response.data.permissions || []);
-            }
-
-            if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
-              setRoles(response.data.roles || []);
-            }
-
-            setLoading(false);
-            setIsAdmin(response.data.isAdmin);
-          }
+          // if (isMounted) {
+          //   const filteredUsers = response.data.users.filter(user=>{
+          //     const userPermissions = getUserPermissions(user);
+          //     const userRoles = getUserRoles(user);
+          //
+          //     return userPermissions.length > 0 || userRoles.length > 0;
+          //   });
+          //
+          //   setUsers(filteredUsers || []);
+          //
+          //   if (JSON.stringify(permissions) !== JSON.stringify(response.data.permissions)) {
+          //     setPermissions(response.data.permissions || []);
+          //   }
+          //
+          //   if (JSON.stringify(roles) !== JSON.stringify(response.data.roles)) {
+          //     setRoles(response.data.roles || []);
+          //   }
+          //
+          //   setLoading(false);
+          //   setIsAdmin(response.data.isAdmin);
+          //   setRolesWithAssociatedPermissions(response.data.rolesWithAssociatedPermissions);
+          //   console.log("rolesWithAssociatedPermissions", rolesWithAssociatedPermissions);
+          // }
         } catch (error) {
           if (isMounted) {
             console.error("An error occurred in fetchUsers", error);
@@ -155,6 +179,85 @@ function ManagePanel() {
     }
   };
 
+  // refreshUserPermissionList
+  const buildAddablePermissions = (user, listOfPermissions) => {
+    const perms = getUserPermissions(user);
+    let updatedPermissions = listOfPermissions.map(permission => {
+      return {
+        name: permission,
+        disabled: perms.includes(permission)
+      };
+    });
+
+    updatedPermissions.sort((a, b) => {
+      if (a.disabled && !b.disabled) return 1;
+      if (!a.disabled && b.disabled) return -1;
+      return a.name.localeCompare(b.name);
+    });
+
+    setUserPermissionNames(updatedPermissions);
+  }
+
+  const handleAssignPermission = async (event) => {
+    event.preventDefault();
+    if (permissionToAdd && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: permissionToAdd.name
+      };
+      try {
+        const response = await axiosClient.post('/permissions/add', payload);
+        if (response.status === 200) {
+          const newUserPermissions = [...selectedUser.permissions, permissionToAdd];
+          const updatedUser = { ...selectedUser, permissions: newUserPermissions };
+          console.log("selectedUser", selectedUser.permissions);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.permissions);
+          buildAddablePermissions(updatedUser, permissions);
+          handleUserPermissionsModalToggle()
+          console.log("Permission added successfully");
+          window.location.reload();
+        } else {
+          console.log("Permission not added");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      console.log("Missing permissionToAdd or selectedUser");
+    }
+  };
+
+  const handleRevokePermission = async (e) => {
+    e.preventDefault();
+    if (permissionToRevoke && selectedUser) {
+      const payload = {
+        user_id: selectedUser.id,
+        name: permissionToRevoke.name
+      };
+      try {
+        const response = await axiosClient.post('/permissions/revoke', payload);
+        if (response.status === 200) {
+          const revokedUserPermissions = [...selectedUser.permissions, permissionToRevoke];
+          const updatedUser = { ...selectedUser, permissions: revokedUserPermissions };
+          console.log("selectedUser", selectedUser.permissions);
+          setSelectedUser(updatedUser);
+          console.log("updatedUser", updatedUser.permissions);
+          buildAddablePermissions(updatedUser, permissions);
+          handleUserPermissionsModalToggle()
+          console.log("Permission revoked successfully");
+          window.location.reload();
+        } else {
+          console.log("Permission nor revoked");
+        }
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      console.log("Missing permissionToRevoke or selectedUser");
+    }
+  };
+
   const getUserRoles = (user) => {
     return user.roles.map(role => role.name).join(', ');
   };
@@ -165,26 +268,47 @@ function ManagePanel() {
     {!loading && (
       <div className="container mx-auto pt-2 mt-2">
       <div className="grid grid-cols-10 gap-4">
-        <aside className="col-span-2 bg-gray-200 p-4" aria-label="Sidebar">
-          <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
-            <ul className="space-y-2">
-              <li>
-                <a href="/posts" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Posts</span>
-                </a>
-              </li>
-              <li>
-                <a href="/categories" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Category</span>
-                </a>
-              </li>
-              <li>
-                <a href="/comments" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Comments</span>
-                </a>
-              </li>
-            </ul>
-          </div>
+        <aside className='grid col-span-2 grid-row-6 m-4 p-4 bg-gray-800 rounded aria-label="Sidebar"'>
+
+          <PermissionsModal
+            showModal={showPermissionsModal}
+            handleModalToggle={handlePermissionsModalToggle}
+            permissionName={permissionName}
+            setPermissionName={setPermissionName}
+            permissions={permissions}
+            setPermissionToDelete={setPermissionToDelete}
+            handleCreatePermission={handleCreatePermission}
+            handleDeletePermission={handleDeletePermission}
+          />
+
+          <UserPermissionsModal
+            showModal={showUserPermissionsModal}
+            handleModalToggle={handleUserPermissionsModalToggle}
+            users={users}
+            permissions={permissions}
+            handleAssignPermission={handleAssignPermission}
+            handleRevokePermission={handleRevokePermission}
+            buildAddablePermissions={buildAddablePermissions}
+          />
+
+          <RolesModal
+            showModal={showRolesModal}
+            handleModalToggle={handleRolesModalToggle}
+            roleName={roleName}
+            setRoleName={setRoleName}
+            roles={roles}
+            setRoleToDelete={setRoleToDelete}
+            handleCreateRole={handleCreateRole}
+            handleDeleteRole={handleDeleteRole}
+          />
+
+          <UserRolesModal
+            showModal={showUserRolesModal}
+            handleModalToggle={handleUserRolesModalToggle}
+            users={users}
+            roles={roles}
+          />
+
         </aside>
         <main className="col-span-8 p-4 border-l-2 border-r-2">
           <div className="grid grid-cols-4 gap-4 border-b-2">
@@ -210,44 +334,17 @@ function ManagePanel() {
         </main>
       </div>
       <footer className="mt-4 p-4 bg-gray-200">
-        <div className="grid grid-cols-6 m-8 p-8 bg-gray-800 gap-8 rounded">
-
-          <PermissionsModal
-            showModal={showPermissionsModal}
-            handleModalToggle={handlePermissionsModalToggle}
-            permissionName={permissionName}
-            setPermissionName={setPermissionName}
-            permissions={permissions}
-            setPermissionToDelete={setPermissionToDelete}
-            handleCreatePermission={handleCreatePermission}
-            handleDeletePermission={handleDeletePermission}
-          />
-
-          <UserPermissionsModal
-            showModal={showUserPermissionsModal}
-            handleModalToggle={handleUserPermissionsModalToggle}
-            users={users}
-            permissions={permissions}
-          />
-
-          <RolesModal
-            showModal={showRolesModal}
-            handleModalToggle={handleRolesModalToggle}
-            roleName={roleName}
-            setRoleName={setRoleName}
-            roles={roles}
-            setRoleToDelete={setRoleToDelete}
-            handleCreateRole={handleCreateRole}
-            handleDeleteRole={handleDeleteRole}
-          />
-
-          <UserRolesModal
-            showModal={showUserRolesModal}
-            handleModalToggle={handleUserRolesModalToggle}
-            users={users}
-            roles={roles}
-          />
-
+        <div className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
+          {
+            rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role) => (
+              <div className="mt-4 text-white" key={role.id}>
+                {role.name}
+                <hr/>
+                {role.permissions && role.permissions.map((permission) => (
+                  <div className=" text-white" key={permission.id}>{permission.name}</div>
+                ))}
+              </div>
+            ))}
         </div>
       </footer>
     </div>

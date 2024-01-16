@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageComponent from "../components/PageComponent";
 import axiosClient from "../axios.js";
 import TButton from "../components/core/TButton.jsx";
@@ -32,7 +32,25 @@ export default function Dashboard() {
             <EyeIcon className="w-5 h-5 mr-2" />
             View Posts
           </TButton>
-          <h3>Hello <span>World</span></h3>
+          <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
+            <ul className="space-y-2">
+              <li>
+                <a href="/posts" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <span className="ml-3">Posts</span>
+                </a>
+              </li>
+              <li>
+                <a href="/categories" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <span className="ml-3">Category</span>
+                </a>
+              </li>
+              <li>
+                <a href="/comments" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <span className="ml-3">Comments</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       )}
     </PageComponent>
