@@ -69,47 +69,6 @@ describe('ManagePanel Component', () => {
 });
 
 describe('ManagePanel Component', () => {
-  it('should render the content', async () => {
-    const mockData = {
-      posts: [{ id: 1, title: "Example post" }]
-    };
-    const router = createMemoryRouter([{ path: '/', element: <ManagePanel /> }]);
-    render(
-        <RouterProvider router={router}>
-          <ManagePanel data={mockData} />
-        </RouterProvider>
-    );
-    const span = await screen.findByText(/Comments/i);
-    expect(span).toBeInTheDocument();
-  });
-})
-
-// describe('ManagePanel Component', () => {
-//   it('should display admin links for admin users', async () => {
-//     isAdminResponse = true;
-//     const router = createMemoryRouter([{ path: '/', element: <ManagePanel /> }]);
-//     render(
-//         <RouterProvider router={router}>
-//           <ManagePanel />
-//         </RouterProvider>
-//     );
-//     await waitFor(() => expect(screen.queryByText(/Add Permission/i)).toBeInTheDocument());
-//   });
-//
-//   it('should not display admin links for non-admin users', async () => {
-//     isAdminResponse = false;
-//     const router = createMemoryRouter([{ path: '/', element: <ManagePanel /> }]);
-//     render(
-//         <RouterProvider router={router}>
-//           <ManagePanel />
-//         </RouterProvider>
-//     );
-//     await waitFor(() => expect(screen.queryByText(/Add Permission/i)).not.toBeInTheDocument());
-//   });
-// });
-
-
-describe('ManagePanel Component', () => {
   it('should make an API call to fetch users, roles, and permissions', async () => {
     const router = createMemoryRouter([{ path: '/', element: <ManagePanel /> }]);
     render(

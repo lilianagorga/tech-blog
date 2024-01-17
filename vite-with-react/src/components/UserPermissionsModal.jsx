@@ -83,7 +83,7 @@ function UserPermissionsModal({
                       <option
                         key={index}
                         value={permission.name}
-                        disabled={permission.disabled}
+                        disabled={permission.directRevocable}
                       >
                         {permission.name}
                       </option>
@@ -114,7 +114,7 @@ function UserPermissionsModal({
                       <option
                         key={index}
                         value={permission.name}
-                        disabled={!permission.disabled}
+                        disabled={!permission.directRevocable}
                       >
                         {permission.name}
                       </option>

@@ -7,9 +7,13 @@ import PermissionsModal from "../components/PermissionsModal.jsx";
 import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
 import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
+import RoleWithAssociatedPermissionsModal from "../components/RoleWithAssociatedPermissionsModal.jsx";
 
 function ManagePanel() {
-  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames } = useStateContext();
+  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames,
+    rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
+    selectedPermissions, setSelectedPermissions
+  } = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -26,9 +30,8 @@ function ManagePanel() {
   const [showRolesModal, setShowRolesModal] = useState(false);
   const [showUserRolesModal, setShowUserRolesModal] = useState(false);
 
-  const [rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions] = useState([]);
-
-  // [{name: 'role name', checked: true}, {name: 'role name', checked: false}, {....}]
+  const [showRoleWithPermissionsModal, setShowRoleWithPermissionsModal] = useState(false);
+  const [selectedRoleWithPermissions, setSelectedRoleWithPermissions] = useState(null);
 
   const handleRolesModalToggle = () => {
     setShowRolesModal(!showRolesModal);
@@ -37,6 +40,44 @@ function ManagePanel() {
   const handleUserRolesModalToggle = () => {
     setShowUserRolesModal(!showUserRolesModal);
   }
+
+  const handleRoleWithPermissionsModalToggle = () => {
+    setShowRoleWithPermissionsModal(!showRoleWithPermissionsModal);
+  };
+
+  const handleRoleSelection = (roleName) => {
+    const role = rolesWithAssociatedPermissions.find(role => role.name === roleName);
+    setSelectedRoleWithPermissions(role);
+    setSelectedPermissions(role ? role.permissions.map(permission => permission.name) : []);
+  };
+
+  const handleUpdateRolePermissions = async (updatedPermissions) => {
+    if (!selectedRoleWithPermissions) {
+      showToast('No role selected. Select role to update permissions.', true);
+      return;
+    }
+    try {
+      const response = await axiosClient.put('/roles', {
+        name: selectedRoleWithPermissions.name,
+        permissions: updatedPermissions
+      });
+      if (response.status === 200) {
+
+        setRolesWithAssociatedPermissions(prevState => prevState.map(role => {
+          return role.name === selectedRoleWithPermissions.name ? { ...role, permissions: updatedPermissions } : role;
+        }));
+
+        setShowRoleWithPermissionsModal(false);
+        showToast('Role permissions have been successfully updated.', false);
+        // window.location.reload();
+      } else {
+        showToast(`Error: ${response.status} ${response.statusText}`, true);
+      }
+    } catch (error) {
+      showToast('An error occurred while updating role permissions.', true);
+      console.error('Error while updating role permissions:', error);
+    }
+  };
 
   const handlePermissionsModalToggle = () => {
     setShowPermissionsModal(!showPermissionsModal);
@@ -203,7 +244,7 @@ function ManagePanel() {
           refreshUserPermissionList(updatedUser, permissions, setUserPermissionNames);
           handleUserPermissionsModalToggle()
           showToast("Permission revoked successfully");
-          window.location.reload();
+          // window.location.reload();
         } else {
           showToast("Permission nor revoked");
         }
@@ -323,6 +364,15 @@ function ManagePanel() {
             handleRevokeRole={handleRevokeRole}
           />
 
+          <RoleWithAssociatedPermissionsModal
+            showModal={showRoleWithPermissionsModal}
+            handleModalToggle={handleRoleWithPermissionsModalToggle}
+            permissions={permissions}
+            selectedRole={selectedRoleWithPermissions}
+            handleRoleSelection={handleRoleSelection}
+            handleUpdateRolePermissions={handleUpdateRolePermissions}
+          />
+
         </aside>
         <main className="col-span-8 p-4 border-l-2 border-r-2">
           <div className="grid grid-cols-4 gap-4 border-b-2">
@@ -350,12 +400,12 @@ function ManagePanel() {
       <footer className="mt-4 p-4 bg-gray-200">
         <div className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
           {
-            rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role) => (
-              <div className="mt-4 text-white" key={role.id}>
+            rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role, index) => (
+              <div className="mt-4 text-white" key={role.id + `${index}`}>
                 {role.name}
                 <hr/>
-                {role.permissions && role.permissions.map((permission) => (
-                  <div className=" text-white" key={permission.id}>{permission.name}</div>
+                {role.permissions && role.permissions.map((permission, innerIndex) => (
+                  <div className=" text-white" key={permission.id + `${innerIndex}`}>{permission.name}</div>
                 ))}
               </div>
             ))}

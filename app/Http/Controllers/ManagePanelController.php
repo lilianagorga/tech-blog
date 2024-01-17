@@ -125,16 +125,15 @@ class ManagePanelController extends Controller
     $validatedData = $request->validate([
       'user_id' => 'required|integer',
       'name' => 'required|string|exists:roles,name',
-
     ]);
 
     $user = User::find($validatedData['user_id']);
-    $roles = Role::where('name', $validatedData['name'])->first();
+    $role = Role::where('name', $validatedData['name'])->first();
 
-    if (!$user || !$roles) {
+    if (!$user || !$role) {
       return response()->json(['message' => 'User or Roles not found'], Response::HTTP_NOT_FOUND);
     } else {
-      $user->assignRole($roles);
+      $user->assignRole($role);
       Cache::forget('manage-panels');
       return response()->json(['message' => 'Roles updated successfully'], Response::HTTP_OK);
     }
@@ -242,15 +241,13 @@ class ManagePanelController extends Controller
     ]);
 
     $user = User::find($validatedData['user_id']);
-    $permission = Permission::where('name', $validatedData['name'])->first();
 
-    if (!$user || !$permission) {
-      return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);
-    } else {
+    if ($user && $user->hasPermissionTo($validatedData['name'])) {
+      $permission = Permission::findByName($validatedData['name'], 'api');
       $user->revokePermissionTo($permission);
-      Cache::forget('manage-panels');
-      return response()->json(['message' => 'Permission revoked successfully'], Response::HTTP_OK);
+      return response()->json(['message' => 'Permission revoked successfully', 'user' => $user, 'permission' => $permission], Response::HTTP_OK);
+    } else {
+      return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);
     }
   }
-
 }

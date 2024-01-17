@@ -5,12 +5,6 @@ import Register from "./views/Register.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import ManagePanel from "./views/ManagePanel.jsx";
-import AddPermission from "./views/AddPermission.jsx";
-import AddRole from "./views/AddRole.jsx";
-import CreateRole from "./views/CreateRole.jsx";
-import CreatePermission from "./views/CreatePermission.jsx";
-import DeletePermission from "./views/DeletePermission";
-import DeleteRole from "./views/DeleteRole";
 import Post from "./views/Post.jsx";
 import Category from "./views/Category.jsx";
 import Comment from "./views/Comment.jsx";
@@ -43,30 +37,6 @@ const router = createBrowserRouter([
         element: <Register />
       }
     ]
-  },
-  {
-    path: '/permissions/assign',
-    element: <AddPermission />
-  },
-  {
-    path: '/roles/assign',
-    element: <AddRole />,
-  },
-  {
-    path: '/roles',
-    element: <CreateRole />,
-  },
-  {
-    path: '/permissions',
-    element: <CreatePermission />,
-  },
-  {
-    path: '/permissions/delete',
-    element: <DeletePermission />,
-  },
-  {
-    path: '/roles/delete',
-    element: <DeleteRole />,
   },
 
   {

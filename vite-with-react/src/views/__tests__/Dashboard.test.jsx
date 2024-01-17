@@ -35,7 +35,7 @@ describe('Dashboard Component', () => {
     };
     const router = createMemoryRouter([{ path: '/', element: <Dashboard /> }]);
     render(<RouterProvider router={router}><Dashboard data={mockData} /></RouterProvider>);
-    const heading = await screen.findByText(/Hello/i);
+    const heading = await screen.findByText(/Comments/i);
     expect(heading).toBeInTheDocument();
   });
 });

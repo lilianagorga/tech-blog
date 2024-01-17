@@ -42,6 +42,8 @@ const StateContext = createContext({
   roleToAdd: {},
   roleToRevoke: {},
   userRoleNames: [],
+  rolesWithAssociatedPermissions: [],
+  selectedPermissions: [],
   questionTypes: ['text', "select", "radio", "checkbox", "textarea"],
   toast: {
     message: '',
@@ -58,6 +60,8 @@ const StateContext = createContext({
   setRoleToRevoke: () => {},
   setRoleToAdd: () => {},
   setUserRoleNames: () => {},
+  setRolesWithAssociatedPermissions: () => {},
+  setSelectedPermissions: () => {},
   showToast: () => {},
 });
 
@@ -74,6 +78,8 @@ export const ContextProvider = ({ children }) => {
   const [roleToRevoke, setRoleToRevoke] = useState({});
   const [userRoleNames, setUserRoleNames] = useState([]);
   const [roleToAdd, setRoleToAdd] = useState({});
+  const [rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
 
   const handleSetUserToken = (token) => {
     if (token) {
@@ -127,6 +133,8 @@ export const ContextProvider = ({ children }) => {
       userPermissionNames, setUserPermissionNames,
       roleToAdd, setRoleToAdd, roleToRevoke, setRoleToRevoke,
       userRoleNames, setUserRoleNames,
+      rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
+      selectedPermissions, setSelectedPermissions,
       toast, showToast,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
