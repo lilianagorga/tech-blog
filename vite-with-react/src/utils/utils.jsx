@@ -51,3 +51,18 @@ export   const refreshUserRoleLists = (user, listOfRoles, setUserRoleNames) => {
 
   setUserRoleNames(updatedRoles);
 }
+
+export const createValidateField = (setErrors) => (name, value) => {
+  let errorMsg = '';
+  if (!value.trim()) {
+    errorMsg = `${name[0].toUpperCase() + name.slice(1)} is required.`;
+  } else if (value.length > 2048) {
+    errorMsg = `${name[0].toUpperCase() + name.slice(1)} must be less than 2048 characters.`;
+  }
+  setErrors(prevErrors => ({ ...prevErrors, [name]: errorMsg }));
+};
+
+export const createSlug = (title) => {
+  return title
+    .toLowerCase().replace(/[\s\W-]+/g, '-').replace(/^-+|-+$/g, '');
+};

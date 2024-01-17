@@ -28,10 +28,6 @@ export default function Dashboard() {
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-700">
-          <TButton link>
-            <EyeIcon className="w-5 h-5 mr-2" />
-            View Posts
-          </TButton>
           <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
             <ul className="space-y-2">
               <li>
@@ -56,3 +52,9 @@ export default function Dashboard() {
     </PageComponent>
   );
 }
+
+//
+// <TButton link>
+//   <EyeIcon className="w-5 h-5 mr-2" />
+//   View Posts
+// </TButton>
