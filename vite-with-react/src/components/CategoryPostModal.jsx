@@ -1,7 +1,7 @@
 import React from "react";
 import TButton from "./core/TButton.jsx";
 
-function PostModal({ post, onClose }) {
+function CategoryPostModal({ post, onClose }) {
   return (
     <div className="modal-backdrop rounded mt-4">
       <div className="modal-content text-white">
@@ -13,4 +13,4 @@ function PostModal({ post, onClose }) {
   );
 }
 
-export default PostModal;
+export default CategoryPostModal;
