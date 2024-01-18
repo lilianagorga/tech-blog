@@ -6,7 +6,7 @@ import GuestLayout from "./components/GuestLayout.jsx";
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import ManagePanel from "./views/ManagePanel.jsx";
 import Post from "./views/Post.jsx";
-import Category from "./views/Category.jsx";
+import ManageCategories from "./views/ManageCategories.jsx";
 import Comment from "./views/Comment.jsx";
 
 const router = createBrowserRouter([
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: 'manage-panels',
         element: <ManagePanel/>
+      },
+      {
+        path: '/categories',
+        element: <ManageCategories />,
       },
     ]
   },
@@ -37,15 +41,6 @@ const router = createBrowserRouter([
         element: <Register />
       }
     ]
-  },
-
-  {
-    path: '/posts',
-    element: <Post />,
-  },
-  {
-    path: '/categories',
-    element: <Category />,
   },
   {
     path: '/comments',

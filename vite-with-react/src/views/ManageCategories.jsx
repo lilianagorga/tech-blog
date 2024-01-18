@@ -7,7 +7,7 @@ import CategoryEditModal from "../components/CategoryEditModal.jsx";
 import CategoryDeleteModal from "../components/CategoryDeleteModal.jsx";
 import CategoryCreateModal from "../components/CategoryCreateModal.jsx";
 
-function Category(){
+function ManageCategories(){
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const { showToast, currentUser } = useStateContext();
@@ -62,7 +62,7 @@ function Category(){
         .then(response => {
           const updatedCategories = categories.filter(category => category.id !== categoryToDelete);
           setCategories(updatedCategories);
-          showToast('Category successfully deleted.');
+          showToast('ManageCategories successfully deleted.');
         })
         .catch(error => {
           showToast(`Error deleting category : ${error.message}`);
@@ -117,7 +117,7 @@ function Category(){
               onSave={(updatedCategory) => {
               setCategories(categories.map(cat => cat.id === updatedCategory.id ? updatedCategory : cat));
               setEditingCategory(null);
-              showToast('Category updated successfully.');
+              showToast('ManageCategories updated successfully.');
               }}
               onCancel={() => setEditingCategory(null)}
             />
@@ -145,4 +145,4 @@ function Category(){
   )
 }
 
-export default Category;
+export default ManageCategories;

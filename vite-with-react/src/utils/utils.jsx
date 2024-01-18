@@ -11,8 +11,6 @@ export const getUserPermissions = (user) => {
 export const refreshUserPermissionList = (user, listOfPermissions, setUserPermissionNames) => {
   const perms = getUserPermissions(user);
   const directPermissions = user.permissions.map(perm => perm.name);
-  // console.log('perms', perms);
-  // console.log('user', user);
   let updatedPermissions = listOfPermissions.map(permission => {
     return {
       name: permission,

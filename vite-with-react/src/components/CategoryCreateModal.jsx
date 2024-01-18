@@ -41,7 +41,7 @@ function CategoryCreateModal({ onSave, onCancel }) {
     axiosClient.post('/categories', newCategoryData)
       .then(response => {
         onSave(response.data);
-        showToast('Category created successfully.');
+        showToast('ManageCategories created successfully.');
         setTitle('');
         setSlug('');
       })

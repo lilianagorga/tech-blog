@@ -58,7 +58,7 @@ function CategoryEditModal({ category, onSave, onCancel }) {
     axiosClient.put(`/categories/${category.id}`, updatedCategoryData)
       .then(response => {
         onSave(response.data);
-        showToast('Category updated successfully!');
+        showToast('ManageCategories updated successfully!');
       })
       .catch(error => {
         console.error('Failed to update category:', error);

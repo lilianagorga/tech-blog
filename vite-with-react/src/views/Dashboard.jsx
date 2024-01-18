@@ -2,11 +2,42 @@ import React, { useEffect, useState } from "react";
 import PageComponent from "../components/PageComponent";
 import axiosClient from "../axios.js";
 import TButton from "../components/core/TButton.jsx";
-import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
+import Post from "./Post.jsx";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    setLoading(true);
+    axiosClient.get('/categories')
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching categories:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+
+  const handleCategoryClick = (categorySlug) => {
+    setLoading(true);
+    axiosClient.get(`/category/${categorySlug}`)
+      .then((res) => {
+        setPosts(res.data.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching posts by category:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   useEffect(()=>{
     setLoading(true);
@@ -23,28 +54,32 @@ export default function Dashboard() {
       });
   }, []);
 
+  const resetPosts = () => {
+    setPosts([]);
+  };
+
   return (
     <PageComponent title="Dashboard">
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-700">
-          <div className="overflow-y-auto py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
-            <ul className="space-y-2">
-              <li>
-                <a href="/posts" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Posts</span>
-                </a>
-              </li>
-              <li>
-                <a href="/categories" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Category</span>
-                </a>
-              </li>
-              <li>
-                <a href="/comments" className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <span className="ml-3">Comments</span>
-                </a>
-              </li>
+        <div className="grid grid-cols-2 overflow-y-auto mx-8 py-4 px-3 bg-gray-50 gap-4 rounded dark:bg-gray-800">
+          <div>
+            <h2 className="grid col-span-1 text-white fond-bold ">Categories</h2>
+            <ul className="grid col-span-1 text-white">
+              {categories.map((category) => (
+                <li key={category.id} className="p-8">
+                  <TButton color="indigo" onClick={() => handleCategoryClick(category.slug)}>
+                    {category.title}
+                  </TButton>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded">
+            <ul className="text-white">
+              {posts.map((post) => (
+                <Post key={post.id} post={post} resetPosts={resetPosts}/>
+              ))}
             </ul>
           </div>
         </div>
@@ -52,9 +87,3 @@ export default function Dashboard() {
     </PageComponent>
   );
 }
-
-//
-// <TButton link>
-//   <EyeIcon className="w-5 h-5 mr-2" />
-//   View Posts
-// </TButton>

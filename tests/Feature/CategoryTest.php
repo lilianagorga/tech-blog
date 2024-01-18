@@ -86,7 +86,7 @@ class CategoryTest extends TestCase
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     $category = $this->createCategoryCount()->first();
-    $updatedData = ['title' => 'Category Update', 'slug' => 'category-update'];
+    $updatedData = ['title' => 'ManageCategories Update', 'slug' => 'category-update'];
 
     $response = $this->putJson('/api/categories/' . $category->id, $updatedData);
 
