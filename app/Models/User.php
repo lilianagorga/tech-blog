@@ -53,8 +53,34 @@ class User extends Authenticatable
     return $this->hasRole('Admin', 'api');
   }
 
+  public function isModerator(): bool
+  {
+    return $this->hasRole('Moderator', 'api');
+  }
+
+  public function isWriter(): bool
+  {
+    return $this->hasRole('Writer', 'api');
+  }
+
   public function canAccessPanel(): bool
   {
     return $this->isAdmin() || $this->hasPermissionTo('managePanel', 'api');
   }
+
+  public function canManagePosts(): bool
+  {
+    return $this->isAdmin() || $this->isModerator() || $this->hasPermissionTo('managePosts', 'api');
+  }
+
+  public function canManageCategories(): bool
+  {
+    return $this->isAdmin() || $this->isWriter() || $this->hasPermissionTo('manageCategories', 'api');
+  }
+
+  public function canManageComments(): bool
+  {
+    return $this->isAdmin() || $this->isModerator() || $this->isWriter() || $this->hasPermissionTo('manageComments', 'api');
+  }
+
 }

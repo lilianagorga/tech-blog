@@ -79,7 +79,7 @@ abstract class TestCase extends BaseTestCase
     $moderator = User::factory()->create();
     $moderatorRole = Role::findOrCreate('Moderator', 'api');
     $moderator->assignRole($moderatorRole);
-    $permissions = ['managePanel', 'edit code'];
+    $permissions = ['managePanel', 'managePosts'];
     foreach ($permissions as $permName) {
       $permission = Permission::findOrCreate($permName, 'api');
       $moderatorRole->givePermissionTo($permission);
@@ -87,6 +87,16 @@ abstract class TestCase extends BaseTestCase
 
     return $moderator;
   }
+
+  public function createUserWithManagePostsPermission(): User
+  {
+    /** @var User $user */
+    $user = User::factory()->create();
+    $permission = Permission::findOrCreate('managePosts', 'api');
+    $user->givePermissionTo($permission);
+    return $user;
+  }
+
 
 
   public function createComment($args = [])

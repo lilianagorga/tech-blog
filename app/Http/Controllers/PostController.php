@@ -75,13 +75,7 @@ class PostController extends Controller
   public function update(Request $request, Post $post): Response
   {
 
-//    if user is admin
-//    if user is writer
-//    if user has managePosts direct permission
-//    if user is post owner
-//    else unauthorized
-
-    if ($request->user()->id !== $post->user_id) {
+    if (!$request->user()->canManagePosts() && $request->user()->id !== $post->user_id) {
       return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
     }
 
@@ -101,12 +95,12 @@ class PostController extends Controller
 
   public function destroy(Request $request, Post $post): Response
   {
-    if ($request->user()->id !== $post->user_id) {
-    return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+    if ($request->user()->canManagePosts() || $request->user()->id === $post->user_id) {
+      $post->delete();
+      return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    $post->delete();
-    return response()->json(null, Response::HTTP_NO_CONTENT);
+    return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
   }
 
   public function byCategory(Category $category): Response

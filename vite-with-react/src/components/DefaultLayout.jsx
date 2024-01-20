@@ -18,7 +18,26 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
   const { currentUser, userToken, setUserToken, setCurrentUser, permissions } = useStateContext();
-  const canAccessPanel = permissions.length > 0;
+  const hasRequiredRolesOrPermissionsForCategories = () => {
+    if (!currentUser || !currentUser.roles || !currentUser.permissions) {
+      return false;
+    }
+    const roles = ['Admin', 'Writer'];
+    const hasRole = currentUser.roles.some(role => roles.includes(role.name));
+    const hasPermission = currentUser.permissions.some(permission => permission.name === 'manageCategories');
+    return hasRole || hasPermission;
+  }
+  const canManageCategories = hasRequiredRolesOrPermissionsForCategories();
+
+  const hasRequiredRolesOrPermissionsForManagePanel = () => {
+    if (!currentUser || !currentUser.roles || !currentUser.permissions) {
+      return false;
+    }
+    const hasRole = currentUser.roles.some(role => role.name === 'Admin');
+    const hasPermission = currentUser.permissions.some(permission => permission.name === 'managePanel');
+    return hasPermission || hasRole;
+  }
+  const canAccessPanel = hasRequiredRolesOrPermissionsForManagePanel();
 
   if (!userToken) {
     return <Navigate to="/user/login" />
@@ -29,7 +48,7 @@ export default function DefaultLayout() {
     ev.preventDefault();
     axiosClient.post('/logout')
       .then(res => {
-        setCurrentUser({})
+        setCurrentUser({ roles: [], permissions: [] });
         setUserToken(null)
       })
   }
@@ -68,10 +87,12 @@ export default function DefaultLayout() {
                                 ? 'bg-gray-900 text-white'
                                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium',
-                              (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
+                              (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : '',
+                              (!canManageCategories && item.name === 'Manage Categories') ? 'hidden' : ''
                             )}
                             onClick={(e) => {
-                              if (!canAccessPanel && item.name === 'Manage Panel') {
+                              if ((!canAccessPanel && item.name === 'Manage Panel') ||
+                                (item.name === 'Manage Categories' && !canManageCategories)) {
                                 e.preventDefault();
                               }
                             }}
@@ -136,10 +157,12 @@ export default function DefaultLayout() {
                       className={({ isActive}) => classNames(
                         isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium',
-                        (!canAccessPanel && item.name === 'Manage Panel') ? 'opacity-50 cursor-not-allowed' : ''
+                        (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : '',
+                        (!canManageCategories && item.name === 'Manage Categories') ? 'hidden' : ''
                       )}
                       onClick={(e) => {
-                        if (!canAccessPanel && item.name === 'Manage Panel') {
+                        if ((!canAccessPanel && item.name === 'Manage Panel') ||
+                          (item.name === 'Manage Categories' && !canManageCategories)) {
                           e.preventDefault();
                         }
                       }}

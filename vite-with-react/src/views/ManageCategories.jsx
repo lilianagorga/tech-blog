@@ -15,7 +15,6 @@ function ManageCategories(){
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const canEdit = currentUser.permissions.some(permission => permission.name === 'manageCategories');
 
 
   const openCreateModal = () => {
@@ -88,7 +87,7 @@ function ManageCategories(){
             <thead className="">
             <tr>
               <th>Title</th>
-              {canEdit && <th>Action</th>}
+              <th>Action</th>
             </tr>
             </thead>
             <tbody className="h-4 w-4">
@@ -96,16 +95,12 @@ function ManageCategories(){
               <tr className="m-4 p-4" key={category.id}>
                 <td className="m-4 p-4">{category.title}</td>
                 <td className="m-4 p-4">
-                  {canEdit && (
-                    <>
-                      <TButton className="m-4 p-4" color="green" onClick={() => handleEdit(category)}>
-                        <PencilIcon className="w-4 h-4" />
-                      </TButton>
-                      <TButton className="m-4 p-4" color="red" onClick={() => handleDelete(category.id)}>
-                        <TrashIcon className="w-4 h-4" />
-                      </TButton>
-                    </>
-                  )}
+                  <TButton className="m-4 p-4" color="green" onClick={() => handleEdit(category)}>
+                    <PencilIcon className="w-4 h-4" />
+                  </TButton>
+                  <TButton className="m-4 p-4" color="red" onClick={() => handleDelete(category.id)}>
+                    <TrashIcon className="w-4 h-4" />
+                  </TButton>
                 </td>
               </tr>
             ))}
@@ -128,16 +123,12 @@ function ManageCategories(){
               onCancel={closeDeleteModal}
             />
           )}
-          {canEdit && (
-            <>
-              <TButton color="indigo" onClick={openCreateModal}>Add New Category</TButton>
-              {isCreateModalOpen && (
-                <CategoryCreateModal
-                  onSave={handleSaveNewCategory}
-                  onCancel={closeCreateModal}
-                />
-              )}
-            </>
+          <TButton color="indigo" onClick={openCreateModal}>Add New Category</TButton>
+          {isCreateModalOpen && (
+            <CategoryCreateModal
+              onSave={handleSaveNewCategory}
+              onCancel={closeCreateModal}
+            />
           )}
         </>
       )}

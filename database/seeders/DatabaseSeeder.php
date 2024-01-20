@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-      /** @var User $adminUser */
       $roles = ['Admin', 'Writer', 'Moderator'];
       $permissions = ['managePanel', 'managePosts', 'manageCategories', 'manageComments'];
 
@@ -24,21 +23,21 @@ class DatabaseSeeder extends Seeder
       }
 
       $adminRole = Role::findOrCreate('Admin', 'api');
-      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['managePosts', 'manageCategories', 'manageComments'])->get());
+      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->get());
 
       $writerRole = Role::create(['name' => 'Writer', 'guard_name' => 'api']);
-      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manageCategories'])->get());
+      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manageCategories', 'managePosts', 'manageComments'])->get());
 
       $moderatorRole = Role::create(['name' => 'Moderator', 'guard_name' => 'api']);
       $moderatorRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['managePosts', 'manageComments'])->get());
 
+      /** @var User $adminUser */
       $adminUser = User::factory()->create([
         'email' => 'admin@techBlog.com',
         'name' => 'Admin',
         'password' => bcrypt('Admin123!')
       ]);
-      $adminUser->assignRole('Admin');
-      $adminUser->givePermissionTo('managePanel');
+      $adminUser->assignRole($adminRole);
 
       /** @var User $writerUser */
       $writerUser = User::factory()->create([

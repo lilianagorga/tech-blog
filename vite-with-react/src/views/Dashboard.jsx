@@ -63,6 +63,9 @@ export default function Dashboard() {
   const handleCategoryPost = (categorySlug) => {
     setSelectedCategory(categorySlug);
     setLoading(true);
+
+    console.log("posts", posts);
+
     axiosClient.get(`/category/${categorySlug}`)
       .then((res) => {
         setFilteredPosts(res.data.data);

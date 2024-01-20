@@ -13,6 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Sanctum\Sanctum;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -104,10 +106,13 @@ class PostTest extends TestCase
     $response->assertNotFound();
   }
 
-  public function test_a_post_can_be_updated(): void
+  public function test_admin_can_update_a_post(): void
   {
-    $user = $this->user;
-    $post = $this->createPost(['user_id' => $user->id]);
+    $admin = $this->addRolesAndPermissionsToAdmin();
+    $post = $this->createPost();
+
+    Sanctum::actingAs($admin);
+
     $updatedData = [
       'title' => 'Updated Post Title',
       'slug' => 'updated-post-title',
@@ -116,17 +121,79 @@ class PostTest extends TestCase
       'published_at' => now()->addDay()->toDateTimeString(),
     ];
 
-    $response = $this->putJson('/api/posts/'.$post->id, $updatedData);
+    $response = $this->putJson("/api/posts/{$post->id}", $updatedData);
 
     $response->assertOk();
     $this->assertDatabaseHas('posts', array_merge(['id' => $post->id], $updatedData));
   }
 
-  public function test_a_post_can_be_deleted(): void
+  public function test_moderator_can_update_a_post(): void
   {
-    $user = $this->user;
-    $post = $this->createPost(['user_id' => $user->id]);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    $post = $this->createPost();
 
+    Sanctum::actingAs($moderator);
+
+    $updatedData = [
+      'title' => 'Updated Post Title',
+      'slug' => 'updated-post-title',
+      'body' => 'This is the updated body of the post',
+      'active' => false,
+      'published_at' => now()->addDay()->toDateTimeString(),
+    ];
+
+    $response = $this->putJson("/api/posts/{$post->id}", $updatedData);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('posts', array_merge(['id' => $post->id], $updatedData));
+  }
+
+  public function test_user_with_manage_posts_permission_can_update_a_post(): void
+  {
+    $userWithPermission = $this->createUserWithManagePostsPermission();
+    $post = $this->createPost();
+
+    Sanctum::actingAs($userWithPermission);
+
+    $updatedData = [
+      'title' => 'Updated Post Title',
+      'slug' => 'updated-post-title',
+      'body' => 'This is the updated body of the post',
+      'active' => false,
+      'published_at' => now()->addDay()->toDateTimeString(),
+    ];
+
+    $response = $this->putJson("/api/posts/{$post->id}", $updatedData);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('posts', array_merge(['id' => $post->id], $updatedData));
+  }
+
+  public function test_admin_can_delete_a_post(): void
+  {
+    $admin = $this->addRolesAndPermissionsToAdmin();
+    $post = $this->createPost();
+    Sanctum::actingAs($admin);
+    $response = $this->deleteJson('/api/posts/'.$post->id);
+    $response->assertNoContent();
+    $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+  }
+
+  public function test_moderator_can_delete_a_post(): void
+  {
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    $post = $this->createPost();
+    Sanctum::actingAs($moderator);
+    $response = $this->deleteJson('/api/posts/'.$post->id);
+    $response->assertNoContent();
+    $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+  }
+
+  public function test_user_with_manage_posts_permission_can_delete_a_post(): void
+  {
+    $userWithPermission = $this->createUserWithManagePostsPermission();
+    $post = $this->createPost();
+    Sanctum::actingAs($userWithPermission);
     $response = $this->deleteJson('/api/posts/'.$post->id);
 
     $response->assertNoContent();
