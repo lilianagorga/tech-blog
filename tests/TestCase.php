@@ -59,12 +59,12 @@ abstract class TestCase extends BaseTestCase
   {
     /** @var User $admin */
     $admin = User::factory()->create();
-    $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
+    $roles = ['Admin', 'Writer', 'Moderator'];
     foreach ($roles as $roleName) {
       $role = Role::findOrCreate($roleName, 'api');
       $admin->assignRole($role);
     }
-    $permissions = ['manage panels', 'edit posts', 'edit categories', 'edit comments', 'edit code'];
+    $permissions = ['managePanel', 'managePosts', 'manageCategories', 'manageComments'];
     foreach ($permissions as $permName) {
       $permission = Permission::findOrCreate($permName, 'api');
       $adminRole = Role::findByName('Admin', 'api');
@@ -75,17 +75,17 @@ abstract class TestCase extends BaseTestCase
 
   public function createUserWithSpecificRoleAndPermissions(): User
   {
-    /** @var User $developer */
-    $developer = User::factory()->create();
-    $developerRole = Role::findOrCreate('Developer', 'api');
-    $developer->assignRole($developerRole);
-    $permissions = ['manage panels', 'edit code'];
+    /** @var User $moderator */
+    $moderator = User::factory()->create();
+    $moderatorRole = Role::findOrCreate('Moderator', 'api');
+    $moderator->assignRole($moderatorRole);
+    $permissions = ['managePanel', 'edit code'];
     foreach ($permissions as $permName) {
       $permission = Permission::findOrCreate($permName, 'api');
-      $developerRole->givePermissionTo($permission);
+      $moderatorRole->givePermissionTo($permission);
     }
 
-    return $developer;
+    return $moderator;
   }
 
 

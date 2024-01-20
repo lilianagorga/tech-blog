@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from "react";
 import TButton from "../components/core/TButton.jsx";
-import CategoryPostModal from "../components/CategoryPostModal.jsx";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
 import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import PostEditModal from "../components/PostEditModal.jsx";
-import axiosClient from "../axios.js";
-import { useStateContext } from "../contexts/ContextProvider.jsx";
 
 function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,9 +29,9 @@ function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
     resetPosts();
   }
 
-  // const handleDelete = () => {
-  //     deletePost(post.id);
-  // };
+  const handleDelete = () => {
+      deletePost(post.id);
+  };
   //
   // const handleUpdatePost = () => {
   //   setEditingPost(post);
@@ -49,7 +46,7 @@ function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
       <h3 className="font-bold">{post.title}</h3>
       <p>{previewText}</p>
       {!isOpen && (
-        <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5 mr-2" />View Post</TButton>
+        <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" /></TButton>
       )}
       {isOpen && (
         isFilteredPost
@@ -57,8 +54,10 @@ function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
           : <TButton onClick={handleClose} color="indigo">Close</TButton>
       )}
 
+      <TButton color="red" onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>
+
       {/*<TButton color="green" onClick={handleUpdatePost}><PencilIcon className="w-4 h-4" /></TButton>*/}
-      {/*<TButton color="red" onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>*/}
+
       {/*{editingPost && (*/}
       {/*  <PostEditModal*/}
       {/*    post={editingPost}*/}

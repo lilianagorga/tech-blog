@@ -104,18 +104,18 @@ export default function Dashboard() {
       });
   };
 
-  // const deletePost = (postId) => {
-  //   if (window.confirm('Are you sure you want to remove this post?')) {
-  //     axiosClient.delete(`/posts/${postId}`)
-  //       .then(() => {
-  //         setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-  //         showToast("Post deleted successfully!");
-  //       })
-  //       .catch((error) => {
-  //         showToast(`Error deleting category : ${error.message}`);
-  //       });
-  //   }
-  // };
+  const deletePost = (postId) => {
+    if (window.confirm('Are you sure you want to remove this post?')) {
+      axiosClient.delete(`/posts/${postId}`)
+        .then(() => {
+          setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+          showToast("Post deleted successfully!");
+        })
+        .catch((error) => {
+          showToast(`Error deleting category : ${error.message}`);
+        });
+    }
+  };
   //
   // const updatePost = (updatePost) => {
   //   setPosts(prevPosts =>
@@ -166,7 +166,7 @@ export default function Dashboard() {
           <div className="rounded grid col-span-1">
             <ul className="text-white">
               {posts.map((post) => (
-                <Post key={post.id} post={post} isFilteredPost={false} />
+                <Post key={post.id} post={post} isFilteredPost={false} deletePost={deletePost} />
               ))}
             </ul>
           </div>
@@ -174,7 +174,7 @@ export default function Dashboard() {
             <div className="rounded grid col-span-1">
               <ul className="text-white">
                 {filteredPosts.map((post) => (
-                  <Post key={post.id} post={post} isFilteredPost={true} resetPosts={resetPosts} />
+                  <Post key={post.id} post={post} isFilteredPost={true} resetPosts={resetPosts} deletePost={deletePost} />
                 ))}
               </ul>
             </div>
@@ -184,13 +184,3 @@ export default function Dashboard() {
     </PageComponent>
   );
 }
-
-// {posts.map((post) => (
-//   <Post
-//     key={post.id}
-//     post={post}
-//     resetPosts={resetPosts}
-//     filteredPosts={filteredPosts}
-//     //
-//   />
-// ))}

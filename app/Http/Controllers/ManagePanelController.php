@@ -19,7 +19,7 @@ class ManagePanelController extends Controller
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
     }
 
-    $data = Cache::remember('manage-panels', 60, function () use ($request) {
+    $data = Cache::remember('managePanel', 60, function () use ($request) {
       $users = User::with(['roles.permissions', 'permissions'])->get();
       $roles = Role::all()->pluck('name');
       $rolesWithAssociatedPermissions = Role::with('permissions')->get();
@@ -52,7 +52,7 @@ class ManagePanelController extends Controller
         'guard_name' => 'api'
       ]);
 
-      Cache::forget('manage-panels');
+      Cache::forget('managePanel');
       return response()->json($role, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
@@ -106,7 +106,7 @@ class ManagePanelController extends Controller
 
       if ($role) {
         $role->delete();
-        Cache::forget('manage-panels');
+        Cache::forget('managePanel');
         return response()->json(['message' => 'Role deleted successfully'],
           Response::HTTP_NO_CONTENT);
       }
@@ -134,7 +134,7 @@ class ManagePanelController extends Controller
       return response()->json(['message' => 'User or Roles not found'], Response::HTTP_NOT_FOUND);
     } else {
       $user->assignRole($role);
-      Cache::forget('manage-panels');
+      Cache::forget('managePanel');
       return response()->json(['message' => 'Roles updated successfully'], Response::HTTP_OK);
     }
   }
@@ -157,7 +157,7 @@ class ManagePanelController extends Controller
       return response()->json(['message' => 'User or Role not found'], Response::HTTP_NOT_FOUND);
     } else {
       $user->removeRole($role);
-      Cache::forget('manage-panels');
+      Cache::forget('managePanel');
       return response()->json(['message' => 'Role revoked successfully'], Response::HTTP_OK);
     }
   }
@@ -174,7 +174,7 @@ class ManagePanelController extends Controller
         'guard_name' => 'api'
       ]);
 
-      Cache::forget('manage-panels');
+      Cache::forget('managePanel');
       return response()->json($permission, Response::HTTP_CREATED);
     } else {
       return response()->json(['message' => 'Access Forbidden'], Response::HTTP_FORBIDDEN);
@@ -196,7 +196,7 @@ class ManagePanelController extends Controller
 
       if ($permission) {
         $permission->delete();
-        Cache::forget('manage-panels');
+        Cache::forget('managePanel');
         return response()->json(['message' => 'Permission deleted successfully'], Response::HTTP_NO_CONTENT);
       }
 
@@ -224,7 +224,7 @@ class ManagePanelController extends Controller
         return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);
       } else {
         $user->givePermissionTo($permission);
-        Cache::forget('manage-panels');
+        Cache::forget('managePanel');
         return response()->json(['message' => 'Permissions updated successfully'], Response::HTTP_OK);
       }
   }

@@ -42,7 +42,7 @@ class ManagePanelTest extends TestCase
   {
     $user = $this->createUser();
     Sanctum::actingAs($user);
-    Permission::findOrCreate('manage panels', 'api');
+    Permission::findOrCreate('managePanel', 'api');
     $response = $this->getJson('/api/manage-panels');
     $response->assertStatus(Response::HTTP_FORBIDDEN);
     $response->assertJson(['message' => 'Access Forbidden']);
@@ -61,7 +61,7 @@ class ManagePanelTest extends TestCase
   {
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
-    $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
+    $roles = ['Admin', 'Writer', 'Moderator'];
     foreach ($roles as $role) {
       $this->assertTrue($admin->hasRole($role));
     }
@@ -94,8 +94,8 @@ class ManagePanelTest extends TestCase
 
   public function test_create_role_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     $roleData = [
       'name' => 'Marketer',
     ];
@@ -109,11 +109,11 @@ class ManagePanelTest extends TestCase
     $admin = $this->addRolesAndPermissionsToAdmin();
     Sanctum::actingAs($admin);
     Role::firstOrCreate(['name' => 'Marketer', 'guard_name' => 'api']);
-    Permission::firstOrCreate(['name' => 'edit posts', 'guard_name' => 'api']);
-    Permission::firstOrCreate(['name' => 'delete posts', 'guard_name' => 'api']);
+    Permission::firstOrCreate(['name' => 'editPosts', 'guard_name' => 'api']);
+    Permission::firstOrCreate(['name' => 'deletePosts', 'guard_name' => 'api']);
     $updateData = [
       'name' => 'Marketer',
-      'permissions' => ['edit posts', 'delete posts']
+      'permissions' => ['editPosts', 'deletePosts']
     ];
     $response = $this->putJson('/api/roles', $updateData);
     $response->assertStatus(Response::HTTP_OK);
@@ -123,15 +123,15 @@ class ManagePanelTest extends TestCase
         'name' => 'Marketer',
         'guard_name' => 'api',
         'permissions' => [
-          ['name' => 'edit posts', 'guard_name' => 'api'],
-          ['name' => 'delete posts', 'guard_name' => 'api']
+          ['name' => 'editPosts', 'guard_name' => 'api'],
+          ['name' => 'deletePosts', 'guard_name' => 'api']
         ]
       ]
     ]);
 
     $updatedRole = Role::findByName('Marketer', 'api');
-    $this->assertTrue($updatedRole->hasPermissionTo('edit posts'));
-    $this->assertTrue($updatedRole->hasPermissionTo('delete posts'));
+    $this->assertTrue($updatedRole->hasPermissionTo('editPosts'));
+    $this->assertTrue($updatedRole->hasPermissionTo('deletePosts'));
     $updatedPermissions = $updatedRole->permissions->pluck('name')->sort()->values();
     $expectedPermissions = collect($updateData['permissions'])->sort()->values();
     $this->assertEquals($expectedPermissions, $updatedPermissions);
@@ -140,8 +140,8 @@ class ManagePanelTest extends TestCase
 
   public function test_update_role_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     $updateData = [
       'name' => 'SomeRole',
       'permissions' => ['some_permission']
@@ -168,17 +168,17 @@ class ManagePanelTest extends TestCase
 
   public function test_create_permission_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
 
     $permissionData = [
-      'name' => 'edit posts'
+      'name' => 'editPosts'
     ];
 
     $response = $this->postJson('/api/permissions', $permissionData);
 
     $response->assertStatus(Response::HTTP_FORBIDDEN);
-    $this->assertDatabaseMissing('permissions', ['name' => 'edit posts']);
+    $this->assertDatabaseMissing('permissions', ['name' => 'editPosts']);
   }
 
   public function test_delete_role_successfully_by_admin()
@@ -196,8 +196,8 @@ class ManagePanelTest extends TestCase
 
   public function test_delete_role_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     $user = User::factory()->create();
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
     /** @var User $user */
@@ -246,8 +246,8 @@ class ManagePanelTest extends TestCase
 
   public function test_delete_permission_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     $user = User::factory()->create();
     $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
     /** @var User $user */
@@ -264,8 +264,8 @@ class ManagePanelTest extends TestCase
 
   public function test_delete_permission_associated_to_role_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
 
     $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
 
@@ -298,8 +298,8 @@ class ManagePanelTest extends TestCase
 
   public function test_add_roles_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     /** @var User $user */
     $user = User::factory()->create();
     Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
@@ -337,8 +337,8 @@ class ManagePanelTest extends TestCase
 
   public function test_add_permissions_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     /** @var User $user */
     $user = User::factory()->create();
     Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);
@@ -377,8 +377,8 @@ class ManagePanelTest extends TestCase
 
   public function test_revoke_role_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     /** @var User $user */
     $user = User::factory()->create();
     $role = Role::create(['name' => 'TestRole', 'guard_name' => 'api']);
@@ -419,8 +419,8 @@ class ManagePanelTest extends TestCase
 
   public function test_revoke_permission_denied_for_user_with_panel_access_but_not_admin()
   {
-    $developer = $this->createUserWithSpecificRoleAndPermissions();
-    Sanctum::actingAs($developer);
+    $moderator = $this->createUserWithSpecificRoleAndPermissions();
+    Sanctum::actingAs($moderator);
     /** @var User $user */
     $user = User::factory()->create();
     $permission = Permission::create(['name' => 'TestPermission', 'guard_name' => 'api']);

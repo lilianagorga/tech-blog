@@ -15,7 +15,7 @@ function ManageCategories(){
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const canEdit = currentUser.permissions.some(permission => permission.name === 'manage panels');
+  const canEdit = currentUser.permissions.some(permission => permission.name === 'manageCategories');
 
 
   const openCreateModal = () => {

@@ -55,6 +55,6 @@ class User extends Authenticatable
 
   public function canAccessPanel(): bool
   {
-    return $this->isAdmin() || $this->hasPermissionTo('manage panels', 'api');
+    return $this->isAdmin() || $this->hasPermissionTo('managePanel', 'api');
   }
 }

@@ -16,58 +16,46 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
       /** @var User $adminUser */
-      $roles = ['Admin', 'Writer', 'Marketer', 'Developer'];
-      $permissions = ['manage panels', 'edit posts', 'edit categories', 'edit comments', 'edit code'];
+      $roles = ['Admin', 'Writer', 'Moderator'];
+      $permissions = ['managePanel', 'managePosts', 'manageCategories', 'manageComments'];
 
       foreach ($permissions as $permName) {
         Permission::findOrCreate($permName, 'api');
       }
 
       $adminRole = Role::findOrCreate('Admin', 'api');
-      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit categories', 'edit posts', 'edit comments', 'edit code'])->get());
+      $adminRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['managePosts', 'manageCategories', 'manageComments'])->get());
 
       $writerRole = Role::create(['name' => 'Writer', 'guard_name' => 'api']);
-      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit posts', 'edit comments'])->get());
+      $writerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['manageCategories'])->get());
 
-      $marketerRole = Role::create(['name' => 'Marketer', 'guard_name' => 'api']);
-      $marketerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit posts', 'edit comments'])->get());
-
-      $developerRole = Role::create(['name' => 'Developer', 'guard_name' => 'api']);
-      $developerRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['edit code'])->get());
+      $moderatorRole = Role::create(['name' => 'Moderator', 'guard_name' => 'api']);
+      $moderatorRole->syncPermissions(Permission::where('guard_name', 'api')->whereIn('name', ['managePosts', 'manageComments'])->get());
 
       $adminUser = User::factory()->create([
-        'email' => 'admin@mysite.com',
+        'email' => 'admin@techBlog.com',
         'name' => 'Admin',
         'password' => bcrypt('Admin123!')
       ]);
       $adminUser->assignRole('Admin');
-      $adminUser->givePermissionTo('manage panels');
+      $adminUser->givePermissionTo('managePanel');
 
       /** @var User $writerUser */
       $writerUser = User::factory()->create([
-        'email' => 'writer@example.com',
-        'name' => 'Writer',
+        'email' => 'liliana@email.com',
+        'name' => 'Liliana',
         'password' => bcrypt('Writer123!')
       ]);
       $writerUser->assignRole('Writer');
-      $writerUser->givePermissionTo('manage panels');
+      $writerUser->givePermissionTo('managePanel');
 
-      /** @var User $marketerUser */
-      $marketerUser = User::factory()->create([
-        'email' => 'marketer@example.com',
-        'name' => 'Marketer',
-        'password' => bcrypt('Marketer123!')
+      /** @var User $moderatorUser */
+      $moderatorUser = User::factory()->create([
+        'email' => 'emanuele@email.com',
+        'name' => 'Emanuele',
+        'password' => bcrypt('Moderator123!')
       ]);
-      $marketerUser->assignRole('Marketer');
-      $marketerUser->givePermissionTo('manage panels');
-
-      /** @var User $developerUser */
-      $developerUser = User::factory()->create([
-        'email' => 'developer@example.com',
-        'name' => 'Developer',
-        'password' => bcrypt('Developer123!')
-      ]);
-      $developerUser->assignRole('Developer');
-      $developerUser->givePermissionTo('manage panels');
+      $moderatorUser->assignRole('Moderator');
+      $moderatorUser->givePermissionTo('managePanel');
     }
 }
