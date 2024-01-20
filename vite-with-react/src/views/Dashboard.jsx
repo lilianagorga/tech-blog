@@ -4,6 +4,7 @@ import { useStateContext } from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 import TButton from "../components/core/TButton.jsx";
 import Post from "./Post.jsx";
+import { createSlug } from "../utils/utils.jsx";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -11,36 +12,9 @@ export default function Dashboard() {
   const [categories, setCategories] = useState([]);
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', body: ''});
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { showToast } = useStateContext();
-
-  useEffect(() => {
-    setLoading(true);
-    axiosClient.get('/categories')
-      .then((res) => {
-        setCategories(res.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching categories:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-
-  const handleCategoryPost = (categorySlug) => {
-    setLoading(true);
-    axiosClient.get(`/category/${categorySlug}`)
-      .then((res) => {
-        setPosts(res.data.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching posts by category:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   useEffect(()=>{
     setLoading(true);
@@ -58,6 +32,21 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
+    axiosClient.get('/categories')
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching categories:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect (() => {
+    setLoading(true);
     axiosClient.get('/posts')
       .then(response => {
         setPosts(response.data.data);
@@ -65,19 +54,45 @@ export default function Dashboard() {
       .catch(error => {
         console.error('Error fetching posts:', error);
         showToast("Error fetching posts!");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
+  const handleCategoryPost = (categorySlug) => {
+    setSelectedCategory(categorySlug);
+    setLoading(true);
+    axiosClient.get(`/category/${categorySlug}`)
+      .then((res) => {
+        setFilteredPosts(res.data.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching posts by category:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const resetPosts = () => {
-    setPosts([]);
+    setFilteredPosts([]);
   };
 
   const handlePostInput = (e) => {
     setNewPost({ ...newPost, [e.target.name]: e.target.value });
   };
 
-  const handleCreatePost = () => {
-    axiosClient.post('/posts', newPost)
+  const handleCreatePost = (e) => {
+    e.preventDefault();
+    const slug = createSlug(newPost.title);
+    const active = true;
+    const payload = {
+      ...newPost,
+      slug,
+      active
+    };
+    axiosClient.post('/posts', payload)
       .then((response) => {
         setPosts(prevPosts => [...prevPosts, response.data]);
         setNewPost({title: '', body: ''});
@@ -89,6 +104,25 @@ export default function Dashboard() {
       });
   };
 
+  // const deletePost = (postId) => {
+  //   if (window.confirm('Are you sure you want to remove this post?')) {
+  //     axiosClient.delete(`/posts/${postId}`)
+  //       .then(() => {
+  //         setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+  //         showToast("Post deleted successfully!");
+  //       })
+  //       .catch((error) => {
+  //         showToast(`Error deleting category : ${error.message}`);
+  //       });
+  //   }
+  // };
+  //
+  // const updatePost = (updatePost) => {
+  //   setPosts(prevPosts =>
+  //     prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
+  //   );
+  //   showToast("Post updated successfully!");
+  // };
 
   return (
     <PageComponent title="Dashboard">
@@ -115,7 +149,7 @@ export default function Dashboard() {
                 name="title"
                 value={newPost.title}
                 onChange={handlePostInput}
-                placeholder="What are you thinking ?"
+                placeholder="Title"
                 required
               />
               <textarea
@@ -123,7 +157,7 @@ export default function Dashboard() {
                 name="body"
                 value={newPost.body}
                 onChange={handlePostInput}
-                placeholder="........"
+                placeholder="What are you thinking ?"
                 required
               />
               <TButton color="indigo" type="submit">Post</TButton>
@@ -132,16 +166,31 @@ export default function Dashboard() {
           <div className="rounded grid col-span-1">
             <ul className="text-white">
               {posts.map((post) => (
-                <Post
-                  key={post.id}
-                  post={post}
-                  resetPosts={resetPosts}
-                />
+                <Post key={post.id} post={post} isFilteredPost={false} />
               ))}
             </ul>
           </div>
+          {selectedCategory && (
+            <div className="rounded grid col-span-1">
+              <ul className="text-white">
+                {filteredPosts.map((post) => (
+                  <Post key={post.id} post={post} isFilteredPost={true} resetPosts={resetPosts} />
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </PageComponent>
   );
 }
+
+// {posts.map((post) => (
+//   <Post
+//     key={post.id}
+//     post={post}
+//     resetPosts={resetPosts}
+//     filteredPosts={filteredPosts}
+//     //
+//   />
+// ))}
