@@ -6,7 +6,7 @@ import TButton from "../components/core/TButton.jsx";
 import Post from "./Post.jsx";
 import { createSlug } from "../utils/utils.jsx";
 
-export default function Dashboard() {
+export default function Home() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
   const [categories, setCategories] = useState([]);
@@ -19,7 +19,7 @@ export default function Dashboard() {
   useEffect(()=>{
     setLoading(true);
     axiosClient
-      .get(`/dashboard`)
+      .get(`/home`)
       .then((res)=>{
         setLoading(false);
         setData(res.data);
@@ -45,20 +45,22 @@ export default function Dashboard() {
       });
   }, []);
 
-  useEffect (() => {
-    setLoading(true);
-    axiosClient.get('/posts')
-      .then(response => {
-        setPosts(response.data.data);
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-        showToast("Error fetching posts!");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  useEffect(() => {
+    if (!selectedCategory) {
+      setLoading(true);
+      axiosClient.get('/posts')
+        .then(response => {
+          setPosts(response.data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching posts:', error);
+          showToast("Error fetching posts!");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [selectedCategory]);
 
   const handleCategoryPost = (categorySlug) => {
     setSelectedCategory(categorySlug);
@@ -76,10 +78,6 @@ export default function Dashboard() {
       .finally(() => {
         setLoading(false);
       });
-  };
-
-  const resetPosts = () => {
-    setFilteredPosts([]);
   };
 
   const handlePostInput = (e) => {
@@ -128,7 +126,7 @@ export default function Dashboard() {
   // };
 
   return (
-    <PageComponent title="Dashboard">
+    <PageComponent title="Tech Blog">
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
         <div className="grid grid-cols-4 overflow-y-auto mx-8 py-4 px-3 bg-gray-50 gap-4 rounded dark:bg-gray-800">
@@ -167,21 +165,30 @@ export default function Dashboard() {
             </form>
           </div>
           <div className="rounded grid col-span-1">
-            <ul className="text-white">
-              {posts.map((post) => (
-                <Post key={post.id} post={post} isFilteredPost={false} deletePost={deletePost} />
-              ))}
-            </ul>
-          </div>
-          {selectedCategory && (
-            <div className="rounded grid col-span-1">
+            {selectedCategory ? (
               <ul className="text-white">
-                {filteredPosts.map((post) => (
-                  <Post key={post.id} post={post} isFilteredPost={true} resetPosts={resetPosts} deletePost={deletePost} />
+                {filteredPosts.map(post => (
+                  <Post
+                    key={post.id}
+                    post={post}
+                    isFilteredPost={true}
+                    deletePost={deletePost}
+                  />
                 ))}
               </ul>
-            </div>
-          )}
+            ) : (
+              <ul className="text-white">
+                {posts.map(post => (
+                  <Post
+                    key={post.id}
+                    post={post}
+                    isFilteredPost={false}
+                    deletePost={deletePost}
+                  />
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       )}
     </PageComponent>

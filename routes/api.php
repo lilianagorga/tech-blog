@@ -5,7 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ManagePanelController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\UI\DashboardController;
+use App\Http\Controllers\UI\HomeController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
   Route::post('/logout', [AuthController::class, 'logout']);
   Route::get('/me', [AuthController::class, 'me']);
-  Route::get('/dashboard', [DashboardController::class, 'index']);
+  Route::get('/home', [HomeController::class, 'index']);
 });
 
 Route::get('/search', [PostController::class, 'search'])->name('search');

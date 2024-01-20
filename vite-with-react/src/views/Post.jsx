@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import TButton from "../components/core/TButton.jsx";
 import { EyeIcon, PencilIcon } from "@heroicons/react/24/outline";
 import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import PostEditModal from "../components/PostEditModal.jsx";
 
-function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
+function Post({ post, deletePost, updatePost }) {
   const { currentUser } = useStateContext();
   const [isOpen, setIsOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
@@ -36,11 +36,6 @@ function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
     setIsOpen(false);
   }
 
-  const handleResetAndClose = () => {
-    setIsOpen(false);
-    resetPosts();
-  }
-
   const handleDelete = () => {
       deletePost(post.id);
   };
@@ -58,12 +53,10 @@ function Post({ post, isFilteredPost, resetPosts, deletePost, updatePost }) {
       <h3 className="font-bold">{post.title}</h3>
       <p>{previewText}</p>
       {!isOpen && (
-        <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" /></TButton>
+        <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" />View</TButton>
       )}
       {isOpen && (
-        isFilteredPost
-          ? <TButton onClick={handleResetAndClose} color="indigo">Close</TButton>
-          : <TButton onClick={handleClose} color="indigo">Close</TButton>
+        <TButton onClick={handleClose} color="indigo">Close</TButton>
       )}
       {canEdit && (
         <TButton color="red" onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>

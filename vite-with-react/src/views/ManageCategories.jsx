@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../axios.js";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import PageComponent from "../components/PageComponent.jsx";
 import TButton from "../components/core/TButton.jsx";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import CategoryEditModal from "../components/CategoryEditModal.jsx";
@@ -79,8 +80,8 @@ function ManageCategories(){
   };
 
   return(
-    <div className="">
-      {loading && <div>Loading...</div>}
+    <PageComponent title="Manage Categories">
+      {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
         <>
           <table className="">
@@ -132,7 +133,7 @@ function ManageCategories(){
           )}
         </>
       )}
-    </div>
+    </PageComponent>
   )
 }
 

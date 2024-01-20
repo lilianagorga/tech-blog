@@ -1,12 +1,11 @@
 import {Fragment} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {Navigate, NavLink, Outlet, useNavigate} from "react-router-dom";
+import {Link, Navigate, NavLink, Outlet, useNavigate} from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
 const navigation = [
-  { name: 'Dashboard', to: '/dashboard' },
   { name: 'Manage Panel', to: '/manage-panels' },
   { name: 'Manage Categories', to: '/categories'}
 ];
@@ -70,11 +69,13 @@ export default function DefaultLayout() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <img
-                        className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
-                      />
+                     <NavLink to="/home">
+                       <img
+                         className="h-8 w-8 hover:scale-110 transition-transform duration-300"
+                         src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                         alt="Tech Blog"
+                       />
+                     </NavLink>
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">

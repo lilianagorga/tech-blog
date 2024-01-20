@@ -8,12 +8,16 @@ import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
 import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
 import RoleWithAssociatedPermissionsModal from "../components/RoleWithAssociatedPermissionsModal.jsx";
+import ManageCategories from "./ManageCategories.jsx";
+import TButton from "../components/core/TButton.jsx";
+import {Link} from "react-router-dom";
 
 function ManagePanel() {
   const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames,
     rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
     selectedPermissions, setSelectedPermissions
   } = useStateContext();
+  const [showManageCategories, setShowManageCategories] = useState(false);
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -324,6 +328,7 @@ function ManagePanel() {
       <div className="grid grid-cols-10 gap-4">
         <aside className='grid col-span-2 grid-row-6 m-4 p-4 bg-gray-800 rounded aria-label="Sidebar"'>
 
+          <Link to="/categories" className="bg-indigo-500 rounded text-white font-bold px-4 py-2 mx-4 block text-center hover:bg-indigo-700">Manage Categories</Link>
           <PermissionsModal
             showModal={showPermissionsModal}
             handleModalToggle={handlePermissionsModalToggle}

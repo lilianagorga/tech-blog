@@ -1,5 +1,5 @@
 import {createBrowserRouter} from "react-router-dom";
-import Dashboard from "./views/Dashboard.jsx";
+import Home from "./views/Home.jsx";
 import Login from "./views/Login.jsx";
 import Register from "./views/Register.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
     element: <DefaultLayout />,
     children: [
       {
-        path: 'dashboard',
-        element: <Dashboard/>,
+        path: 'home',
+        element: <Home/>,
       },
       {
         path: 'manage-panels',
