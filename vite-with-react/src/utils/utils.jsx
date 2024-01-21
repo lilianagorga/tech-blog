@@ -1,3 +1,5 @@
+import axiosClient from "../axios.js";
+
 export const getUserPermissions = (user) => {
   const rolePermissions = user.roles
     ? user.roles.flatMap(role => role.permissions ? role.permissions.map(perm => perm.name) : [])
@@ -64,3 +66,4 @@ export const createSlug = (title) => {
   return title
     .toLowerCase().replace(/[\s\W-]+/g, '-').replace(/^-+|-+$/g, '');
 };
+

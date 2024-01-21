@@ -66,8 +66,11 @@ class PostController extends Controller
     }
     $validatedData['published_at'] = $validatedData['published_at'] ?? now();
     $post = Post::create($validatedData);
-    if ($request->has('categories') && is_array($request->categories)) {
-      $post->categories()->attach($request->categories);
+
+    if ($request->has('categories') && is_array($request->categories) && !empty($request->categories)) {
+      $validCategoryIds = Category::whereIn('id', $request->categories)->pluck('id')->all();
+
+      $post->categories()->sync($validCategoryIds);
     }
 
     return response()->json($post, Response::HTTP_CREATED);

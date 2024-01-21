@@ -5,15 +5,20 @@ import axiosClient from "../axios.js";
 import TButton from "../components/core/TButton.jsx";
 import Post from "./Post.jsx";
 import { createSlug } from "../utils/utils.jsx";
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
   const [categories, setCategories] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [postsByCategory, setPostsByCategory] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', body: ''});
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  // const [selectedCategory, setSelectedCategory] = useState(null);
   const { showToast, refreshKey } = useStateContext();
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
 
   useEffect(()=>{
     setLoading(true);
@@ -44,13 +49,9 @@ export default function Home() {
       });
   }, []);
 
-  const handleShowAllAndFilteredPosts = (categorySlug) => {
-    setSelectedCategory(categorySlug);
+  useEffect(() => {
     setLoading(true);
-
-    const endpoint = categorySlug ? `/posts?category=${categorySlug}` : '/posts';
-
-    axiosClient.get(endpoint)
+    axiosClient.get('/posts')
       .then((res) => {
         setPosts(res.data.data);
       })
@@ -61,11 +62,22 @@ export default function Home() {
       .finally(() => {
         setLoading(false);
       });
+  }, [])
+
+  const filterPostsByCategory = (category) => {
+    navigate(`/${category.slug}`, {
+      state: {
+      posts: getPostsByCategory(category.id),
+      category: category
+    }});
   };
 
-  useEffect(() => {
-    handleShowAllAndFilteredPosts(null);
-  }, [refreshKey]);
+  const getPostsByCategory = (categoryId) => {
+    return posts.filter(post =>
+      post.categories.some(category => category.id === categoryId)
+    );
+  }
+
 
   const handlePostInput = (e) => {
     setNewPost({ ...newPost, [e.target.name]: e.target.value });
@@ -73,18 +85,25 @@ export default function Home() {
 
   const handleCreatePost = (e) => {
     e.preventDefault();
-    const slug = createSlug(newPost.title);
+
+    const formData = new FormData(e.target);
+    const slug = createSlug(formData.get('title'));
     const active = true;
-    const payload = {
-      ...newPost,
+    const category = formData.get('category');
+
+    let payload = {
+      title: formData.get('title'),
+      body: formData.get('body'),
       slug,
-      active
+      active,
+      categories: [category],
     };
+
     axiosClient.post('/posts', payload)
       .then((response) => {
         setPosts(prevPosts => [...prevPosts, response.data]);
-        setNewPost({title: '', body: ''});
         showToast("Post created successfully!");
+        window.location.reload();
       })
       .catch((error) => {
         console.error('Error creating post:', error);
@@ -104,7 +123,7 @@ export default function Home() {
         });
     }
   };
-  //
+
   // const updatePost = (updatePost) => {
   //   setPosts(prevPosts =>
   //     prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
@@ -122,7 +141,7 @@ export default function Home() {
             <ul className="text-white">
               {categories.map((category) => (
                 <li key={category.id} className="p-8">
-                  <TButton color="indigo" onClick={() => handleShowAllAndFilteredPosts(category.slug)}>
+                  <TButton color="indigo" onClick={() => filterPostsByCategory(category)}>
                     {category.title}
                   </TButton>
                 </li>
@@ -140,6 +159,14 @@ export default function Home() {
                 placeholder="Title"
                 required
               />
+              <select name="category">
+                <option>Select a Category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
               <textarea
                 className="rounded"
                 name="body"

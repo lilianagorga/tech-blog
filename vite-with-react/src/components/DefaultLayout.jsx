@@ -8,7 +8,7 @@ import axiosClient from "../axios.js";
 const navigation = [
   { name: 'Manage Panel', to: '/manage-panels' },
   { name: 'Manage Categories', to: '/categories'},
-  { name: 'Home', to: '/home' },
+  { name: 'Home', to: '/' },
 ];
 
 function classNames(...classes) {

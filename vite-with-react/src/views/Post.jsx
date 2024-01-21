@@ -51,6 +51,9 @@ function Post({ post, deletePost, updatePost }) {
   return (
     <li className="border p-2 rounded shadow">
       <h3 className="font-bold">{post.title}</h3>
+      {post.categories && post.categories.map((category) => (
+        <h6 key={category.id}>{category.title}</h6>
+      ))}
       <p>{previewText}</p>
       {!isOpen && (
         <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" />View</TButton>

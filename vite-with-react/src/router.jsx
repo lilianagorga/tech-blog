@@ -8,6 +8,7 @@ import ManagePanel from "./views/ManagePanel.jsx";
 import Post from "./views/Post.jsx";
 import ManageCategories from "./views/ManageCategories.jsx";
 import Comment from "./views/Comment.jsx";
+import Category from "./views/Category.jsx";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     element: <DefaultLayout />,
     children: [
       {
-        path: 'home',
+        path: '',
         element: <Home/>,
       },
       {
@@ -23,9 +24,13 @@ const router = createBrowserRouter([
         element: <ManagePanel/>
       },
       {
-        path: '/categories',
+        path: 'categories',
         element: <ManageCategories />,
       },
+      {
+        path: '/:categoryName',
+        element: <Category />
+      }
     ]
   },
   {
