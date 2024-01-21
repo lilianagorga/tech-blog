@@ -7,19 +7,19 @@ export default {
   theme: {
     extend: {
       keyframes: {
-        'fade-in-down': {
-          "from": {
-            transform: "translateY(-0.75rem)",
-            opacity: '0'
+        bounce: {
+          "0%, 100%": {
+            transform: "translateY(-25%)",
+            animationTimingFunction: "cubic-bezier(0.8, 0, 1, 1)",
           },
-          "to": {
-            transform: "translateY(0rem)",
-            opacity: '1'
+          "50%": {
+            transform: "translateY(0)",
+            animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
           },
         },
       },
       animation: {
-        'fade-in-down': "fade-in-down 0.2s ease-in-out both",
+        bounce: "bounce 1s infinite",
       },
     },
   },

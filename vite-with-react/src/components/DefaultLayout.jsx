@@ -1,22 +1,27 @@
 import {Fragment} from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {Link, Navigate, NavLink, Outlet, useNavigate} from "react-router-dom";
+import { Bars3Icon, UserIcon, XMarkIcon, HomeIcon } from '@heroicons/react/24/outline'
+import { Navigate, NavLink, Outlet } from "react-router-dom";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
 const navigation = [
   { name: 'Manage Panel', to: '/manage-panels' },
-  { name: 'Manage Categories', to: '/categories'}
+  { name: 'Manage Categories', to: '/categories'},
+  { name: 'Home', to: '/home' },
 ];
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setUserToken, setCurrentUser, permissions } = useStateContext();
+  const { currentUser, userToken, setUserToken, setCurrentUser, setRefreshKey } = useStateContext();
+
+  const handleHomeClick = () => {
+    setRefreshKey(prevKey => prevKey + 1);
+  }
+
   const hasRequiredRolesOrPermissionsForCategories = () => {
     if (!currentUser || !currentUser.roles || !currentUser.permissions) {
       return false;
@@ -69,16 +74,14 @@ export default function DefaultLayout() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                     <NavLink to="/home">
-                       <img
-                         className="h-8 w-8 hover:scale-110 transition-transform duration-300"
-                         src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                         alt="Tech Blog"
-                       />
-                     </NavLink>
+                     <img
+                       className="h-8 w-8 hover:animate-bounce"
+                       src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                       alt="Tech Blog"
+                     />
                     </div>
                     <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
+                      <div className="ml-10 flex items-center space-x-4">
                         {navigation.map((item) => (
                           <NavLink
                             key={item.name}
@@ -98,7 +101,7 @@ export default function DefaultLayout() {
                               }
                             }}
                           >
-                            {item.name}
+                            {item.name === 'Home' ? <HomeIcon onClick={handleHomeClick} className="h-4 w-4" /> : item.name}
                           </NavLink>
                         ))}
                       </div>
@@ -168,7 +171,13 @@ export default function DefaultLayout() {
                         }
                       }}
                     >
-                      {item.name}
+                      {item.name === 'Home' ? (
+                        <div className="flex items-center">
+                          <HomeIcon className="h-6 w-6" onClick={handleHomeClick} />
+                        </div>
+                      ) : (
+                        item.name
+                      )}
                     </NavLink>
                   ))}
                 </div>

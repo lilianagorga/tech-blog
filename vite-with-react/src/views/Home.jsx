@@ -13,8 +13,7 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', body: ''});
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const { showToast } = useStateContext();
-  const [filteredPosts, setFilteredPosts] = useState([]);
+  const { showToast, refreshKey } = useStateContext();
 
   useEffect(()=>{
     setLoading(true);
@@ -45,40 +44,28 @@ export default function Home() {
       });
   }, []);
 
-  useEffect(() => {
-    if (!selectedCategory) {
-      setLoading(true);
-      axiosClient.get('/posts')
-        .then(response => {
-          setPosts(response.data.data);
-        })
-        .catch(error => {
-          console.error('Error fetching posts:', error);
-          showToast("Error fetching posts!");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  }, [selectedCategory]);
-
-  const handleCategoryPost = (categorySlug) => {
+  const handleShowAllAndFilteredPosts = (categorySlug) => {
     setSelectedCategory(categorySlug);
     setLoading(true);
 
-    console.log("posts", posts);
+    const endpoint = categorySlug ? `/posts?category=${categorySlug}` : '/posts';
 
-    axiosClient.get(`/category/${categorySlug}`)
+    axiosClient.get(endpoint)
       .then((res) => {
-        setFilteredPosts(res.data.data);
+        setPosts(res.data.data);
       })
       .catch((error) => {
-        console.error('Error fetching posts by category:', error);
+        console.error('Error fetching posts:', error);
+        showToast("Error fetching posts!");
       })
       .finally(() => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    handleShowAllAndFilteredPosts(null);
+  }, [refreshKey]);
 
   const handlePostInput = (e) => {
     setNewPost({ ...newPost, [e.target.name]: e.target.value });
@@ -135,7 +122,7 @@ export default function Home() {
             <ul className="text-white">
               {categories.map((category) => (
                 <li key={category.id} className="p-8">
-                  <TButton color="indigo" onClick={() => handleCategoryPost(category.slug)}>
+                  <TButton color="indigo" onClick={() => handleShowAllAndFilteredPosts(category.slug)}>
                     {category.title}
                   </TButton>
                 </li>
@@ -165,29 +152,15 @@ export default function Home() {
             </form>
           </div>
           <div className="rounded grid col-span-1">
-            {selectedCategory ? (
-              <ul className="text-white">
-                {filteredPosts.map(post => (
-                  <Post
-                    key={post.id}
-                    post={post}
-                    isFilteredPost={true}
-                    deletePost={deletePost}
-                  />
-                ))}
-              </ul>
-            ) : (
-              <ul className="text-white">
-                {posts.map(post => (
-                  <Post
-                    key={post.id}
-                    post={post}
-                    isFilteredPost={false}
-                    deletePost={deletePost}
-                  />
-                ))}
-              </ul>
-            )}
+            <ul className="text-white">
+              {posts.map(post => (
+                <Post
+                  key={post.id}
+                  post={post}
+                  deletePost={deletePost}
+                />
+              ))}
+            </ul>
           </div>
         </div>
       )}

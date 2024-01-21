@@ -18,7 +18,7 @@ function Post({ post, deletePost, updatePost }) {
     return hasRole || hasPermission || isOwner;
   };
 
-  const canEdit = hasRequiredRoleOrPermission();
+  const canDelete = hasRequiredRoleOrPermission();
 
   function truncateText(text, limit) {
     const wordsArray = text.split(' ');
@@ -58,7 +58,7 @@ function Post({ post, deletePost, updatePost }) {
       {isOpen && (
         <TButton onClick={handleClose} color="indigo">Close</TButton>
       )}
-      {canEdit && (
+      {canDelete && (
         <TButton color="red" onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>
       )}
       {/*<TButton color="green" onClick={handleUpdatePost}><PencilIcon className="w-4 h-4" /></TButton>*/}
