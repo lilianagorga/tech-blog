@@ -36,6 +36,13 @@ function Category() {
     }
   };
 
+  const updatePost = (updatePost) => {
+    setAvailablePosts(prevPosts =>
+      prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
+    );
+    showToast("Post updated successfully!");
+  };
+
   return(
     <PageComponent title={category.title}>
       <TButton onClick={goBack}>
@@ -49,6 +56,7 @@ function Category() {
               <Post
                 post={post}
                 deletePost={deletePost}
+                updatePost={updatePost}
               />
             </div>
           ))

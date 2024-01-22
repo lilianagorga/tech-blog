@@ -6,6 +6,7 @@ import TButton from "../components/core/TButton.jsx";
 import Post from "./Post.jsx";
 import { createSlug } from "../utils/utils.jsx";
 import { useNavigate } from 'react-router-dom';
+import PostEditModal from "../components/PostEditModal.jsx";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,8 @@ export default function Home() {
   const [newPost, setNewPost] = useState({ title: '', body: ''});
   const { showToast } = useStateContext();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
 
   useEffect(()=>{
@@ -76,7 +78,6 @@ export default function Home() {
     );
   }
 
-
   const handlePostInput = (e) => {
     setNewPost({ ...newPost, [e.target.name]: e.target.value });
   };
@@ -122,12 +123,26 @@ export default function Home() {
     }
   };
 
-  // const updatePost = (updatePost) => {
-  //   setPosts(prevPosts =>
-  //     prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
-  //   );
-  //   showToast("Post updated successfully!");
-  // };
+  const updatePost = (updatePost) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
+    );
+    showToast("Post updated successfully!");
+  };
+
+  const handleUpdatePost = (post) => {
+    console.log('Opening edit modal for post', post);
+    setEditingPost(post);
+    setIsModalOpen(true);
+    console.log('Current editing post', editingPost);
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      console.log('Modal is open with editing post:', editingPost);
+    }
+  }, [isModalOpen, editingPost]);
+
 
   return (
     <PageComponent title="Tech Blog">
@@ -178,14 +193,25 @@ export default function Home() {
             </form>
           </div>
           <div className="rounded-lg shadow-xl p-6 border-4 border-gray-800">
-            <ul className="text-white grid grid-cols-3 gap-4 posts-list posts-list:hover">
+            <ul className="text-gray-400 grid grid-cols-3 gap-4 posts-list posts-list:hover">
               {posts.map(post => (
                 <Post
                   key={post.id}
                   post={post}
                   deletePost={deletePost}
+                  handleUpdatePost={handleUpdatePost}
                 />
               ))}
+              {editingPost && isModalOpen && (
+                <PostEditModal
+                  post={editingPost}
+                  onClose={() =>{
+                    setEditingPost(null);
+                    setIsModalOpen(false);
+                  }}
+                  onPostUpdated={updatePost}
+                />
+              )}
             </ul>
           </div>
         </div>

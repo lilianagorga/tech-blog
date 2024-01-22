@@ -5,10 +5,9 @@ import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import PostEditModal from "../components/PostEditModal.jsx";
 
-function Post({ post, deletePost, updatePost }) {
+function Post({ post, deletePost, handleUpdatePost }) {
   const { currentUser } = useStateContext();
   const [isOpen, setIsOpen] = useState(false);
-  const [editingPost, setEditingPost] = useState(null);
 
   const hasRequiredRoleOrPermission = () => {
     const roles = ['Admin', 'Moderator'];
@@ -19,6 +18,7 @@ function Post({ post, deletePost, updatePost }) {
   };
 
   const canDelete = hasRequiredRoleOrPermission();
+  const canUpdate = hasRequiredRoleOrPermission();
 
   function truncateText(text, limit) {
     const wordsArray = text.split(' ');
@@ -39,22 +39,21 @@ function Post({ post, deletePost, updatePost }) {
   const handleDelete = () => {
       deletePost(post.id);
   };
-  //
-  // const handleUpdatePost = () => {
-  //   setEditingPost(post);
-  //
-  // };
-
 
   const previewText = isOpen ? post.body : truncateText(post.body, 10);
+  console.log('Post props:', { handleUpdatePost });
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
-      {canDelete && (
-        <div className="absolute top-0 right-0 m-2">
+      <div className="absolute top-0 right-0 m-2 flex gap-2">
+        {canDelete && (
           <TButton color="red" square onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>
-        </div>
-      )}
+        )}
+        {canUpdate && (
+          <TButton color="green" square  onClick={() => handleUpdatePost(post)}><PencilIcon className="w-4 h-4" /></TButton>
+        )}
+      </div>
+
       <div className="flex-1">
         <h3 className="font-bold">{post.title}</h3>
         <div className="flex flex-wrap">
@@ -76,16 +75,6 @@ function Post({ post, deletePost, updatePost }) {
          <TButton onClick={handleClose} color="indigo">Close</TButton>
        )}
      </div>
-      {/*<TButton color="green" onClick={handleUpdatePost}><PencilIcon className="w-4 h-4" /></TButton>*/}
-
-      {/*{editingPost && (*/}
-      {/*  <PostEditModal*/}
-      {/*    post={editingPost}*/}
-      {/*    onClose={() => setEditingPost(null)}*/}
-      {/*    onPostUpdated={updatePost}*/}
-      {/*  />*/}
-      {/*)}*/}
-
     </li>
   );
 }

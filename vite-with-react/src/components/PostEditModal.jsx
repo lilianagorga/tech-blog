@@ -6,12 +6,17 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
   const [editData, setEditData] = useState({
     title: post.title,
     body: post.body,
+    slug: post.slug,
+    active: post.active
   });
 
   useEffect(() => {
+    console.log('Modal received post:', post);
     setEditData({
       title: post.title,
       body: post.body,
+      slug: post.slug,
+      active: post.active
     });
   }, [post]);
 
@@ -19,16 +24,26 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
-  const handleUpdatePost = () => {
+  const handleUpdatePost = () =>{
     axiosClient.put(`/posts/${post.id}`, editData)
-      .then((response) => {
+      .then((response)=>{
         onPostUpdated(response.data);
         onClose();
       })
-      .catch((error) => {
-        console.error('Error updating post:', error);
+      .catch((error) =>{
+        if (error.response) {
+          console.error('Error data:', error.response.data);
+          console.error('Error status:', error.response.status);
+        } else {
+          console.error('Error updating post:', error.message);
+        }
       });
-  };
+      // .catch((error)=>{
+      //   console.error('Error updating post:', error);
+      // });
+  }
+  console.log('editData.title:', editData.title);
+  console.log('editData.body:', editData.body);
 
   return (
     <div className="modal-backdrop">
@@ -37,6 +52,12 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
           type="text"
           name="title"
           value={editData.title}
+          onChange={handleInputChange}
+        />
+        <input
+          type="text"
+          name="slug"
+          value={editData.slug}
           onChange={handleInputChange}
         />
         <textarea
