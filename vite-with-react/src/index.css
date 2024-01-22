@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.manage-categories-container, .modals-container {
+  width: 100%;
+}
+
+li::marker {
+  content: none;
+}
+
+.form-element-border, .posts-list > li {
+  @apply border-2 border-gray-700
+}
+
+.form-element-border:hover {
+  @apply border-4 border-gray-600
+}
+
+.posts-list > li:hover {
+  @apply border-2 border-gray-600
+}

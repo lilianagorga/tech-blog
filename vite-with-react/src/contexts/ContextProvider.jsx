@@ -31,7 +31,6 @@ const getDefaultPermissions = () => {
 };
 
 const StateContext = createContext({
-  refreshKey: 0,
   currentUser: getDefaultCurrentUser(),
   userToken: localStorage.getItem('TOKEN') || null,
   roles: getDefaultRoles(),
@@ -50,7 +49,6 @@ const StateContext = createContext({
     message: '',
     show: false,
   },
-  setRefreshKey: () => {},
   setCurrentUser: () => {},
   setUserToken: () => {},
   setRoles: () => {},
@@ -68,7 +66,6 @@ const StateContext = createContext({
 });
 
 export const ContextProvider = ({ children }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
   const [currentUser, setCurrentUser] = useState(getDefaultCurrentUser());
   const [userToken, setUserToken] = useState(localStorage.getItem('TOKEN') || '');
   const [roles, setRoles] = useState(getDefaultRoles());
@@ -139,7 +136,6 @@ export const ContextProvider = ({ children }) => {
       rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
       selectedPermissions, setSelectedPermissions,
       toast, showToast,
-      refreshKey, setRefreshKey,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
       {children}

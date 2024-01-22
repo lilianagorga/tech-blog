@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Post from "./Post.jsx";
 import axiosClient from "../axios.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
+import PageComponent from "../components/PageComponent.jsx";
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import TButton from "../components/core/TButton.jsx";
 
 function Category() {
   const location = useLocation();
@@ -10,10 +13,15 @@ function Category() {
   const category = location.state.category;
   const [availablePosts, setAvailablePosts] = useState([]);
   const { showToast } = useStateContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAvailablePosts(posts);
-  })
+  }, [posts]);
+
+  const goBack = () => {
+    navigate(-1);
+  }
 
   const deletePost = (postId) => {
     if (window.confirm('Are you sure you want to remove this post?')) {
@@ -29,16 +37,26 @@ function Category() {
   };
 
   return(
-    <>
-      <h1>{category.title}</h1>
-      {availablePosts.map(post => (
-        <Post
-          key={post.id}
-          post={post}
-          deletePost={deletePost}
-        />
-      ))}
-    </>
+    <PageComponent title={category.title}>
+      <TButton onClick={goBack}>
+        <ArrowLeftIcon className="h-5 w-5" />
+        <span className="ml-1 font-bold">Back</span>
+      </TButton>
+      <div className="grid grid-cols-3 gap-4">
+        {availablePosts.length > 0 ? (
+          availablePosts.map(post => (
+            <div key={post.id} className="col-span-1">
+              <Post
+                post={post}
+                deletePost={deletePost}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="text-gray-800 text-center font-bold uppercase col-span-3 p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">No post yet</div>
+        )}
+      </div>
+    </PageComponent>
   )
 }
 

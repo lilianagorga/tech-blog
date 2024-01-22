@@ -12,10 +12,8 @@ export default function Home() {
   const [data, setData] = useState({});
   const [categories, setCategories] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [postsByCategory, setPostsByCategory] = useState([]);
   const [newPost, setNewPost] = useState({ title: '', body: ''});
-  // const [selectedCategory, setSelectedCategory] = useState(null);
-  const { showToast, refreshKey } = useStateContext();
+  const { showToast } = useStateContext();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -135,12 +133,11 @@ export default function Home() {
     <PageComponent title="Tech Blog">
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
-        <div className="grid grid-cols-4 overflow-y-auto mx-8 py-4 px-3 bg-gray-50 gap-4 rounded dark:bg-gray-800">
-          <div className="grid col-span-1">
-            <h2 className="text-white fond-bold">Categories</h2>
-            <ul className="text-white">
+        <div className="overflow-y-auto mx-8 py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
+          <div className="border-4 border-gray-800 rounded-lg shadow-xl p-6">
+            <ul className="text-white flex flex-wrap justify-between">
               {categories.map((category) => (
-                <li key={category.id} className="p-8">
+                <li key={category.id} className="p-2">
                   <TButton color="indigo" onClick={() => filterPostsByCategory(category)}>
                     {category.title}
                   </TButton>
@@ -148,10 +145,11 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          <div className="grid col-span-1">
-            <form onSubmit={handleCreatePost}>
+          <div className="shadow-lg rounded-lg p-6 border-1 my-16 mx-auto max-w-screen-lg">
+            <form onSubmit={handleCreatePost} className="flex gap-4 items-center justify-center form-element-border:hover">
               <input
-                className="rounded mb-2"
+                className="rounded mb-2 px-4 py-2 form-element-border"
+                style={{ width: 'calc(25% - 1rem)' }}
                 type="text"
                 name="title"
                 value={newPost.title}
@@ -159,7 +157,7 @@ export default function Home() {
                 placeholder="Title"
                 required
               />
-              <select name="category">
+              <select name="category" className="rounded mb-2 px-4 form-element-border py-2 text-gray-500" style={{ width: 'calc(30% - 1rem)' }}>
                 <option>Select a Category</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -168,7 +166,8 @@ export default function Home() {
                 ))}
               </select>
               <textarea
-                className="rounded"
+                className="rounded px-4 py-2 form-element-border"
+                style={{ width: 'calc(45% - 1rem)' }}
                 name="body"
                 value={newPost.body}
                 onChange={handlePostInput}
@@ -178,8 +177,8 @@ export default function Home() {
               <TButton color="indigo" type="submit">Post</TButton>
             </form>
           </div>
-          <div className="rounded grid col-span-1">
-            <ul className="text-white">
+          <div className="rounded-lg shadow-xl p-6 border-4 border-gray-800">
+            <ul className="text-white grid grid-cols-3 gap-4 posts-list posts-list:hover">
               {posts.map(post => (
                 <Post
                   key={post.id}

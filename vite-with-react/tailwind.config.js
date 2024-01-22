@@ -21,6 +21,12 @@ export default {
       animation: {
         bounce: "bounce 1s infinite",
       },
+      height: {
+        'custom': '24px',
+      },
+      width: {
+        'custom': '24px',
+      },
     },
   },
   plugins: [

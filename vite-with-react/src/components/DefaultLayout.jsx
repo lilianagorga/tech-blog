@@ -6,9 +6,8 @@ import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 
 const navigation = [
-  { name: 'Manage Panel', to: '/manage-panels' },
-  { name: 'Manage Categories', to: '/categories'},
   { name: 'Home', to: '/' },
+  { name: 'Manage Panel', to: '/manage-panels' },
 ];
 
 function classNames(...classes) {
@@ -16,22 +15,8 @@ function classNames(...classes) {
 }
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setUserToken, setCurrentUser, setRefreshKey } = useStateContext();
+  const { currentUser, userToken, setUserToken, setCurrentUser } = useStateContext();
 
-  const handleHomeClick = () => {
-    setRefreshKey(prevKey => prevKey + 1);
-  }
-
-  const hasRequiredRolesOrPermissionsForCategories = () => {
-    if (!currentUser || !currentUser.roles || !currentUser.permissions) {
-      return false;
-    }
-    const roles = ['Admin', 'Writer'];
-    const hasRole = currentUser.roles.some(role => roles.includes(role.name));
-    const hasPermission = currentUser.permissions.some(permission => permission.name === 'manageCategories');
-    return hasRole || hasPermission;
-  }
-  const canManageCategories = hasRequiredRolesOrPermissionsForCategories();
 
   const hasRequiredRolesOrPermissionsForManagePanel = () => {
     if (!currentUser || !currentUser.roles || !currentUser.permissions) {
@@ -73,13 +58,6 @@ export default function DefaultLayout() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                     <img
-                       className="h-8 w-8 hover:animate-bounce"
-                       src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                       alt="Tech Blog"
-                     />
-                    </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-center space-x-4">
                         {navigation.map((item) => (
@@ -91,17 +69,15 @@ export default function DefaultLayout() {
                                 ? 'bg-gray-900 text-white'
                                 : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium',
-                              (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : '',
-                              (!canManageCategories && item.name === 'Manage Categories') ? 'hidden' : ''
+                              (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : ''
                             )}
                             onClick={(e) => {
-                              if ((!canAccessPanel && item.name === 'Manage Panel') ||
-                                (item.name === 'Manage Categories' && !canManageCategories)) {
+                              if ((!canAccessPanel && item.name === 'Manage Panel')) {
                                 e.preventDefault();
                               }
                             }}
                           >
-                            {item.name === 'Home' ? <HomeIcon onClick={handleHomeClick} className="h-4 w-4" /> : item.name}
+                            {item.name === 'Home' ? <HomeIcon className="h-4 w-4" /> : item.name}
                           </NavLink>
                         ))}
                       </div>
@@ -161,19 +137,17 @@ export default function DefaultLayout() {
                       className={({ isActive}) => classNames(
                         isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block rounded-md px-3 py-2 text-base font-medium',
-                        (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : '',
-                        (!canManageCategories && item.name === 'Manage Categories') ? 'hidden' : ''
+                        (!canAccessPanel && item.name === 'Manage Panel') ? 'hidden' : ''
                       )}
                       onClick={(e) => {
-                        if ((!canAccessPanel && item.name === 'Manage Panel') ||
-                          (item.name === 'Manage Categories' && !canManageCategories)) {
+                        if ((!canAccessPanel && item.name === 'Manage Panel')) {
                           e.preventDefault();
                         }
                       }}
                     >
                       {item.name === 'Home' ? (
                         <div className="flex items-center">
-                          <HomeIcon className="h-6 w-6" onClick={handleHomeClick} />
+                          <HomeIcon className="h-6 w-6" />
                         </div>
                       ) : (
                         item.name

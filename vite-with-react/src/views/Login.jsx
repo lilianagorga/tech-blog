@@ -29,7 +29,7 @@ export default function Login() {
         if (hasAdminRole || hasManagePanelPermission) {
           navigate("/manage-panels");
         } else {
-          navigate("/home");
+          navigate("/");
         }
 
       })

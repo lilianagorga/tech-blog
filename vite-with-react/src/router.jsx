@@ -5,9 +5,7 @@ import Register from "./views/Register.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import ManagePanel from "./views/ManagePanel.jsx";
-import Post from "./views/Post.jsx";
 import ManageCategories from "./views/ManageCategories.jsx";
-import Comment from "./views/Comment.jsx";
 import Category from "./views/Category.jsx";
 
 const router = createBrowserRouter([
@@ -46,11 +44,7 @@ const router = createBrowserRouter([
         element: <Register />
       }
     ]
-  },
-  {
-    path: '/comments',
-    element: <Comment />,
-  },
+  }
 ])
 
 export default router;

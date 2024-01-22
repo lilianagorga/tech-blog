@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function TButton({color = "indigo", to = "", circle = false, href = "", link = false, target = "_blank", onClick = () => {}, children,})
+export default function TButton({color = "indigo", to = "", circle = false, square = false, href = "", link = false, target = "_blank", onClick = () => {}, children,})
 {
   let classes = [
     "flex",
@@ -10,6 +10,8 @@ export default function TButton({color = "indigo", to = "", circle = false, href
     "border",
     "border-2",
     "border-transparent",
+    "my-2",
+    "w-auto",
   ];
 
   if (link) {
@@ -63,9 +65,21 @@ export default function TButton({color = "indigo", to = "", circle = false, href
       "rounded-full",
       "text-sm",
     ];
+  } else if (square) {
+    classes = [
+      ...classes,
+      "h-custom",
+      "w-custom",
+      "items-center",
+      "justify-center",
+      "rounded",
+      "text-sm"
+    ]
   } else {
     classes = [...classes, "p-0", "py-2", "px-4", "rounded-md"];
   }
+
+
 
   return (
     <>

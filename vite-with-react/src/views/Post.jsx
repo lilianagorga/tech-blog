@@ -46,24 +46,36 @@ function Post({ post, deletePost, updatePost }) {
   // };
 
 
-  const previewText = isOpen ? post.body : truncateText(post.body, 2);
+  const previewText = isOpen ? post.body : truncateText(post.body, 10);
 
   return (
-    <li className="border p-2 rounded shadow">
-      <h3 className="font-bold">{post.title}</h3>
-      {post.categories && post.categories.map((category) => (
-        <h6 key={category.id}>{category.title}</h6>
-      ))}
-      <p>{previewText}</p>
-      {!isOpen && (
-        <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" />View</TButton>
-      )}
-      {isOpen && (
-        <TButton onClick={handleClose} color="indigo">Close</TButton>
-      )}
+    <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
       {canDelete && (
-        <TButton color="red" onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>
+        <div className="absolute top-0 right-0 m-2">
+          <TButton color="red" square onClick={handleDelete}><TrashIcon className="w-4 h-4" /></TButton>
+        </div>
       )}
+      <div className="flex-1">
+        <h3 className="font-bold">{post.title}</h3>
+        <div className="flex flex-wrap">
+          {post.categories && post.categories.length > 0 ? (
+            post.categories.map((category) => (
+              <h6 key={category.id} className="text-xs mr-2">{category.title}</h6>
+            ))
+          ) : (
+            <h6 className="text-xs truncate">No categories</h6>
+          )}
+        </div>
+      </div>
+      <p className="text-xs overflow-hidden text-ellipsis">{previewText}</p>
+     <div className="flex justify-start">
+       {!isOpen && (
+         <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" />View</TButton>
+       )}
+       {isOpen && (
+         <TButton onClick={handleClose} color="indigo">Close</TButton>
+       )}
+     </div>
       {/*<TButton color="green" onClick={handleUpdatePost}><PencilIcon className="w-4 h-4" /></TButton>*/}
 
       {/*{editingPost && (*/}
@@ -73,6 +85,7 @@ function Post({ post, deletePost, updatePost }) {
       {/*    onPostUpdated={updatePost}*/}
       {/*  />*/}
       {/*)}*/}
+
     </li>
   );
 }

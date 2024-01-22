@@ -8,16 +8,12 @@ import UserPermissionsModal from "../components/UserPermissionsModal.jsx";
 import RolesModal from "../components/RolesModal.jsx";
 import UserRolesModal from "../components/UserRolesModal.jsx";
 import RoleWithAssociatedPermissionsModal from "../components/RoleWithAssociatedPermissionsModal.jsx";
-import ManageCategories from "./ManageCategories.jsx";
-import TButton from "../components/core/TButton.jsx";
 import {Link} from "react-router-dom";
 
 function ManagePanel() {
-  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser, setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames,
-    rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
-    selectedPermissions, setSelectedPermissions
-  } = useStateContext();
-  const [showManageCategories, setShowManageCategories] = useState(false);
+  const { showToast, permissions, setPermissions, roles, setRoles, permissionToRevoke, permissionToAdd, selectedUser,
+    setSelectedUser, setUserPermissionNames, roleToAdd, roleToRevoke, setUserRoleNames, rolesWithAssociatedPermissions,
+    setRolesWithAssociatedPermissions, currentUser, setSelectedPermissions} = useStateContext();
   const [users, setUsers] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -136,6 +132,17 @@ function ManagePanel() {
       isMounted = false;
     };
   }, []);
+
+  const hasRequiredRolesOrPermissionsForCategories = () => {
+    if (!currentUser || !currentUser.roles || !currentUser.permissions) {
+      return false;
+    }
+    const roles = ['Admin', 'Writer'];
+    const hasRole = currentUser.roles.some(role => roles.includes(role.name));
+    const hasPermission = currentUser.permissions.some(permission => permission.name === 'manageCategories');
+    return hasRole || hasPermission;
+  }
+  const canManageCategories = hasRequiredRolesOrPermissionsForCategories();
 
   const handleCreateRole = async (e) => {
     e.preventDefault();
@@ -326,58 +333,69 @@ function ManagePanel() {
     {!loading && (
       <div className="container mx-auto pt-2 mt-2">
       <div className="grid grid-cols-10 gap-4">
-        <aside className='grid col-span-2 grid-row-6 m-4 p-4 bg-gray-800 rounded aria-label="Sidebar"'>
+        <aside className='grid col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
+          <div className="manage-categories-container">
+            {canManageCategories && (
+              <>
+                <Link
+                  to="/categories"
+                  className="bg-indigo-500 rounded text-white font-bold px-4 py-2 mx-4 block text-center hover:bg-indigo-700">
+                  Manage Categories
+                </Link>
+                <hr className="my-4 border-gray-600 w-full" />
+              </>
+            )};
+          </div>
+          <div className="modals-container">
+            <PermissionsModal
+              showModal={showPermissionsModal}
+              handleModalToggle={handlePermissionsModalToggle}
+              permissionName={permissionName}
+              setPermissionName={setPermissionName}
+              permissions={permissions}
+              setPermissionToDelete={setPermissionToDelete}
+              handleCreatePermission={handleCreatePermission}
+              handleDeletePermission={handleDeletePermission}
+            />
 
-          <Link to="/categories" className="bg-indigo-500 rounded text-white font-bold px-4 py-2 mx-4 block text-center hover:bg-indigo-700">Manage Categories</Link>
-          <PermissionsModal
-            showModal={showPermissionsModal}
-            handleModalToggle={handlePermissionsModalToggle}
-            permissionName={permissionName}
-            setPermissionName={setPermissionName}
-            permissions={permissions}
-            setPermissionToDelete={setPermissionToDelete}
-            handleCreatePermission={handleCreatePermission}
-            handleDeletePermission={handleDeletePermission}
-          />
+            <UserPermissionsModal
+              showModal={showUserPermissionsModal}
+              handleModalToggle={handleUserPermissionsModalToggle}
+              users={users}
+              permissions={permissions}
+              handleAssignPermission={handleAssignPermission}
+              handleRevokePermission={handleRevokePermission}
+            />
 
-          <UserPermissionsModal
-            showModal={showUserPermissionsModal}
-            handleModalToggle={handleUserPermissionsModalToggle}
-            users={users}
-            permissions={permissions}
-            handleAssignPermission={handleAssignPermission}
-            handleRevokePermission={handleRevokePermission}
-          />
+            <RolesModal
+              showModal={showRolesModal}
+              handleModalToggle={handleRolesModalToggle}
+              roleName={roleName}
+              setRoleName={setRoleName}
+              roles={roles}
+              setRoleToDelete={setRoleToDelete}
+              handleCreateRole={handleCreateRole}
+              handleDeleteRole={handleDeleteRole}
+            />
 
-          <RolesModal
-            showModal={showRolesModal}
-            handleModalToggle={handleRolesModalToggle}
-            roleName={roleName}
-            setRoleName={setRoleName}
-            roles={roles}
-            setRoleToDelete={setRoleToDelete}
-            handleCreateRole={handleCreateRole}
-            handleDeleteRole={handleDeleteRole}
-          />
+            <UserRolesModal
+              showModal={showUserRolesModal}
+              handleModalToggle={handleUserRolesModalToggle}
+              users={users}
+              roles={roles}
+              handleAssignRole={handleAssignRole}
+              handleRevokeRole={handleRevokeRole}
+            />
 
-          <UserRolesModal
-            showModal={showUserRolesModal}
-            handleModalToggle={handleUserRolesModalToggle}
-            users={users}
-            roles={roles}
-            handleAssignRole={handleAssignRole}
-            handleRevokeRole={handleRevokeRole}
-          />
-
-          <RoleWithAssociatedPermissionsModal
-            showModal={showRoleWithPermissionsModal}
-            handleModalToggle={handleRoleWithPermissionsModalToggle}
-            permissions={permissions}
-            selectedRole={selectedRoleWithPermissions}
-            handleRoleSelection={handleRoleSelection}
-            handleUpdateRolePermissions={handleUpdateRolePermissions}
-          />
-
+            <RoleWithAssociatedPermissionsModal
+              showModal={showRoleWithPermissionsModal}
+              handleModalToggle={handleRoleWithPermissionsModalToggle}
+              permissions={permissions}
+              selectedRole={selectedRoleWithPermissions}
+              handleRoleSelection={handleRoleSelection}
+              handleUpdateRolePermissions={handleUpdateRolePermissions}
+            />
+          </div>
         </aside>
         <main className="col-span-8 p-4 border-l-2 border-r-2">
           <div className="grid grid-cols-4 gap-4 border-b-2">
