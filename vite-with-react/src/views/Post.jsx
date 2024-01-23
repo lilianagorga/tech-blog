@@ -41,7 +41,6 @@ function Post({ post, deletePost, handleUpdatePost }) {
   };
 
   const previewText = isOpen ? post.body : truncateText(post.body, 10);
-  console.log('Post props:', { handleUpdatePost });
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">

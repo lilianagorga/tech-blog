@@ -81,9 +81,9 @@ export default function Home() {
 
   const getPostsByCategory = (categoryId) => {
     return posts.filter(post =>
-      post.categories.some(category => category.id === categoryId)
+      Array.isArray(post.categories) && post.categories.some(category => category.id === categoryId)
     );
-  }
+  };
 
   const handlePostInput = (e) => {
     setNewPost({ ...newPost, [e.target.name]: e.target.value });

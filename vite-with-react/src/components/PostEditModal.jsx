@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useRef, useEffect} from "react";
 import axiosClient from "../axios";
 import TButton from "./core/TButton.jsx";
 import { createSlug } from "../utils/utils.jsx";
@@ -9,8 +9,41 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
     title: post.title,
     body: post.body,
     slug: post.slug,
-    active: post.active
+    active: post.active,
+    categories: post.categories.map(cat => cat.id)
   });
+
+  useEffect(() => {
+    setEditData({
+      title: post.title,
+      body: post.body,
+      slug: post.slug,
+      active: post.active,
+      categories: post.categories.map(cat => cat.id)
+    });
+  }, [post]);
+
+  const modalRef = useRef();
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,25 +71,34 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
         }
       });
   }
-  console.log('editData.title:', editData.title);
-  console.log('editData.body:', editData.body);
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-content">
-        <input
-          type="text"
-          name="title"
-          value={editData.title}
-          onChange={handleInputChange}
-        />
-        <textarea
-          name="body"
-          value={editData.body}
-          onChange={handleInputChange}
-        />
-        <TButton color="indigo" onClick={handleUpdatePost}>Update Post</TButton>
-        <TButton color="indigo" onClick={onClose}>Close</TButton>
+    <div className="modal-backdrop fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div className="modal-content relative p-5 border w-auto shadow-lg rounded-md bg-white" ref={modalRef}>
+        <div className="mb-4">
+          <input
+            className="w-full p-2 border rounded"
+            type="text"
+            name="title"
+            placeholder="title"
+            value={editData.title}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-4">
+          <textarea
+            className="w-full p-2 border rounded"
+            name="body"
+            placeholder="..."
+            rows="4"
+            value={editData.body}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="flex justify-between space-x-4">
+          <TButton color="indigo" onClick={handleUpdatePost}>Update Post</TButton>
+          <TButton color="indigo" onClick={onClose}>Close</TButton>
+        </div>
       </div>
     </div>
   );

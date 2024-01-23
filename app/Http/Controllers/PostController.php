@@ -73,6 +73,8 @@ class PostController extends Controller
       $post->categories()->sync($validCategoryIds);
     }
 
+    $post->load('categories');
+
     return response()->json($post, Response::HTTP_CREATED);
   }
   public function update(Request $request, Post $post): Response
@@ -92,6 +94,13 @@ class PostController extends Controller
     ]);
 
     $post->update($validatedData);
+
+    if ($request->has('categories') && is_array($request->categories) && !empty($request->categories)) {
+      $validCategoryIds = Category::whereIn('id', $request->categories)->pluck('id')->all();
+      $post->categories()->sync($validCategoryIds);
+    }
+
+    $post->load('categories');
 
     return response()->json($post);
   }
