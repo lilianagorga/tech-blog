@@ -7,6 +7,7 @@ import Post from "./Post.jsx";
 import { createSlug } from "../utils/utils.jsx";
 import { useNavigate } from 'react-router-dom';
 import PostEditModal from "../components/PostEditModal.jsx";
+import {usePostManager} from "../hooks/usePostManager.jsx";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -16,9 +17,15 @@ export default function Home() {
   const [newPost, setNewPost] = useState({ title: '', body: ''});
   const { showToast } = useStateContext();
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingPost, setEditingPost] = useState(null);
 
+  const {
+    isModalOpen,
+    editingPost,
+    deletePost,
+    handleUpdatePost,
+    updatePost,
+    handleCloseModal,
+  } = usePostManager(setPosts);
 
   useEffect(()=>{
     setLoading(true);
@@ -110,40 +117,6 @@ export default function Home() {
       });
   };
 
-  const deletePost = (postId) => {
-    if (window.confirm('Are you sure you want to remove this post?')) {
-      axiosClient.delete(`/posts/${postId}`)
-        .then(() => {
-          setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-          showToast("Post deleted successfully!");
-        })
-        .catch((error) => {
-          showToast(`Error deleting category : ${error.message}`);
-        });
-    }
-  };
-
-  const updatePost = (updatePost) => {
-    setPosts(prevPosts =>
-      prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
-    );
-    showToast("Post updated successfully!");
-  };
-
-  const handleUpdatePost = (post) => {
-    console.log('Opening edit modal for post', post);
-    setEditingPost(post);
-    setIsModalOpen(true);
-    console.log('Current editing post', editingPost);
-  };
-
-  useEffect(() => {
-    if (isModalOpen) {
-      console.log('Modal is open with editing post:', editingPost);
-    }
-  }, [isModalOpen, editingPost]);
-
-
   return (
     <PageComponent title="Tech Blog">
       {loading && <div className="flex justify-center">Loading...</div>}
@@ -205,10 +178,7 @@ export default function Home() {
               {editingPost && isModalOpen && (
                 <PostEditModal
                   post={editingPost}
-                  onClose={() =>{
-                    setEditingPost(null);
-                    setIsModalOpen(false);
-                  }}
+                  onClose={handleCloseModal}
                   onPostUpdated={updatePost}
                 />
               )}

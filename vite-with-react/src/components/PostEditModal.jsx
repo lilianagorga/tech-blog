@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../axios";
 import TButton from "./core/TButton.jsx";
+import { createSlug } from "../utils/utils.jsx";
 
 function PostEditModal({ post, onClose, onPostUpdated }) {
+
   const [editData, setEditData] = useState({
     title: post.title,
     body: post.body,
@@ -10,18 +12,15 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
     active: post.active
   });
 
-  useEffect(() => {
-    console.log('Modal received post:', post);
-    setEditData({
-      title: post.title,
-      body: post.body,
-      slug: post.slug,
-      active: post.active
-    });
-  }, [post]);
-
   const handleInputChange = (e) => {
-    setEditData({ ...editData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setEditData((prevEditData) => {
+      const newEditData = { ...prevEditData, [name]: value };
+      if (name === 'title') {
+        newEditData.slug = createSlug(value);
+      }
+      return newEditData;
+    });
   };
 
   const handleUpdatePost = () =>{
@@ -38,9 +37,6 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
           console.error('Error updating post:', error.message);
         }
       });
-      // .catch((error)=>{
-      //   console.error('Error updating post:', error);
-      // });
   }
   console.log('editData.title:', editData.title);
   console.log('editData.body:', editData.body);
@@ -52,12 +48,6 @@ function PostEditModal({ post, onClose, onPostUpdated }) {
           type="text"
           name="title"
           value={editData.title}
-          onChange={handleInputChange}
-        />
-        <input
-          type="text"
-          name="slug"
-          value={editData.slug}
           onChange={handleInputChange}
         />
         <textarea

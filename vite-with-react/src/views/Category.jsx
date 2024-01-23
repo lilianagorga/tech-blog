@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Post from "./Post.jsx";
-import axiosClient from "../axios.js";
-import { useStateContext } from "../contexts/ContextProvider.jsx";
 import PageComponent from "../components/PageComponent.jsx";
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import TButton from "../components/core/TButton.jsx";
+import PostEditModal from "../components/PostEditModal.jsx";
+import {usePostManager} from "../hooks/usePostManager.jsx";
 
 function Category() {
   const location = useLocation();
   const posts = location.state.posts;
   const category = location.state.category;
   const [availablePosts, setAvailablePosts] = useState([]);
-  const { showToast } = useStateContext();
   const navigate = useNavigate();
+  const {
+    isModalOpen,
+    editingPost,
+    deletePost,
+    handleUpdatePost,
+    updatePost,
+    handleCloseModal,
+  } = usePostManager(setAvailablePosts);
 
   useEffect(() => {
     setAvailablePosts(posts);
@@ -22,26 +29,6 @@ function Category() {
   const goBack = () => {
     navigate(-1);
   }
-
-  const deletePost = (postId) => {
-    if (window.confirm('Are you sure you want to remove this post?')) {
-      axiosClient.delete(`/posts/${postId}`)
-        .then(() => {
-          setAvailablePosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-          showToast("Post deleted successfully!");
-        })
-        .catch((error) => {
-          showToast(`Error deleting category : ${error.message}`);
-        });
-    }
-  };
-
-  const updatePost = (updatePost) => {
-    setAvailablePosts(prevPosts =>
-      prevPosts.map(post => post.id === updatePost.id ? updatePost : post)
-    );
-    showToast("Post updated successfully!");
-  };
 
   return(
     <PageComponent title={category.title}>
@@ -56,12 +43,19 @@ function Category() {
               <Post
                 post={post}
                 deletePost={deletePost}
-                updatePost={updatePost}
+                handleUpdatePost={handleUpdatePost}
               />
             </div>
           ))
         ) : (
           <div className="text-gray-800 text-center font-bold uppercase col-span-3 p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">No post yet</div>
+        )}
+        {editingPost && isModalOpen && (
+          <PostEditModal
+            post={editingPost}
+            onClose={handleCloseModal}
+            onPostUpdated={updatePost}
+          />
         )}
       </div>
     </PageComponent>
