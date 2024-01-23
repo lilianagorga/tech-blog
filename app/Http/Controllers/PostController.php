@@ -73,7 +73,7 @@ class PostController extends Controller
       $post->categories()->sync($validCategoryIds);
     }
 
-    $post->load('categories');
+    $post->load('categories', 'user');
 
     return response()->json($post, Response::HTTP_CREATED);
   }

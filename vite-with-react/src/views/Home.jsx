@@ -107,9 +107,9 @@ export default function Home() {
 
     axiosClient.post('/posts', payload)
       .then((response) => {
-        setPosts(prevPosts => [...prevPosts, response.data]);
+        setPosts(prevPosts => [response.data, ...prevPosts]);
+        setNewPost({ title: '', body: '', category: '' });
         showToast("Post created successfully!");
-        window.location.reload();
       })
       .catch((error) => {
         console.error('Error creating post:', error);
