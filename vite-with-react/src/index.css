@@ -27,3 +27,36 @@ li::marker {
 .posts-list > li:hover {
   @apply border-2 border-gray-600
 }
+
+.comment-form {
+  @apply flex items-center gap-2
+}
+
+.comment-textarea {
+  @apply flex-grow mr-2;
+}
+
+.comment-item {
+  @apply relative flex justify-between items-start p-2 border-b border-gray-100 mb-4;
+}
+
+.comment-content {
+  @apply flex-grow;
+}
+
+.comment-body {
+  @apply inline;
+}
+
+.comment-username {
+  @apply inline-block ml-2 whitespace-nowrap text-sm text-gray-600;
+}
+
+.comment-actions {
+  @apply flex gap-2;
+}
+
+.comment:last-child {
+  @apply border-b-0;
+}
+

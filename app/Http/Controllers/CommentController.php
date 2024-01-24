@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,7 +52,7 @@ class CommentController extends Controller
     return response()->json($comments);
   }
 
-  public function destroy(CommentRequest $request, Comment $comment): JsonResponse
+  public function destroy(Request $request, Comment $comment): JsonResponse
   {
     $user = $request->user();
 
