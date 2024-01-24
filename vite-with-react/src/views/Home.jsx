@@ -14,7 +14,7 @@ export default function Home() {
   const [data, setData] = useState({});
   const [categories, setCategories] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState({ title: '', body: ''});
+  const [newPost, setNewPost] = useState({ title: '', body: '', category: ''});
   const { showToast } = useStateContext();
   const navigate = useNavigate();
 
@@ -71,6 +71,14 @@ export default function Home() {
       });
   }, [])
 
+  const updateVoteCount = (postId, newCount) => {
+    setPosts(currentPosts =>
+      currentPosts.map(post =>
+        post.id === postId ? { ...post, votes_count: newCount } : post
+      )
+    );
+  };
+
   const filterPostsByCategory = (category) => {
     navigate(`/${category.slug}`, {
       state: {
@@ -108,7 +116,7 @@ export default function Home() {
     axiosClient.post('/posts', payload)
       .then((response) => {
         setPosts(prevPosts => [response.data, ...prevPosts]);
-        setNewPost({ title: '', body: '', category: '' });
+        setNewPost({ title: '', category: '', body: '' });
         showToast("Post created successfully!");
       })
       .catch((error) => {
@@ -145,8 +153,8 @@ export default function Home() {
                 placeholder="Title"
                 required
               />
-              <select name="category" className="rounded mb-2 px-4 form-element-border py-2 text-gray-500" style={{ width: 'calc(30% - 1rem)' }}>
-                <option>Select a Category</option>
+              <select name="category" value={newPost.category} onChange={handlePostInput} className="rounded mb-2 px-4 form-element-border py-2 text-gray-500" style={{ width: 'calc(30% - 1rem)' }}>
+                <option value="">Select a Category</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.title}
@@ -173,6 +181,7 @@ export default function Home() {
                   post={post}
                   deletePost={deletePost}
                   handleUpdatePost={handleUpdatePost}
+                  updateVoteCount={updateVoteCount}
                 />
               ))}
               {editingPost && isModalOpen && (

@@ -16,6 +16,7 @@ class PostController extends Controller
   public function index(Request $request): Response
   {
     $query = Post::with('categories', 'user')
+      ->withCount('votes')
       ->where('active', true)
       ->whereDate('published_at', '<=', now());
     if ($request->has('category')) {

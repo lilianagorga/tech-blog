@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosClient from "../axios.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { createSlug, createValidateField } from "../utils/utils.jsx";
+import TButton from "./core/TButton.jsx";
 
 function CategoryEditModal({ category, onSave, onCancel }) {
   const [title, setTitle] = useState(category.title || '');
@@ -69,9 +70,8 @@ function CategoryEditModal({ category, onSave, onCancel }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2 className="font-bold m-2">Edit Category</h2>
-        <form onSubmit={handleSubmit}>
-          <label className="font-bold mx-2" htmlFor="title">Title</label>
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <label className="text-white font-bold mx-2" htmlFor="title">Title</label>
           <input
             type="text"
             id="title"
@@ -79,7 +79,7 @@ function CategoryEditModal({ category, onSave, onCancel }) {
             onChange={handleTitleChange}
           />
           {errors.title && <div className="error">{errors.title}</div>}
-          <label className="font-bold mx-2" htmlFor="slug">Slug</label>
+          <label className="text-white font-bold mx-2" htmlFor="slug">Slug</label>
           <input
             type="text"
             id="slug"
@@ -87,8 +87,8 @@ function CategoryEditModal({ category, onSave, onCancel }) {
             onChange={handleSlugChange}
           />
           {errors.title && <div className="error">{errors.slug}</div>}
-          <button className="mx-4 font-bold" type="submit">Save Changes</button>
-          <button className="font-bold" type="button" onClick={onCancel}>Cancel</button>
+          <TButton type="submit">Save Changes</TButton>
+          <TButton type="button" onClick={onCancel}>Cancel</TButton>
         </form>
       </div>
     </div>

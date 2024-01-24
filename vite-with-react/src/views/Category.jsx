@@ -26,6 +26,14 @@ function Category() {
     setAvailablePosts(posts);
   }, [posts]);
 
+  const updateVoteCount = (postId, newCount) => {
+    setAvailablePosts(currentPosts =>
+      currentPosts.map(post =>
+        post.id === postId ? { ...post, votes_count: newCount } : post
+      )
+    );
+  };
+
   const goBack = () => {
     navigate(-1);
   }
@@ -44,11 +52,12 @@ function Category() {
                 post={post}
                 deletePost={deletePost}
                 handleUpdatePost={handleUpdatePost}
+                updateVoteCount={updateVoteCount}
               />
             </div>
           ))
         ) : (
-          <div className="text-gray-800 text-center font-bold uppercase col-span-3 p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">No post yet</div>
+          <div className="text-gray-800 text-center font-bold uppercase col-span-3 p-6 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">No posts yet</div>
         )}
         {editingPost && isModalOpen && (
           <PostEditModal

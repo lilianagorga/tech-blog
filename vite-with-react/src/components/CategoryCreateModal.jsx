@@ -2,6 +2,7 @@ import React, {useState } from "react";
 import axiosClient from "../axios.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { createSlug, createValidateField } from "../utils/utils.jsx";
+import TButton from "./core/TButton.jsx";
 
 function CategoryCreateModal({ onSave, onCancel }) {
   const [title, setTitle] = useState('');
@@ -53,26 +54,27 @@ function CategoryCreateModal({ onSave, onCancel }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>Create Category</h2>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="title">Title</label>
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <label className="text-white ml-2 font-bold" htmlFor="title">Title</label>
           <input
+            className="mb-2"
             type="text"
             id="title"
             value={title}
             onChange={handleTitleCreate}
           />
           {errors.title && <div className="error">{errors.title}</div>}
-          <label htmlFor="slug">Slug</label>
+          <label className="text-white font-bold" htmlFor="slug">Slug</label>
           <input
+            className="mb-2"
             type="text"
             id="slug"
             value={slug}
             onChange={handleSlugCrete}
           />
           {errors.slug && <div className="error">{errors.slug}</div>}
-          <button type="submit">Create</button>
-          <button type="button" onClick={onCancel}>Cancel</button>
+          <TButton color="indigo" squareMedium>Create</TButton>
+          <TButton color="indigo" squareMedium onClick={onCancel}>Cancel</TButton>
         </form>
       </div>
     </div>

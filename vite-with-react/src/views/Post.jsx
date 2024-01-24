@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import TButton from "../components/core/TButton.jsx";
-import {EyeIcon, PencilIcon} from "@heroicons/react/24/outline";
+import {EyeIcon, PencilIcon, HandThumbDownIcon, HandThumbUpIcon} from "@heroicons/react/24/outline";
 import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import {useStateContext} from "../contexts/ContextProvider.jsx";
 import axiosClient from "../axios.js";
 import Comments from "./Comments.jsx";
 
-function Post({ post, deletePost, handleUpdatePost }) {
+function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
   const { currentUser, showToast } = useStateContext();
   const [isOpen, setIsOpen] = useState(false);
   const [comments, setComments] = useState([]);
@@ -14,6 +14,7 @@ function Post({ post, deletePost, handleUpdatePost }) {
   const [showComments, setShowComments] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
+  const [vote, setVote] = useState(null);
 
 
   const hasRequiredRoleOrPermission = () => {
@@ -90,7 +91,7 @@ function Post({ post, deletePost, handleUpdatePost }) {
     if (window.confirm('Are you sure you want to remove this comment?')) {
       axiosClient.delete(`/comments/${commentId}`)
         .then(response => {
-          setComments(currentComments => currentComments.filter(c => c.id !== commentId));
+          setComments(currentComments => currentComments.filter(comment => comment.id !== commentId));
           showToast(response.data.message);
         })
         .catch(error => {
@@ -136,9 +137,36 @@ function Post({ post, deletePost, handleUpdatePost }) {
       });
   };
 
-
-
   const previewText = isOpen ? post.body : truncateText(post.body, 10);
+
+  const handleVote = (type) => {
+    if (!currentUser) {
+      showToast("You must be logged in and have a verified email to vote.");
+      return;
+    }
+
+    const payload = {
+      post_id: post.id,
+      type: type,
+    };
+
+    axiosClient.post(`/votes/${type}`, payload)
+      .then(response => {
+        setVote(response.data);
+        showToast("Vote registered!");
+        const newCount = type === 'up' ? post.votes_count + 1 : post.votes_count - 1;
+        updateVoteCount(post.id, newCount);
+      })
+      .catch(error => {
+        if (error.response) {
+          console.error('Error voting:', error.response.data);
+        } else {
+          console.error('Error updating comment:', error);
+        }
+        showToast(error.response?.data?.message || "Error registering vote!");
+      });
+  };
+
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
@@ -197,6 +225,14 @@ function Post({ post, deletePost, handleUpdatePost }) {
         />
         <TButton color="green" squareMedium >Send</TButton>
       </form>
+      <div className="flex items-center gap-2">
+        <TButton onClick={() => handleVote('up')} color="indigo" squareMedium>
+          <HandThumbUpIcon className="h-4 w-4" />{post.votes_count}
+        </TButton>
+        <TButton onClick={() => handleVote('down')} color="indigo" squareMedium>
+          <HandThumbDownIcon className="w-4 h-4" />{post.votes_count}
+        </TButton>
+      </div>
     </li>
   );
 }

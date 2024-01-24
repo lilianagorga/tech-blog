@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../axios.js";
+import {useNavigate} from "react-router-dom";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import PageComponent from "../components/PageComponent.jsx";
 import TButton from "../components/core/TButton.jsx";
@@ -7,22 +8,29 @@ import { useStateContext } from "../contexts/ContextProvider.jsx";
 import CategoryEditModal from "../components/CategoryEditModal.jsx";
 import CategoryDeleteModal from "../components/CategoryDeleteModal.jsx";
 import CategoryCreateModal from "../components/CategoryCreateModal.jsx";
+import {ArrowLeftIcon} from "@heroicons/react/24/outline/index.js";
 
 function ManageCategories(){
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showToast, currentUser } = useStateContext();
+  const { showToast } = useStateContext();
   const [editingCategory, setEditingCategory] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const navigate = useNavigate();
 
+
+  const goBack = () => {
+    navigate(-1);
+  }
 
   const openCreateModal = () => {
     setIsCreateModalOpen(true);
   };
 
-  const closeCreateModal = () => {
+  const closeCreateModal = (e) => {
+    e.preventDefault();
     setIsCreateModalOpen(false);
   };
 
@@ -83,30 +91,41 @@ function ManageCategories(){
     <PageComponent title="Manage Categories">
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
-        <>
-          <table className="">
-            <thead className="">
-            <tr>
-              <th>Title</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody className="h-4 w-4">
-            {categories.map((category) => (
-              <tr className="m-4 p-4" key={category.id}>
-                <td className="m-4 p-4">{category.title}</td>
-                <td className="m-4 p-4">
-                  <TButton className="m-4 p-4" color="green" onClick={() => handleEdit(category)}>
-                    <PencilIcon className="w-4 h-4" />
-                  </TButton>
-                  <TButton className="m-4 p-4" color="red" onClick={() => handleDelete(category.id)}>
-                    <TrashIcon className="w-4 h-4" />
-                  </TButton>
-                </td>
+        <div className="bg-gray-800 rounded p-4">
+          <div className="flex justify-between">
+            <TButton onClick={goBack}>
+              <ArrowLeftIcon className="h-5 w-5" />
+              <span className="ml-1 font-bold">Back</span>
+            </TButton>
+            <TButton color="indigo" onClick={openCreateModal}>Add New Category</TButton>
+          </div>
+          <div className="flex flex-col items-center w-full">
+            <table className="min-w-full divide-y divide-gray-700">
+              <thead className="">
+              <tr className="text-white">
+                <th className="text-center px-6 py-4">Title</th>
+                <th className="text-center px-6 py-4">Action</th>
               </tr>
-            ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-gray-800 divide-y divide-gray-700 text-white">
+              {categories.map((category) => (
+                <tr className="" key={category.id}>
+                  <td className="text-center whitespace-nowrap px-6 py-4">{category.title}</td>
+                  <td className="text-center whitespace-nowrap px-6 py-4">
+                   <div className="inline-flex justify-end gap-2">
+                     <TButton className="m-4 p-4" color="green" onClick={() => handleEdit(category)}>
+                       <PencilIcon className="w-4 h-4" />
+                     </TButton>
+                     <TButton className="m-4 p-4" color="red" onClick={() => handleDelete(category.id)}>
+                       <TrashIcon className="w-4 h-4" />
+                     </TButton>
+                   </div>
+                  </td>
+                </tr>
+              ))}
+              </tbody>
+            </table>
+          </div>
           {editingCategory && (
             <CategoryEditModal
               category={editingCategory}
@@ -115,7 +134,8 @@ function ManageCategories(){
               setEditingCategory(null);
               showToast('ManageCategories updated successfully.');
               }}
-              onCancel={() => setEditingCategory(null)}
+              onCancel={(e) =>{
+                e.preventDefault(); setEditingCategory(null)}}
             />
           )}
           {isDeleteModalOpen && (
@@ -124,14 +144,14 @@ function ManageCategories(){
               onCancel={closeDeleteModal}
             />
           )}
-          <TButton color="indigo" onClick={openCreateModal}>Add New Category</TButton>
+
           {isCreateModalOpen && (
             <CategoryCreateModal
               onSave={handleSaveNewCategory}
               onCancel={closeCreateModal}
             />
           )}
-        </>
+        </div>
       )}
     </PageComponent>
   )

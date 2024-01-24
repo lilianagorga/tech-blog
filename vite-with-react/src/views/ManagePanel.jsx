@@ -420,7 +420,8 @@ function ManagePanel() {
           </div>
         </main>
       </div>
-      <footer className="mt-4 p-4 bg-gray-200">
+      <footer className="mt-4 p-4 bg-gray-100">
+        <h4 className="text-center font-bold text-gray-800">ROLE AND PERMISSION OVERVIEW</h4>
         <div className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
           {
             rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role, index) => (
@@ -431,7 +432,7 @@ function ManagePanel() {
                   <div className=" text-white" key={permission.id + `${innerIndex}`}>{permission.name}</div>
                 ))}
               </div>
-            ))}
+          ))}
         </div>
       </footer>
     </div>
