@@ -25,6 +25,7 @@ export default function Home() {
     handleUpdatePost,
     updatePost,
     handleCloseModal,
+    updateVoteCount
   } = usePostManager(setPosts);
 
   useEffect(()=>{
@@ -71,13 +72,13 @@ export default function Home() {
       });
   }, [])
 
-  const updateVoteCount = (postId, newCount) => {
-    setPosts(currentPosts =>
-      currentPosts.map(post =>
-        post.id === postId ? { ...post, votes_count: newCount } : post
-      )
-    );
-  };
+  // const updateVoteCount = (postId, { upVote_count, downVote_count }) => {
+  //   setPosts(currentPosts =>
+  //     currentPosts.map(post =>
+  //       post.id === postId ? { ...post, upVote_count, downVote_count } : post
+  //     )
+  //   );
+  // };
 
   const filterPostsByCategory = (category) => {
     navigate(`/${category.slug}`, {

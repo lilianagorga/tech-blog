@@ -14,8 +14,7 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
   const [showComments, setShowComments] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
-  const [vote, setVote] = useState(null);
-
+  const [currentVote, setCurrentVote] = useState(null);
 
   const hasRequiredRoleOrPermission = () => {
     const roles = ['Admin', 'Moderator'];
@@ -150,23 +149,57 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
       type: type,
     };
 
-    axiosClient.post(`/votes/${type}`, payload)
+    let voteMethod, voteUrl;
+    if (currentVote && currentVote.type !== type) {
+      voteMethod = 'patch';
+      voteUrl = `/votes/${currentVote.id}`;
+    } else {
+      voteMethod = 'post';
+      voteUrl = `/votes/${type}`;
+    }
+
+    axiosClient[voteMethod](voteUrl, payload)
       .then(response => {
-        setVote(response.data);
-        showToast("Vote registered!");
-        const newCount = type === 'up' ? post.votes_count + 1 : post.votes_count - 1;
-        updateVoteCount(post.id, newCount);
+        console.log('Response data:', response.data);
+        setCurrentVote( response.data.vote);
+        console.log('currentVote in handleVote:',currentVote)
+        updateVoteCount(post.id, {
+          upVote_count: parseInt(response.data.upVote_count),
+          downVote_count: parseInt(response.data.downVote_count),
+        });
+        showToast("Vote updated!");
       })
       .catch(error => {
-        if (error.response) {
-          console.error('Error voting:', error.response.data);
-        } else {
-          console.error('Error updating comment:', error);
-        }
+        console.error('Error voting:', error.response?.data || error);
         showToast(error.response?.data?.message || "Error registering vote!");
       });
   };
 
+  const handleDeleteVote = () => {
+    if (!currentUser || !currentVote) {
+      showToast("You must be logged in to delete a vote.");
+      return;
+    }
+
+    axiosClient.delete(`/votes/${currentVote.id}`)
+      .then(() => {
+        setCurrentVote(null);
+        console.log('currentVote in handleDeleteVote:',currentVote);
+        updateVoteCount(post.id, {
+          upVote_count: currentVote.type === 'up' ? post.upVote_count - 1 : post.upVote_count,
+          downVote_count: currentVote.type === 'down' ? post.downVote_count - 1 : post.downVote_count,
+        });
+        showToast("Vote deleted successfully!");
+      })
+      .catch(error => {
+        console.error('Error deleting vote:', error.response?.data || error);
+        showToast(error.response?.data?.message || "Error deleting vote!");
+      });
+  };
+  //
+  // useEffect(() => {
+  //   console.log('currentVote has changed:', currentVote);
+  // }, [currentVote]);
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
@@ -227,11 +260,16 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
       </form>
       <div className="flex items-center gap-2">
         <TButton onClick={() => handleVote('up')} color="indigo" squareMedium>
-          <HandThumbUpIcon className="h-4 w-4" />{post.votes_count}
+          <HandThumbUpIcon className="h-4 w-4" />{post.upVote_count}
         </TButton>
         <TButton onClick={() => handleVote('down')} color="indigo" squareMedium>
-          <HandThumbDownIcon className="w-4 h-4" />{post.votes_count}
+          <HandThumbDownIcon className="w-4 h-4" />{post.downVote_count}
         </TButton>
+        {currentVote && (
+          <TButton onClick={handleDeleteVote} color="red" squareMedium>Delete Vote
+            {/*<TrashIcon className="w-4 h-4" />*/}
+          </TButton>
+        )}
       </div>
     </li>
   );

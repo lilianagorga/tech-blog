@@ -38,10 +38,15 @@ class VoteController extends Controller
       'user_id' => $user->id
     ]);
 
-    return response()->json($vote, Response::HTTP_CREATED);
+    return response()->json([
+      'vote' => $vote,
+      'upVote_count' => $this->getVoteCounts($postId)['upVote_count'],
+      'downVote_count' => $this->getVoteCounts($postId)['downVote_count']
+    ], Response::HTTP_CREATED);
+
   }
 
-  public function update(Request $request, $id)
+  public function update(Request $request, $id): JsonResponse
   {
     $user = $request->user();
     if (!$user || !$user->hasVerifiedEmail()) {
@@ -60,8 +65,12 @@ class VoteController extends Controller
     }
 
     $vote->update(['type' => $type]);
-
-    return response()->json(['message' => 'Vote updated', 'vote' => $vote]);
+    return response()->json([
+      'message' => 'Vote updated',
+      'vote' => $vote,
+      'upVote_count' => $this->getVoteCounts($vote->post_id)['upVote_count'],
+      'downVote_count' => $this->getVoteCounts($vote->post_id)['downVote_count']
+    ]);
   }
 
 
@@ -82,6 +91,13 @@ class VoteController extends Controller
     return response()->json(null, Response::HTTP_NO_CONTENT);
   }
 
+  private function getVoteCounts($postId): array
+  {
+    return [
+      'upVote_count' => Vote::where('post_id', $postId)->where('type', 'up')->count(),
+      'downVote_count' => Vote::where('post_id', $postId)->where('type', 'down')->count()
+    ];
+  }
 
 }
 

@@ -37,12 +37,21 @@ export function usePostManager(updatePostCallback) {
     setIsModalOpen(false);
   }, []);
 
+  const updateVoteCount = useCallback((postId, { upVote_count, downVote_count }) => {
+    updatePostCallback(currentPosts =>
+      currentPosts.map(post =>
+        post.id === postId ? { ...post, upVote_count, downVote_count } : post
+      )
+    );
+  }, [updatePostCallback]);
+
   return {
     isModalOpen,
     editingPost,
     deletePost,
     handleUpdatePost,
     updatePost,
-    handleCloseModal
+    handleCloseModal,
+    updateVoteCount,
   };
 }

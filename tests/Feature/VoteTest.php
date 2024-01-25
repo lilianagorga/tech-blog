@@ -23,12 +23,16 @@ class VoteTest extends TestCase
     $response = $this->actingAs($this->user)->postJson("/api/votes/up", ['post_id' => $post->id]);
     $response->assertCreated();
     $response->assertJsonStructure([
-      'type',
-      'post_id',
-      'user_id',
-      'id',
-      'created_at',
-      'updated_at'
+      'vote' => [
+        'type',
+        'post_id',
+        'user_id',
+        'id',
+        'created_at',
+        'updated_at'
+      ],
+      'upVote_count',
+      'downVote_count'
     ]);
 
     $this->assertDatabaseHas('votes', [
@@ -44,12 +48,16 @@ class VoteTest extends TestCase
     $response = $this->actingAs($this->user)->postJson("/api/votes/down", ['post_id' => $post->id]);
     $response->assertCreated();
     $response->assertJsonStructure([
-      'type',
-      'post_id',
-      'user_id',
-      'id',
-      'created_at',
-      'updated_at'
+      'vote' => [
+        'type',
+        'post_id',
+        'user_id',
+        'id',
+        'created_at',
+        'updated_at'
+      ],
+      'upVote_count',
+      'downVote_count'
     ]);
     $this->assertDatabaseHas('votes', [
       'post_id' => $post->id,

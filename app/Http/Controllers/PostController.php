@@ -16,7 +16,12 @@ class PostController extends Controller
   public function index(Request $request): Response
   {
     $query = Post::with('categories', 'user')
-      ->withCount('votes')
+      ->withCount(['votes as upVote_count' => function ($query) {
+        $query->where('type', 'up');
+      }])
+      ->withCount(['votes as downVote_count' => function ($query) {
+        $query->where('type', 'down');
+      }])
       ->where('active', true)
       ->whereDate('published_at', '<=', now());
     if ($request->has('category')) {

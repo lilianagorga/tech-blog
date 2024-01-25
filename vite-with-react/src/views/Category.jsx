@@ -20,19 +20,12 @@ function Category() {
     handleUpdatePost,
     updatePost,
     handleCloseModal,
+    updateVoteCount
   } = usePostManager(setAvailablePosts);
 
   useEffect(() => {
     setAvailablePosts(posts);
   }, [posts]);
-
-  const updateVoteCount = (postId, newCount) => {
-    setAvailablePosts(currentPosts =>
-      currentPosts.map(post =>
-        post.id === postId ? { ...post, votes_count: newCount } : post
-      )
-    );
-  };
 
   const goBack = () => {
     navigate(-1);
