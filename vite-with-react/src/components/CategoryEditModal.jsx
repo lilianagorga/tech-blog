@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axiosClient from "../axios.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { createSlug, createValidateField } from "../utils/utils.jsx";
@@ -9,8 +9,28 @@ function CategoryEditModal({ category, onSave, onCancel }) {
   const [slug, setSlug] = useState(String(category.slug || ''));
   const { showToast } = useStateContext();
   const [errors, setErrors] = useState({});
-
+  const modalRef = useRef();
   const validateField = createValidateField(setErrors);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onCancel();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onCancel]);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const handleTitleChange = (e) => {
     const { value } = e.target;
@@ -68,27 +88,35 @@ function CategoryEditModal({ category, onSave, onCancel }) {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
-          <label className="text-white font-bold mx-2" htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={handleTitleChange}
-          />
-          {errors.title && <div className="error">{errors.title}</div>}
-          <label className="text-white font-bold mx-2" htmlFor="slug">Slug</label>
-          <input
-            type="text"
-            id="slug"
-            value={slug}
-            onChange={handleSlugChange}
-          />
-          {errors.title && <div className="error">{errors.slug}</div>}
-          <TButton type="submit">Save Changes</TButton>
-          <TButton type="button" onClick={onCancel}>Cancel</TButton>
+    <div className="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div className="modal-content relative p-5 border w-auto shadow-lg rounded-md bg-white" ref={modalRef}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title</label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="text"
+              id="title"
+              value={title}
+              onChange={handleTitleChange}
+            />
+            {errors.title && <p className="text-red-500 text-xs italic">{errors.title}</p>}
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="slug">Slug</label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              type="text"
+              id="slug"
+              value={slug}
+              onChange={handleSlugChange}
+            />
+            {errors.title && <p className="text-red-500 text-xs italic">{errors.slug}</p>}
+          </div>
+          <div className="flex items-center justify-between">
+            <TButton color="indigo" squareMedium >Save Changes</TButton>
+            <TButton color="indigo" squareMedium onClick={onCancel}>Cancel</TButton>
+          </div>
         </form>
       </div>
     </div>
