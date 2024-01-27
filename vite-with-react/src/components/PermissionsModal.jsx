@@ -32,6 +32,7 @@ function PermissionsModal({
   return (
     <div className="p-4">
         <button
+          data-testid="open-permissions-modal"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleModalToggle}>
           Permissions
@@ -44,7 +45,7 @@ function PermissionsModal({
             ref={modalRef}
           >
             <div className="mt-3 text-center">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Permissions Panel</h3>
+              <h3 data-testid="permissions-panel" className="text-lg leading-6 font-medium text-gray-900">Permissions Panel</h3>
 
               <div className="mt-4">
                 <div>

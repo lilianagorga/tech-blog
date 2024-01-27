@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
 .sidebar-container {
   display: flex;
   flex-direction: column;
@@ -59,4 +62,11 @@ li::marker {
 .comment:last-child {
   @apply border-b-0;
 }
+
+/*@layer base {*/
+/*  html {*/
+/*  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');*/
+/*    font-family: 'Permanent Marker', cursive;*/
+/*  }*/
+/*}*/
 

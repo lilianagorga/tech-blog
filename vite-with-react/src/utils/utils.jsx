@@ -1,5 +1,3 @@
-import axiosClient from "../axios.js";
-
 export const getUserPermissions = (user) => {
   const rolePermissions = user.roles
     ? user.roles.flatMap(role => role.permissions ? role.permissions.map(perm => perm.name) : [])
@@ -42,7 +40,6 @@ export   const refreshUserRoleLists = (user, listOfRoles, setUserRoleNames) => {
       disabled: roles.includes(role)
     };
   });
-
   updatedRoles.sort((a, b) => {
     if (a.disabled && !b.disabled) return 1;
     if (!a.disabled && b.disabled) return -1;

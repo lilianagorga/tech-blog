@@ -196,10 +196,6 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
         showToast(error.response?.data?.message || "Error deleting vote!");
       });
   };
-  //
-  // useEffect(() => {
-  //   console.log('currentVote has changed:', currentVote);
-  // }, [currentVote]);
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
@@ -267,7 +263,6 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
         </TButton>
         {currentVote && (
           <TButton onClick={handleDeleteVote} color="red" squareMedium>Delete Vote
-            {/*<TrashIcon className="w-4 h-4" />*/}
           </TButton>
         )}
       </div>

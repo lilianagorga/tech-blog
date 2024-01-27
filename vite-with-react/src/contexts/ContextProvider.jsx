@@ -81,6 +81,14 @@ export const ContextProvider = ({ children }) => {
   const [rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions] = useState([]);
   const [selectedPermissions, setSelectedPermissions] = useState([]);
 
+  const updateRolesWithPermissions = (roleName, newPermissions) => {
+    setRolesWithAssociatedPermissions(prevState =>
+      prevState.map(role =>
+        role.name === roleName ? { ...role, permissions: newPermissions } : role
+      )
+    );
+  };
+
   const handleSetUserToken = (token) => {
     if (token) {
       localStorage.setItem('TOKEN', token);
@@ -135,7 +143,7 @@ export const ContextProvider = ({ children }) => {
       userRoleNames, setUserRoleNames,
       rolesWithAssociatedPermissions, setRolesWithAssociatedPermissions,
       selectedPermissions, setSelectedPermissions,
-      toast, showToast,
+      toast, showToast, updateRolesWithPermissions,
       questionTypes: ['text', "select", "radio", "checkbox", "textarea"]
     }}>
       {children}

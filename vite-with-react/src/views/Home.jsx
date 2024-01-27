@@ -72,14 +72,6 @@ export default function Home() {
       });
   }, [])
 
-  // const updateVoteCount = (postId, { upVote_count, downVote_count }) => {
-  //   setPosts(currentPosts =>
-  //     currentPosts.map(post =>
-  //       post.id === postId ? { ...post, upVote_count, downVote_count } : post
-  //     )
-  //   );
-  // };
-
   const filterPostsByCategory = (category) => {
     navigate(`/${category.slug}`, {
       state: {
@@ -134,7 +126,7 @@ export default function Home() {
           <div className="border-4 border-gray-800 rounded-lg shadow-xl p-6">
             <ul className="text-white flex flex-wrap justify-between">
               {categories.map((category) => (
-                <li key={category.id} className="p-2">
+                <li key={category.id} className="p-2" data-testid={`category-${category.title}`}>
                   <TButton color="indigo" onClick={() => filterPostsByCategory(category)}>
                     {category.title}
                   </TButton>
