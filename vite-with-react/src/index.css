@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,600&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-
+@layer base {
+  html {
+    font-family: 'Nunito Sans', sans-serif;
+  }
+}
 
 .sidebar-container {
   display: flex;
@@ -62,11 +66,4 @@ li::marker {
 .comment:last-child {
   @apply border-b-0;
 }
-
-/*@layer base {*/
-/*  html {*/
-/*  @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');*/
-/*    font-family: 'Permanent Marker', cursive;*/
-/*  }*/
-/*}*/
 

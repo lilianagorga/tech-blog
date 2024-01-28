@@ -28,6 +28,9 @@ export default {
         'custom': '24px',
       },
     },
+    fontFamily: {
+      nunito: ['Nunito Sans', 'sans-serif'],
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),
