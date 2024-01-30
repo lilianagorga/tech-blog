@@ -16,6 +16,17 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
   const [editingCommentText, setEditingCommentText] = useState("");
   const [currentVote, setCurrentVote] = useState(null);
 
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 920);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth >= 920);
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const hasRequiredRoleOrPermission = () => {
     const roles = ['Admin', 'Moderator'];
     const hasRole = currentUser.roles.some(role => roles.includes(role.name));
@@ -199,7 +210,10 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
 
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
-      <div className="absolute top-0 right-0 m-2 flex gap-2">
+      <div
+        className="absolute right-0 lg:top-0 top-auto m-2 lg:flex lg:flex-row flex flex-col lg:gap-2 gap-0"
+        // className="absolute top-0 right-0 m-2 flex gap-2"
+      >
         {canUpdate && (
           <TButton color="green" square  onClick={() => handleUpdatePost(post)}><PencilIcon className="w-4 h-4" /></TButton>
         )}
@@ -221,18 +235,32 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
         </div>
       </div>
       <p className="text-xs overflow-hidden text-ellipsis">{previewText}</p>
-     <div className="flex justify-between">
+     <div className="flex md:flex-row flex-col justify-between">
        {!isOpen && (
-         <TButton color="indigo" onClick={handleOpen}><EyeIcon className="w-5 h-5" />View Post</TButton>
+         <TButton color="indigo" onClick={handleOpen} squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>
+           <EyeIcon className="w-5 h-5 hidden xl:inline mr-2"/>
+           <span className="">View Post</span>
+         </TButton>
        )}
        {isOpen && (
-         <TButton onClick={handleClose} color="indigo">Close</TButton>
+         <TButton onClick={handleClose} color="indigo" squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>Close</TButton>
        )}
-       <TButton onClick={toggleComments}>
-         {showComments ? "Hide Comments" : "View Comments"} ({comments.length})
+       <TButton onClick={toggleComments} squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>
+         {showComments ? (
+           <>
+             <span className="xl:hidden">Comments</span>
+             <span className="hidden xl:inline">Hide Comments</span>
+           </>
+         ) : (
+           <>
+             <span className="xl:hidden">Comments</span>
+             <span className="hidden xl:inline">View Comments</span>
+           </>
+         )}
+         <span className="hidden xl:inline"> ({comments.length})</span>
        </TButton>
-
      </div>
+
       <Comments
         comments={comments}
         showComments={showComments}
