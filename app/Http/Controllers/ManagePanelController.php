@@ -72,12 +72,11 @@ class ManagePanelController extends Controller
       ]);
 
     $role = Role::firstWhere('name', $validatedData['name']);
-
     if ($role && $validatedData['permissions']) {
         $updatedPermissionsList = Permission::whereIn('name', $validatedData['permissions'])->get();
 
         $role->syncPermissions($updatedPermissionsList);
-
+        Cache::forget('managePanel');
         $role = $role->load('permissions');
 
         return response()->json([
@@ -245,6 +244,7 @@ class ManagePanelController extends Controller
     if ($user && $user->hasPermissionTo($validatedData['name'])) {
       $permission = Permission::findByName($validatedData['name'], 'api');
       $user->revokePermissionTo($permission);
+      Cache::forget('managePanel');
       return response()->json(['message' => 'Permission revoked successfully', 'user' => $user, 'permission' => $permission], Response::HTTP_OK);
     } else {
       return response()->json(['message' => 'User or Permission not found'], Response::HTTP_NOT_FOUND);

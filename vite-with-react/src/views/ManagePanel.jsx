@@ -32,7 +32,6 @@ function ManagePanel() {
 
   const [showRoleWithPermissionsModal, setShowRoleWithPermissionsModal] = useState(false);
   const [selectedRoleWithPermissions, setSelectedRoleWithPermissions] = useState(null);
-  const [forceUpdateKey, setForceUpdateKey] = useState(0);
 
   const handleRolesModalToggle = () => {
     setShowRolesModal(!showRolesModal);
@@ -64,13 +63,10 @@ function ManagePanel() {
       });
       if (response.status === 200) {
         updateRolesWithPermissions(selectedRoleWithPermissions.name, updatedPermissions);
-        // setRolesWithAssociatedPermissions(prevState => prevState.map(role => {
-        //   return role.name === selectedRoleWithPermissions.name ? { ...role, permissions: updatedPermissions } : role;
-        // }));
 
         setShowRoleWithPermissionsModal(false);
         showToast('Role permissions have been successfully updated.', false);
-        // window.location.reload();
+        window.location.reload();
       } else {
         showToast(`Error: ${response.status} ${response.statusText}`, true);
       }
@@ -87,7 +83,7 @@ function ManagePanel() {
   const handleUserPermissionsModalToggle = () => {
     setShowUserPermissionsModal(!showUserPermissionsModal);
   };
-  const handleDropdownChange = (e) => setDropdownValue(e.target.value);
+  // const handleDropdownChange = (e) => setDropdownValue(e.target.value);
 
   useEffect(() => {
     let isMounted = true;
@@ -328,11 +324,6 @@ function ManagePanel() {
     }
   };
 
-  useEffect(() => {
-    // console.log('Roles with associated permissions updated:', rolesWithAssociatedPermissions);
-    // setForceUpdateKey(prevKey => prevKey + 1);
-  }, [rolesWithAssociatedPermissions]);
-
   return (
   <PageComponent title="Manage Panel">
     {loading && <div className="flex justify-center">Loading...</div>}
@@ -428,7 +419,7 @@ function ManagePanel() {
       </div>
       <footer className="mt-4 p-4 bg-gray-100">
         <h4 className="text-center font-bold text-gray-800">ROLE AND PERMISSION OVERVIEW</h4>
-        <div key={forceUpdateKey} className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
+        <div className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
           {rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role, index) => (
             <div className="mt-4 text-white" key={`${role.id}-${index}`}>
               {role.name}
@@ -440,17 +431,6 @@ function ManagePanel() {
               ))}
             </div>
           ))}
-
-          {/*{*/}
-          {/*  rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role, index) => (*/}
-          {/*    <div className="mt-4 text-white" key={role.id + `${index}`}>*/}
-          {/*      {role.name}*/}
-          {/*      <hr/>*/}
-          {/*      {role.permissions && role.permissions.map((permission, innerIndex) => (*/}
-          {/*        <div className=" text-white" key={permission.id + `${innerIndex}`}>{permission.name}</div>*/}
-          {/*      ))}*/}
-          {/*    </div>*/}
-          {/*))}*/}
         </div>
       </footer>
     </div>
