@@ -17,7 +17,8 @@ export default function Home() {
   const [newPost, setNewPost] = useState({ title: '', body: '', category: ''});
   const { showToast } = useStateContext();
   const navigate = useNavigate();
-
+  const [searchQuery, setSearchQuery] = useState('');
+  const [originalPosts, setOriginalPosts] = useState([]);
   const {
     isModalOpen,
     editingPost,
@@ -61,6 +62,7 @@ export default function Home() {
     setLoading(true);
     axiosClient.get('/posts')
       .then((res) => {
+        setOriginalPosts(res.data.data);
         setPosts(res.data.data);
       })
       .catch((error) => {
@@ -118,6 +120,29 @@ export default function Home() {
       });
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setLoading(true);
+    axiosClient.get(`/search?q=${encodeURIComponent(searchQuery)}`)
+      .then((response) => {
+        setPosts(response.data.data);
+        setSearchQuery('');
+      })
+      .catch((error) => {
+        showToast(`Error searching posts: ${error.message}`);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleReset = () => {
+    setSearchQuery('');
+    setPosts(originalPosts);
+  };
+
   return (
     <PageComponent title="Tech Blog">
       {loading && <div className="flex justify-center">Loading...</div>}
@@ -164,6 +189,23 @@ export default function Home() {
                 required
               />
               <TButton color="indigo" type="submit">Post</TButton>
+            </form>
+          </div>
+          <div className="shadow-lg rounded-lg p-6 border-1 my-16 mx-auto max-w-screen-lg">
+            <form onSubmit={handleSearch} className="flex gap-4 items-center justify-center">
+              <input
+                className="rounded mb-2 px-4 py-2 form-element-border"
+                style={{ width: 'calc(70% - 1rem)' }}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search posts..."
+              />
+              <TButton color="indigo" type="submit">Search</TButton>
+              <TButton color="red" onClick={(e) => {
+                handleReset();
+                e.target.blur();
+              }}>Reset</TButton>
             </form>
           </div>
           <div className="rounded-lg shadow-xl p-6 border-4 border-gray-800">

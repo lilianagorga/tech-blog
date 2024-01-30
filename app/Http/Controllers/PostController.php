@@ -121,13 +121,22 @@ class PostController extends Controller
     return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
   }
 
-  public function byCategory(Category $category): Response
+  public function byCategory(Request $request, Category $category): Response
   {
-    $posts = Post::query()->join('category_post', 'posts.id', '=', 'category_post.post_id')
-      ->where('category_post.category_id', '=', $category->id)->where('active', '=', true)
-      ->whereDate('published_at', '<=', Carbon::now())->orderBy('published_at', 'desc')
-      ->paginate(10);
+    $query = $request->get('q');
+    $postsQuery = Post::query()->join('category_post', 'posts.id', '=', 'category_post.post_id')
+      ->where('category_post.category_id', '=', $category->id)
+      ->where('active', '=', true)
+      ->whereDate('published_at', '<=', Carbon::now())
+      ->orderBy('published_at', 'desc');
 
+    if ($query) {
+      $postsQuery->where(function ($q) use ($query) {
+        $q->where('title', 'like', "%$query%")
+          ->orWhere('body', 'like', "%$query%");
+      });
+    }
+    $posts = $postsQuery->paginate(10);
     return response()->json($posts);
   }
 

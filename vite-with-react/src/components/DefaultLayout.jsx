@@ -42,13 +42,6 @@ export default function DefaultLayout() {
       })
   }
 
-  useEffect(() => {
-    axiosClient.get('/me')
-      .then(({data}) => {
-        setCurrentUser(data);
-      })
-  }, []);
-
 
   return (
     <>

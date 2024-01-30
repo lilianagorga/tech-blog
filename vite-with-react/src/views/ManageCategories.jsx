@@ -30,7 +30,7 @@ function ManageCategories(){
   };
 
   const closeCreateModal = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setIsCreateModalOpen(false);
   };
 
