@@ -15,17 +15,33 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
   const [editingComment, setEditingComment] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
   const [currentVote, setCurrentVote] = useState(null);
-
-  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 920);
+  const [screenSize, setScreenSize] = useState({
+    isLargeScreen: window.innerWidth >= 920,
+    isSmallScreen: window.innerWidth <= 770
+  });
 
   useEffect(() => {
     function handleResize() {
-      setIsLargeScreen(window.innerWidth >= 920);
+      setScreenSize({
+        isLargeScreen: window.innerWidth >= 920,
+        isSmallScreen: window.innerWidth <= 770
+      });
     }
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 920);
+  //
+  // useEffect(() => {
+  //   function handleResize() {
+  //     setIsLargeScreen(window.innerWidth >= 920);
+  //   }
+  //
+  //   window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
 
   const hasRequiredRoleOrPermission = () => {
     const roles = ['Admin', 'Moderator'];
@@ -237,15 +253,18 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
       <p className="text-xs overflow-hidden text-ellipsis">{previewText}</p>
      <div className="flex md:flex-row flex-col justify-between">
        {!isOpen && (
-         <TButton color="indigo" onClick={handleOpen} squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>
+         <TButton color="indigo" onClick={handleOpen} squareSmall={!screenSize.isLargeScreen} squareLarge={screenSize.isLargeScreen}>
            <EyeIcon className="w-5 h-5 hidden xl:inline mr-2"/>
            <span className="">View Post</span>
          </TButton>
        )}
        {isOpen && (
-         <TButton onClick={handleClose} color="indigo" squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>Close</TButton>
+         <TButton
+           onClick={handleClose} color="indigo" squareSmall={!screenSize.isLargeScreen}
+           squareLarge={screenSize.isLargeScreen}
+         >Close</TButton>
        )}
-       <TButton onClick={toggleComments} squareSmall={!isLargeScreen} squareLarge={isLargeScreen}>
+       <TButton onClick={toggleComments} squareSmall={!screenSize.isLargeScreen} squareLarge={screenSize.isLargeScreen}>
          {showComments ? (
            <>
              <span className="xl:hidden">Comments</span>
@@ -272,9 +291,9 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
         editingCommentText={editingCommentText}
         setEditingCommentText={setEditingCommentText}
       />
-      <form onSubmit={handleAddComment} className="comment-form flex items-center gap-2">
+      <form onSubmit={handleAddComment} className="comment-form flex-col md:flex-row">
         <textarea
-          className="flex-1 comment-textarea"
+          className={`w-full md:w-auto resize-none ${screenSize.isSmallScreen ? "text-sm" : "text-md"}`}
           value={newCommentText}
           onChange={(e) => setNewCommentText(e.target.value)}
           placeholder="Leave a comment..."
@@ -282,13 +301,15 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
         />
         <TButton color="green" squareMedium >Send</TButton>
       </form>
-      <div className="flex items-center gap-2">
-        <TButton onClick={() => handleVote('up')} color="indigo" squareMedium>
-          <HandThumbUpIcon className="h-4 w-4" />{post.upVote_count}
-        </TButton>
-        <TButton onClick={() => handleVote('down')} color="indigo" squareMedium>
-          <HandThumbDownIcon className="w-4 h-4" />{post.downVote_count}
-        </TButton>
+      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+        <div className="flex-1 flex items-center gap-2">
+          <TButton onClick={() => handleVote('up')} color="indigo" squareMedium>
+            <HandThumbUpIcon className="h-4 w-4" />{post.upVote_count}
+          </TButton>
+          <TButton onClick={() => handleVote('down')} color="indigo" squareMedium>
+            <HandThumbDownIcon className="w-4 h-4" />{post.downVote_count}
+          </TButton>
+        </div>
         {currentVote && (
           <TButton onClick={handleDeleteVote} color="red" squareMedium>Delete Vote
           </TButton>
