@@ -92,7 +92,7 @@ function ManageCategories(){
       {loading && <div className="flex justify-center">Loading...</div>}
       {!loading && (
         <div className="bg-gray-800 rounded p-4">
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-2 sm:gap-0">
             <TButton onClick={goBack}>
               <ArrowLeftIcon className="h-5 w-5" />
               <span className="ml-1 font-bold">Back</span>

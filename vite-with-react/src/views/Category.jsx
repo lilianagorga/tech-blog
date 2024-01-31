@@ -27,6 +27,19 @@ function Category() {
     handleCloseModal,
     updateVoteCount
   } = usePostManager(setAvailablePosts);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     setOriginalPosts(posts);
@@ -59,7 +72,7 @@ function Category() {
 
   return(
     <PageComponent title={category.title}>
-        <div className="overflow-y-auto mx-8 py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
+        <div className="overflow-y-auto mx-0 sm-mx-8 py-4 px-3 bg-gray-50 rounded dark:bg-gray-800">
           <div className="flex flex-col items-center">
             <TButton onClick={goBack}>
               <ArrowLeftIcon className="h-5 w-5" />
@@ -68,14 +81,17 @@ function Category() {
           </div>
 
           <div className="shadow-lg rounded-lg p-6 border-4 border-gray-800 my-16 mx-auto max-w-screen-lg">
-            <form onSubmit={handleSearch} className="flex gap-4 items-center justify-center">
+            <form onSubmit={handleSearch}
+                  className="flex flex-col sm:flex-row gap-4 items-center justify-center"
+              // className="flex gap-4 items-center justify-center"
+            >
               <input
                 className="rounded mb-2 px-4 py-2 form-element-border"
                 style={{ width: 'calc(70% - 1rem)' }}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search posts..."
+                placeholder={windowWidth > 400 ? 'Search Posts...' : 'Posts...'}
               />
               <TButton color="indigo" type="submit" onClick={(e) => {
                 e.target.blur();
@@ -88,7 +104,7 @@ function Category() {
           </div>
 
           <div className="rounded-lg shadow-xl p-6 border-4 border-gray-800">
-            <ul className="text-gray-400 grid grid-cols-3 gap-4 posts-list posts-list:hover">
+            <ul className="text-gray-400 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 posts-list posts-list:hover">
               {availablePosts.length > 0 ? (
                 availablePosts.map(post => (
                   <Post

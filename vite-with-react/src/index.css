@@ -39,10 +39,6 @@ li::marker {
   @apply flex items-center gap-2
 }
 
-/*.comment-textarea {*/
-/*  @apply flex-grow mr-2;*/
-/*}*/
-
 .comment-item {
   @apply relative flex justify-between items-start p-2 border-b border-gray-100 mb-4;
 }
@@ -99,4 +95,3 @@ li::marker {
     width: calc(45% - 1rem);
   }
 }
-

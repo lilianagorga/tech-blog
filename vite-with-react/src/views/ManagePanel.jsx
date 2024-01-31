@@ -328,9 +328,9 @@ function ManagePanel() {
   <PageComponent title="Manage Panel">
     {loading && <div className="flex justify-center">Loading...</div>}
     {!loading && (
-      <div className="container mx-auto pt-2 mt-2">
+      <div className="container mx-0 sm:mx-auto pt-2 mt-2">
       <div className="grid grid-cols-10 gap-4">
-        <aside className='grid col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
+        <aside className='grid col-span-10 sm:col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
           <div className="manage-categories-container">
             {canManageCategories && (
               <>
@@ -394,38 +394,45 @@ function ManagePanel() {
             />
           </div>
         </aside>
-        <main className="col-span-8 p-4 border-l-2 border-r-2">
-          <div className="grid grid-cols-4 gap-4 border-b-2">
-            <h3 className="col-span-1 text-lg font-bold text-center">Email</h3>
-            <h3 className="col-span-2 text-lg font-bold text-center">Permissions</h3>
-            <h3 className="col-span-1 text-lg font-bold text-center">Roles</h3>
+        <main className="col-span-10 sm:col-span-8 p-4 border-l-2 border-r-2">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 border-b-2">
+            <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Email</h3>
+            <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Permissions</h3>
+            <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Roles</h3>
+            <h3 className="col-span-1 block sm:hidden text-lg font-bold text-center">Users</h3>
           </div>
-          <div className="grid grid-cols-4 gap-4 py-2">
-            {users.map((user, index) => (
-              <React.Fragment key={user.id}>
-                <div className={`col-span-1 p-2`}>
-                  {user.email}
-                </div>
-                <div className={`col-span-2 p-2`}>
-                  {getUserPermissions(user).join(', ')}
-                </div>
-                <div className={`col-span-1 p-2`}>
-                  {getUserRoles(user)}
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+          {users.map((user) => (
+            <div key={user.id}>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 py-1 sm:py-2">
+                <React.Fragment>
+                  <div className={`flex sm:block gap-2 sm:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-2`}>
+                    <h3 className="sm:hidden text-md font-bold">USER </h3>
+                    {user.email}
+                  </div>
+                  <div className={`col-span-2 sm:col-span-2 p-1 sm:p-2`}>
+                    <h3 className="sm:hidden text-md font-bold">PERMISSIONS </h3>
+                    {getUserPermissions(user).join(', ')}
+                  </div>
+                  <div className={`flex sm:block gap-2 sm:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-2`}>
+                    <h3 className="sm:hidden text-md font-bold">ROLES </h3>
+                    {getUserRoles(user)}
+                  </div>
+                </React.Fragment>
+              </div>
+              <hr className="sm:hidden border-t border-gray-300" />
+            </div>
+          ))}
         </main>
       </div>
       <footer className="mt-4 p-4 bg-gray-100">
         <h4 className="text-center font-bold text-gray-800">ROLE AND PERMISSION OVERVIEW</h4>
-        <div className="grid grid-cols-5 m-8 p-8 bg-gray-800 gap-8 rounded">
+        <div className="grid grid-cols-1 sm:grid-cols-3 m-4 sm:m-8 p-8 bg-gray-800 gap-8 rounded">
           {rolesWithAssociatedPermissions && rolesWithAssociatedPermissions.map((role, index) => (
-            <div className="mt-4 text-white" key={`${role.id}-${index}`}>
+            <div className="mt-4 text-white text-center" key={`${role.id}-${index}`}>
               {role.name}
               <hr/>
               {role.permissions && role.permissions.map((permission, index) => (
-                <div className="text-white" key={`${permission.id}-${index}`}>
+                <div className="text-white text-start" key={`${permission.id}-${index}`}>
                   {permission.name}
                 </div>
               ))}
