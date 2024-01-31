@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
       /** @var User $adminUser */
       $adminUser = User::factory()->create([
-        'email' => 'admin@techBlog.com',
+        'email' => 'admin@techblog.com',
         'name' => 'Admin',
         'password' => bcrypt('Admin123!')
       ]);

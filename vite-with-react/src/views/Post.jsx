@@ -211,7 +211,7 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
   return (
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
       <div
-        className="absolute right-0 lg:top-0 top-auto m-2 lg:flex lg:flex-row flex flex-col lg:gap-2 gap-0"
+        className={`flex gap-2 m-2 ${canUpdate || canDelete ? "lg:absolute lg:right-0 lg:top-0" : ""}`}
         // className="absolute top-0 right-0 m-2 flex gap-2"
       >
         {canUpdate && (
