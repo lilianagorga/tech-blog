@@ -330,7 +330,7 @@ function ManagePanel() {
     {!loading && (
       <div className="container mx-0 sm:mx-auto pt-2 mt-2">
       <div className="grid grid-cols-10 gap-4">
-        <aside className='grid col-span-10 sm:col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
+        <aside className='grid col-span-10 lg:col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
           <div className="manage-categories-container">
             {canManageCategories && (
               <>
@@ -394,10 +394,10 @@ function ManagePanel() {
             />
           </div>
         </aside>
-        <main className="col-span-10 sm:col-span-8 p-4 border-l-2 border-r-2">
+        <main className="col-span-10 lg:col-span-8 p-4 border-l-0 lg:border-l-2 border-r-0 lg:border-r-2">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 border-b-2">
             <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Email</h3>
-            <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Permissions</h3>
+            <h3 className="col-span-2 hidden sm:block text-lg font-bold text-center">Permissions</h3>
             <h3 className="col-span-1 hidden sm:block text-lg font-bold text-center">Roles</h3>
             <h3 className="col-span-1 block sm:hidden text-lg font-bold text-center">Users</h3>
           </div>
@@ -405,15 +405,15 @@ function ManagePanel() {
             <div key={user.id}>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-4 py-1 sm:py-2">
                 <React.Fragment>
-                  <div className={`flex sm:block gap-2 sm:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-2`}>
+                  <div className={`flex sm:block gap-2 lg:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-4 md:p-6 lg:p-6`}>
                     <h3 className="sm:hidden text-md font-bold">USER </h3>
                     {user.email}
                   </div>
-                  <div className={`col-span-2 sm:col-span-2 p-1 sm:p-2`}>
+                  <div className={`col-span-2 gap-2 lg:gap-0 sm:col-span-2 p-1 sm:p-4 md:p-6 lg:p-6 pl-0 sm:pl-8 md:pl-12 lg:pl-12`}>
                     <h3 className="sm:hidden text-md font-bold">PERMISSIONS </h3>
                     {getUserPermissions(user).join(', ')}
                   </div>
-                  <div className={`flex sm:block gap-2 sm:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-2`}>
+                  <div className={`flex sm:block gap-2 lg:gap-0 col-span-1 sm:col-span-1 p-1 sm:p-4 md:p-2 sm:pl-8 lg:p-6 pl-0 md:pl-10 pl-10`}>
                     <h3 className="sm:hidden text-md font-bold">ROLES </h3>
                     {getUserRoles(user)}
                   </div>
