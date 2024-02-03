@@ -271,7 +271,24 @@ Management Roles and Permissions:
 - **GET** /home: Retrieve home page content.
 
 ### Routes Web
-[//]: # (&#40;TENERE IN STANDBY&#41;)
+
+- The web routes are designed to ensure that the React frontend is served correctly when the application is run outside 
+  of Docker, such as during local development.
+- When running locally without Docker, the Laravel server needs to handle requests for your React application. Since all
+  API routes are prefixed with `/api`, we need a way to serve the React application for all other requests. This is 
+  where the catch-all route comes into play:
+  
+ ```php
+Route::get('/{any}', function () {
+    return file_get_contents(public_path('build/index.html'));
+})->where('any', '^(?!api).*$');
+```
+
+- This snippet in the web routes (routes/web.php) tells Laravel to respond with the index.html of your React application 
+  for any route that does not start with /api. This way, when you access your application at http://localhost:8000
+  Laravel will serve the index.html file, and React Router will handle the rest.
+
+#### Postman API Test Configuration
 
 > **Remember to include the following headers when making requests:**
 > Check on the headers tab **Content/type** application/json.

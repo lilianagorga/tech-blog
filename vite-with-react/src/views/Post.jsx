@@ -32,17 +32,6 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 920);
-  //
-  // useEffect(() => {
-  //   function handleResize() {
-  //     setIsLargeScreen(window.innerWidth >= 920);
-  //   }
-  //
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
-
   const hasRequiredRoleOrPermission = () => {
     const roles = ['Admin', 'Moderator'];
     const hasRole = currentUser.roles.some(role => roles.includes(role.name));
@@ -187,9 +176,7 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
 
     axiosClient[voteMethod](voteUrl, payload)
       .then(response => {
-        console.log('Response data:', response.data);
         setCurrentVote( response.data.vote);
-        console.log('currentVote in handleVote:',currentVote)
         updateVoteCount(post.id, {
           upVote_count: parseInt(response.data.upVote_count),
           downVote_count: parseInt(response.data.downVote_count),
@@ -211,7 +198,6 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
     axiosClient.delete(`/votes/${currentVote.id}`)
       .then(() => {
         setCurrentVote(null);
-        console.log('currentVote in handleDeleteVote:',currentVote);
         updateVoteCount(post.id, {
           upVote_count: currentVote.type === 'up' ? post.upVote_count - 1 : post.upVote_count,
           downVote_count: currentVote.type === 'down' ? post.downVote_count - 1 : post.downVote_count,
@@ -228,7 +214,6 @@ function Post({ post, deletePost, handleUpdatePost, updateVoteCount }) {
     <li className="relative border p-2 rounded-lg shadow-lg h-full flex flex-col">
       <div
         className={`flex gap-2 m-2 ${canUpdate || canDelete ? "lg:absolute lg:right-0 lg:top-0" : ""}`}
-        // className="absolute top-0 right-0 m-2 flex gap-2"
       >
         {canUpdate && (
           <TButton color="green" square  onClick={() => handleUpdatePost(post)}><PencilIcon className="w-4 h-4" /></TButton>
