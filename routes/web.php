@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-//
-//Route::get('/{any}', function () {
-//  return file_get_contents(public_path('build/index.html'));
-//})->where('any', '^(?!api).*$');
 
 if (App::environment('local')) {
   Route::get('/{any}', function () {
