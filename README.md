@@ -288,8 +288,6 @@ Route::get('/{any}', function () {
   for any route that does not start with /api. This way, when you access your application at http://localhost:8000
   Laravel will serve the index.html file, and React Router will handle the rest.
 
-#### Postman API Test Configuration
-
 > **Remember to include the following headers when making requests:**
 > Check on the headers tab **Content/type** application/json.
 > Add a new header **Accept** application/json.
@@ -352,7 +350,7 @@ git push origin feature-name
 * Open a pull request.
 
 ## Live Deploy
-* The application will be accessible at http://164.90.221.159/
+* The application will be accessible at http://techblogproduction.lilianagorga.com/
 
 ## License
 
