@@ -328,9 +328,9 @@ function ManagePanel() {
   <PageComponent title="Manage Panel">
     {loading && <div className="flex justify-center">Loading...</div>}
     {!loading && (
-      <div className="container mx-0 sm:mx-auto pt-2 mt-2">
+      <div className="container mx-0 sm:mx-auto pt-0 sm:pt-2 mt-0 sm:mt-2">
       <div className="grid grid-cols-10 gap-4">
-        <aside className='grid col-span-10 lg:col-span-2 grid-row-6 my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
+        <aside className='grid col-span-10 lg:col-span-2 grid-row-6 my-0 sm:my-4 py-4 bg-gray-800 rounded .sidebar-container aria-label="Sidebar"'>
           <div className="manage-categories-container">
             {canManageCategories && (
               <>

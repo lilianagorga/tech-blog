@@ -95,3 +95,25 @@ li::marker {
     width: calc(45% - 1rem);
   }
 }
+
+
+@media (max-width: 639px) {
+  .modal {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
+
+@media (min-width: 640px) {
+  .modal {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal {
+    width: 20%;
+  }
+}
+

@@ -65,13 +65,14 @@ function RoleWithAssociatedPermissionsModal({
 
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white" ref={modalRef}>
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white modal" ref={modalRef}>
             <div className="mt-3 text-center">
               <h3 className="text-lg leading-6 font-medium text-gray-900">Update Roles Panel</h3>
               <div className="mt-4">
                 <div>
                   <label htmlFor="roleSelect">Select Role:</label>
                   <select id="roleSelect" onChange={handleRoleChange} value={selectedRole?.name || ''}>
+                    <option value="">Select a Role</option>
                     {rolesWithAssociatedPermissions.map((role) => (
                       <option key={role.id} value={role.name}>{role.name}</option>
                     ))}

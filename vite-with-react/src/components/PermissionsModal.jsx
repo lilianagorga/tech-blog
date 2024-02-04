@@ -41,7 +41,7 @@ function PermissionsModal({
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
           <div
-            className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
+            className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white modal"
             ref={modalRef}
           >
             <div className="mt-3 text-center">
@@ -70,7 +70,7 @@ function PermissionsModal({
 
               <div className="flex items-center justify-between">
                 <select
-                  className="px-3 py-2 border border-gray-300 rounded-md text-gray-600 mr-2"
+                  className="px-1 py-2 border border-gray-300 rounded-md text-gray-600 mr-2 flex-1 sm:flex-none sm:px-3"
                   onChange={(e) => setPermissionToDelete(e.target.value)}>
                   <option value="">Select Permission</option>
                   {
@@ -81,7 +81,7 @@ function PermissionsModal({
                 </select>
 
                 <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 sm:px-4 mr-2 rounded"
                   onClick={handleDeletePermission}
                 >
                   DELETE
