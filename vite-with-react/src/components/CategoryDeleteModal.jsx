@@ -26,7 +26,7 @@ function CategoryDeleteModal({ onConfirm, onCancel }) {
   }, [onCancel]);
 
   return (
-    <div className="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="modal-content relative p-5 border w-auto shadow-lg rounded-md bg-white" ref={modalRef}>
         <div className="text-center">
           <h3 className="font-bold uppercase mb-4">Are you sure you want to delete this category?</h3>

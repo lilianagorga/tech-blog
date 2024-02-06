@@ -98,7 +98,7 @@ li::marker {
 
 
 @media (max-width: 639px) {
-  .modal {
+  .modal-size {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
@@ -106,13 +106,13 @@ li::marker {
 }
 
 @media (min-width: 640px) {
-  .modal {
+  .modal-size {
     width: 50%;
   }
 }
 
 @media (min-width: 1024px) {
-  .modal {
+  .modal-size {
     width: 20%;
   }
 }

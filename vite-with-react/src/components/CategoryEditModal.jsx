@@ -88,7 +88,7 @@ function CategoryEditModal({ category, onSave, onCancel }) {
   };
 
   return (
-    <div className="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="modal-content relative p-5 border w-auto shadow-lg rounded-md bg-white" ref={modalRef}>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="mb-4">
